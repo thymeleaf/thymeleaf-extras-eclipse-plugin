@@ -31,6 +31,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
@@ -49,19 +55,8 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 
 	private static final String DIALECT_EXTRAS_NAMESPACE = "http://www.thymeleaf.org/extras/dialect";
 
-	private static final XPathExpression namespaceexpression;
-	static {
-		try {
-			XPathFactory factory = XPathFactory.newInstance();
-			XPath xpath = factory.newXPath();
-			namespaceexpression = xpath.compile("namespace-uri(/*)");
-		}
-		catch (XPathExpressionException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
-
 	private final IProject project;
+	private final XPathExpression namespaceexpression;
 
 	/**
 	 * Constructor, sets which project will be scanned for Thymeleaf dialect
@@ -72,6 +67,14 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 	public ProjectDependencyDialectLocator(IProject project) {
 
 		this.project = project;
+		try {
+			XPathFactory factory = XPathFactory.newInstance();
+			XPath xpath = factory.newXPath();
+			namespaceexpression = xpath.compile("namespace-uri(/*)");
+		}
+		catch (XPathExpressionException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	/**
@@ -82,7 +85,7 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 	 * @return <tt>true</tt> if the resource is an XML file in the
 	 * 		   <tt>http://www.thymeleaf.org/extras/dialect</tt> namespace.
 	 */
-	private static boolean isDialectHelpXMLFile(IStorage resource) {
+	private boolean isDialectHelpXMLFile(IStorage resource) {
 
 		InputStream resourcestream = null;
 		try {
@@ -100,11 +103,11 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 			return false;
 		}
 		catch (XPathExpressionException ex) {
-			ex.printStackTrace();
+			ContentAssistPlugin.logError("Unable to execute XPath expression", ex);
 			return false;
 		}
 		catch (CoreException ex) {
-			ex.printStackTrace();
+			ContentAssistPlugin.logError("Unable to open an input stream over resource", ex);
 			return false;
 		}
 		finally {
@@ -126,9 +129,10 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 	public List<InputStream> locateDialects() {
 
 		ContentAssistPlugin.logInfo("Scanning for dialect help files on project dependencies...");
-
 		long start = System.currentTimeMillis();
-		ArrayList<InputStream> dialectstreams = new ArrayList<InputStream>();
+
+		ExecutorService executorservice = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		final ArrayList<InputStream> dialectstreams = new ArrayList<InputStream>();
 
 		try {
 			// Proceed only if this is a Java web project
@@ -138,25 +142,60 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 				IJavaProject javaproject = JavaCore.create(project);
 				IPackageFragment[] packagefragments = javaproject.getPackageFragments();
 
-				// NOTE: This loop could be super slow since I introduced an IO element
-				//       to the XML file checking.  Might need to run it in parallel.
-				for (IPackageFragment packagefragment: packagefragments) {
-					for (Object resource: packagefragment.getNonJavaResources()) {
-						IStorage fileorjarentry = (IStorage)resource;
-						if (isDialectHelpXMLFile(fileorjarentry)) {
-							ContentAssistPlugin.logInfo("Help file found: " + fileorjarentry.getName());
-							dialectstreams.add((fileorjarentry).getContents());
+				// Multi-threaded search for dialect files - there are a lot of package
+				// fragments to get through, and the I/O namespace check is a blocker.
+				ArrayList<Future<IStorage>> scannertasks = new ArrayList<Future<IStorage>>();
+				for (final IPackageFragment packagefragment: packagefragments) {
+					scannertasks.add(executorservice.submit(new Callable<IStorage>() {
+						@Override
+						public IStorage call() throws Exception {
+
+							for (Object resource: packagefragment.getNonJavaResources()) {
+								IStorage fileorjarentry = (IStorage)resource;
+								if (isDialectHelpXMLFile(fileorjarentry)) {
+									ContentAssistPlugin.logInfo("...help file found: " + fileorjarentry.getName());
+									return fileorjarentry;
+								}
+							}
+							return null;
 						}
+					}));
+				}
+
+				// Collate scanner results
+				for (Future<IStorage> scannertask: scannertasks) {
+					try {
+						IStorage fileorjarentry = scannertask.get();
+						if (fileorjarentry != null) {
+							dialectstreams.add(fileorjarentry.getContents());
+						}
+					}
+					catch (ExecutionException ex) {
+						ContentAssistPlugin.logError("Unable to execute scanning task", ex);
+					}
+					catch (InterruptedException ex) {
+						ContentAssistPlugin.logError("Unable to execute scanning task", ex);
 					}
 				}
 			}
 		}
 		catch (CoreException ex) {
 			// If we get here, the project cannot be read.  Return the empty list.
-			ex.printStackTrace();
+			ContentAssistPlugin.logError("Project " + project.getName() + " could not be read", ex);
+		}
+		finally {
+			executorservice.shutdown();
+			try {
+				if (!executorservice.awaitTermination(5, TimeUnit.SECONDS)) {
+					executorservice.shutdownNow();
+				}
+			}
+			catch (InterruptedException ex) {
+				throw new RuntimeException(ex);
+			}
 		}
 
-		ContentAssistPlugin.logInfo("Scanning time: " + (System.currentTimeMillis() - start) + "ms");
+		ContentAssistPlugin.logInfo("...scanning complete.  Execution time: " + (System.currentTimeMillis() - start) + "ms");
 		return dialectstreams;
 	}
 }

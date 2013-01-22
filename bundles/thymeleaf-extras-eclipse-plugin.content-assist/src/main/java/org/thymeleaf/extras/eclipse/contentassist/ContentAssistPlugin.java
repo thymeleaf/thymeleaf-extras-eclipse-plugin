@@ -66,6 +66,17 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 	}
 
 	/**
+	 * Logs an error message to the Eclipse logger.
+	 * 
+	 * @param message
+	 * @param throwable
+	 */
+	public static void logError(String message, Throwable throwable) {
+
+		plugin.getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, throwable));
+	}
+
+	/**
 	 * Logs an information message to the Eclipse logger.
 	 * 
 	 * @param message
