@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<!--
+	Schema for the Thymeleaf dialect help/documentation XML files that are used
+	for the content assist features in any of the IDE plugins for Thymeleaf.
+-->
+<xsd:schema targetNamespace="http://www.thymeleaf.org/extras/dialect"
+	xmlns="http://www.thymeleaf.org/extras/dialect"
+	xmlns:ci="http://jaxb.dev.java.net/plugin/code-injector"
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:extensionBindingPrefixes="ci xjc" jxb:version="1.0"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<!-- Map generated classes to the specified Java package -->
+	<xsd:annotation>
+		<xsd:appinfo>
+			<jxb:schemaBindings>
+				<jxb:package name="org.thymeleaf.extras.eclipse.dialect.xml"/>
+			</jxb:schemaBindings>
+		</xsd:appinfo>
+	</xsd:annotation>
+
+
+	<!-- Root element, the dialect -->
+	<!-- ========================= -->
+
+	<xsd:element name="dialect">
+		<xsd:complexType>
+			<xsd:annotation>
+				<xsd:documentation>
+					Information about a dialect and its processors.
+				</xsd:documentation>
+				<xsd:appinfo>
+					<ci:code><![CDATA[
+	/**
+	 * Returns if this dialect is equal to another.
+	 * 
+	 * @param other The other dialect to compare against.
+	 * @return <tt>true</tt> if the other object is a dialect and the share the
+	 * 		   same namespace.
+	 */
+	@Override
+	public boolean equals(Object other) {
+
+		return other instanceof Dialect && namespaceUri.equals(((Dialect)other).namespaceUri);
+	}
+					]]></ci:code>
+				</xsd:appinfo>
+			</xsd:annotation>
+			<xsd:sequence>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:annotation>
+						<xsd:appinfo>
+							<jxb:property name="processors"/>
+						</xsd:appinfo>
+					</xsd:annotation>
+					<xsd:element name="attribute-processor" type="AttributeProcessor"/>
+					<xsd:element name="element-processor" type="ElementProcessor"/>
+				</xsd:choice>
+			</xsd:sequence>
+			<xsd:attribute name="prefix" type="xsd:string" use="required"/>
+			<xsd:attribute name="namespace-uri" type="xsd:anyURI" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+
+
+	<!-- Processor types -->
+	<!-- =============== -->
+
+	<xsd:complexType name="Processor" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>
+				Common data between the 2 Thymeleaf processor types: attribute processors
+				and element processors.
+			</xsd:documentation>
+			<xsd:appinfo>
+				<ci:code><![CDATA[
+	@javax.xml.bind.annotation.XmlTransient
+	protected Dialect dialect;
+
+	/**
+	 * Gets the dialect this processor belongs to.
+	 * 
+	 * @return Dialect this processor is for.
+	 */
+	public Dialect getDialect() {
+
+		return dialect;
+	}
+
+	/**
+	 * Set the dialect this processor belongs to.
+	 * 
+	 * @param dialect
+	 */
+	public void setDialect(Dialect dialect) {
+
+		this.dialect = dialect;
+	}
+				]]></ci:code>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="documentation" type="ProcessorDocumentation" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<jxb:property generateIsSetMethod="true"/>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:ID" use="required"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="ProcessorDocumentation">
+		<xsd:annotation>
+			<xsd:documentation>
+				Notes to help generate some documentation about a processor.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="see-also" type="xsd:IDREFS">
+					<xsd:annotation>
+						<xsd:documentation>
+							List of tags related to this one, suggesting where else
+							the user can go to get more information or understanding.
+						</xsd:documentation>
+						<xsd:appinfo>
+							<jxb:property generateIsSetMethod="true"/>
+						</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:attribute>
+				<xsd:attribute name="reference" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>
+							An 'official' document and the section/page within it
+							to get more information.
+						</xsd:documentation>
+						<xsd:appinfo>
+							<jxb:property generateIsSetMethod="true"/>
+						</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<!-- Attribute processor -->
+	<xsd:complexType name="AttributeProcessor">
+		<xsd:annotation>
+			<xsd:documentation>
+				An attribute processor, includes an extra set of restrictions to
+				help with deciding where the processor can go and what values it
+				can take.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="Processor">
+				<xsd:sequence>
+					<xsd:element name="restrictions" type="AttributeRestrictions" minOccurs="0">
+						<xsd:annotation>
+							<xsd:appinfo>
+								<jxb:property generateIsSetMethod="true"/>
+							</xsd:appinfo>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="AttributeRestrictions">
+		<xsd:annotation>
+			<xsd:documentation>
+				A set of restrictions on attribute processor use, used to help the
+				content assist decide where attribute suggestions should be made.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="tags">
+			<xsd:annotation>
+				<xsd:documentation>
+					A list of tags that this processor can or cannot appear in.
+				</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:list itemType="xsd:string"/>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="values">
+			<xsd:annotation>
+				<xsd:documentation>
+					A list of values that this processor can take.
+				</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:list itemType="xsd:string"/>
+			</xsd:simpleType>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<!-- Element processor -->
+	<xsd:complexType name="ElementProcessor">
+		<xsd:annotation>
+			<xsd:documentation>
+				An element processor.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="Processor"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+</xsd:schema>

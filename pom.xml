@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.thymeleaf.extras</groupId>
+	<artifactId>thymeleaf-extras-eclipse-plugin</artifactId>
+	<version>0.3.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>thymeleaf-extras-eclipse-plugin</name>
+	<description>Thymeleaf integration plugin for the Eclipse IDE </description>
+	<url>https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin</url>
+	<inceptionYear>2013</inceptionYear>
+	<organization>
+		<name>Thymeleaf Project</name>
+		<url>http://www.thymeleaf.org/</url>
+	</organization>
+	<developers>
+		<developer>
+			<id>emanuelrabina</id>
+			<name>Emanuel Rabina</name>
+			<email>emanuelrabina@gmail.com</email>
+			<url>http://www.ultraq.net.nz/</url>
+			<roles>
+				<role>author</role>
+				<role>developer</role>
+			</roles>
+			<timezone>+12</timezone>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>Thibault Duchateau</name>
+			<email>thibault.duchateau@gmail.com</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<properties>
+				<contribution>Dialect scanning</contribution>
+				<contributionUrl>https://github.com/ultraq/thymeleaf-eclipse-plugin/pull/7</contributionUrl>
+			</properties>
+		</contributor>
+	</contributors>
+
+	<modules>
+		<module>bundles/thymeleaf-extras-eclipse-plugin.content-assist</module>
+		<module>bundles/thymeleaf-extras-eclipse-plugin.dialect</module>
+		<module>features/thymeleaf-extras-eclipse-plugin.content-assist.feature</module>
+		<module>repository/thymeleaf-extras-eclipse-plugin.repository</module>
+	</modules>
+
+	<scm>
+		<url>scm:git:git@github.com:thymeleaf/thymeleaf-extras-eclipse-plugin.git</url>
+		<connection>scm:git:git@github.com:thymeleaf/thymeleaf-extras-eclipse-plugin.git</connection>
+		<developerConnection>scm:git:git@github.com:thymeleaf/thymeleaf-extras-eclipse-plugin.git</developerConnection>
+	</scm>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues</url>
+	</issueManagement>
+
+	<prerequisites>
+		<maven>3.0</maven>
+	</prerequisites>
+	<repositories>
+		<repository>
+			<id>juno</id>
+			<url>http://download.eclipse.org/releases/juno</url>
+			<layout>p2</layout>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>sonatype-public</id>
+			<url>http://repository.sonatype.org/content/groups/sonatype-public-grid</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<properties>
+		<tycho.version>0.16.0</tycho.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<environments>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<archiveSite>true</archiveSite>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<repositoryName>Thymeleaf Eclipse Plugin repository</repositoryName>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

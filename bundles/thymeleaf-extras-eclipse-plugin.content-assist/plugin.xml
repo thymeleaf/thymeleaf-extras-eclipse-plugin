@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+
+<plugin>
+   <extension
+         point="org.eclipse.wst.sse.ui.completionProposal">
+      <proposalCategory
+            icon="icons/Thymeleaf-Leaf.png"
+            id="org.thymeleaf.extras.eclipse.proposalCategory.thymeleafProcessors"
+            name="Thymeleaf Processor Proposals">
+      </proposalCategory>
+      <proposalComputer
+            activate="true"
+            categoryId="org.thymeleaf.extras.eclipse.proposalCategory.thymeleafProcessors"
+            class="org.thymeleaf.extras.eclipse.contentassist.autocomplete.ProcessorCompletionProposalComputer"
+            id="org.thymeleaf.extras.eclipse.proposalComputer.thymeleafProcessors"
+            name="Thymeleaf Processor Proposal Computer">
+         <contentType
+               id="org.eclipse.wst.html.core.htmlsource">
+            <partitionType
+                  id="org.eclipse.wst.html.HTML_DEFAULT">
+            </partitionType>
+         </contentType>
+      </proposalComputer>
+   </extension>
+   <extension
+         point="org.eclipse.wst.sse.ui.editorConfiguration">
+      <documentationTextHover
+            class="org.thymeleaf.extras.eclipse.contentassist.hover.ProcessorInfoHoverComputer"
+            target="org.eclipse.wst.html.HTML_DEFAULT">
+      </documentationTextHover>
+   </extension>
+
+</plugin>

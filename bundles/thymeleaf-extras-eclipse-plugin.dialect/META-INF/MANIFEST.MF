@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Thymeleaf Dialects
+Bundle-SymbolicName: org.thymeleaf.extras.eclipse.dialect;singleton:=true
+Bundle-Version: 0.3.0.qualifier
+Bundle-Activator: org.thymeleaf.extras.eclipse.dialect.DialectPlugin
+Bundle-Vendor: Thymeleaf Project
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.thymeleaf.extras.eclipse.dialect,
+ org.thymeleaf.extras.eclipse.dialect.xml
+Bundle-ClassPath: .,
+ libs/activation-1.1.1.jar,
+ libs/jaxb-api-2.2.6.jar,
+ libs/jaxb-impl-2.2.6.jar,
+ libs/jaxb-utilities-1.2.3.jar,
+ libs/joda-time-2.1.jar,
+ libs/jsr173_api-1.0.jar
