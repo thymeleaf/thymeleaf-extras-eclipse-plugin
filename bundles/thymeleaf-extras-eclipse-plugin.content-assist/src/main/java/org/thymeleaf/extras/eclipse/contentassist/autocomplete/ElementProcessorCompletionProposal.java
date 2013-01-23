@@ -16,32 +16,38 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete;
 
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Point;
-import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
+import org.eclipse.wst.html.ui.internal.HTMLUIPlugin;
+import org.eclipse.wst.html.ui.internal.preferences.HTMLUIPreferenceNames;
+import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 
 /**
- * A completion proposal for Thymeleaf attribute processors.
+ * A completion proposal for Thymeleaf element processors.
  * 
  * @author Emanuel Rabina
  */
-public class AttributeProcessorCompletionProposal extends AbstractProcessorCompletionProposal {
+@SuppressWarnings("restriction")
+public class ElementProcessorCompletionProposal extends AbstractProcessorCompletionProposal {
+
+	private final boolean addendtag;
 
 	/**
-	 * Constructor, creates a completion proposal for a Thymeleaf attribute
+	 * Constructor, creates a completion proposal for a Thymeleaf element
 	 * processor.
 	 * 
-	 * @param processor		  Attribute processor being proposed.
+	 * @param processor		  Element processor being proposed.
 	 * @param charsentered	  How much of the entire proposal has already been
 	 * 						  entered by the user.
 	 * @param cursorposition
 	 */
-	public AttributeProcessorCompletionProposal(AttributeProcessor processor,
+	public ElementProcessorCompletionProposal(ElementProcessor processor,
 		int charsentered, int cursorposition) {
 
 		super(processor, charsentered, cursorposition);
+		addendtag = HTMLUIPlugin.getDefault().getPreferenceStore().getBoolean(
+				HTMLUIPreferenceNames.TYPING_COMPLETE_ELEMENTS);
 	}
 
 	/**
@@ -50,7 +56,11 @@ public class AttributeProcessorCompletionProposal extends AbstractProcessorCompl
 	@Override
 	protected void applyImpl(IDocument document, char trigger, int offset) throws BadLocationException {
 
-		document.replace(offset, 0, replacementstring.substring(offset - cursorposition) + "=\"\"");
+		String replacement = replacementstring.substring(offset - cursorposition) + ">";
+		if (addendtag) {
+			replacement += "</" + fullprocessorname + ">";
+		}
+		document.replace(offset, 0, replacement);
 	}
 
 	/**
@@ -59,6 +69,6 @@ public class AttributeProcessorCompletionProposal extends AbstractProcessorCompl
 	@Override
 	public Point getSelection(IDocument document) {
 
-		return new Point(cursorposition + replacementstring.length() + 2, 0);
+		return new Point(cursorposition + replacementstring.length() + 1, 0);
 	}
 }

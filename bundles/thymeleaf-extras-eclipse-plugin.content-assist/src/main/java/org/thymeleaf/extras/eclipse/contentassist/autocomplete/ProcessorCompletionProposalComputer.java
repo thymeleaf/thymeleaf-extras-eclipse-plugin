@@ -25,9 +25,11 @@ import org.eclipse.wst.sse.ui.contentassist.CompletionProposalInvocationContext;
 import org.eclipse.wst.sse.ui.contentassist.ICompletionProposalComputer;
 import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMElement;
+import org.eclipse.wst.xml.core.internal.provisional.document.IDOMText;
 import org.thymeleaf.extras.eclipse.contentassist.AbstractProcessorComputer;
 import org.thymeleaf.extras.eclipse.contentassist.ProcessorCache;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
+import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
@@ -78,7 +80,16 @@ public class ProcessorCompletionProposalComputer extends AbstractProcessorComput
 								pattern.length(), cursorposition));
 					}
 				}
+			}
 
+			// Collect element processors if we're in an HTML text node
+			else if (node instanceof IDOMText) {
+				List<ElementProcessor> processors = ProcessorCache.getElementProcessors(
+						findCurrentProject(), namespaces, pattern);
+				for (ElementProcessor processor: processors) {
+					proposals.add(new ElementProcessorCompletionProposal(processor,
+							pattern.length(), cursorposition));
+				}
 			}
 		}
 		catch (BadLocationException ex) {

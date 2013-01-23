@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IProject;
 import org.thymeleaf.extras.eclipse.dialect.DialectLoader;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
+import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
 
 import java.util.ArrayList;
@@ -59,6 +60,38 @@ public class ProcessorCache {
 	});
 
 	/**
+	 * Retrieve all attribute processors for the given project, whose names
+	 * match the starting pattern.
+	 * 
+	 * @param project	 The current project.
+	 * @param namespaces List of namespaces available at the current point in
+	 * 					 the document.
+	 * @param pattern	 Start-of-string pattern to match.
+	 * @return List of all matching attribute processors.
+	 */
+	public static List<AttributeProcessor> getAttributeProcessors(IProject project,
+		List<QName> namespaces, String pattern) {
+
+		return getProcessors(project, namespaces, pattern, AttributeProcessor.class);
+	}
+
+	/**
+	 * Retrieve all element processors for the given project, whose names match
+	 * the starting pattern.
+	 * 
+	 * @param project	 The current project.
+	 * @param namespaces List of namespaces available at the current point in
+	 * 					 the document.
+	 * @param pattern	 Start-of-string pattern to match.
+	 * @return List of all matching element processors
+	 */
+	public static List<ElementProcessor> getElementProcessors(IProject project,
+		List<QName> namespaces, String pattern) {
+
+		return getProcessors(project, namespaces, pattern, ElementProcessor.class);
+	}
+
+	/**
 	 * Retrieve the processor with the full matching name.
 	 * 
 	 * @param project		The current project.
@@ -83,30 +116,33 @@ public class ProcessorCache {
 	}
 
 	/**
-	 * Retrieve all attribute processors for the given project, whose names
-	 * match the starting pattern.
+	 * Retrieve all processors of the given type, for the given project, and
+	 * whose names match the starting pattern.
 	 * 
 	 * @param project	 The current project.
 	 * @param namespaces List of namespaces available at the current point in
 	 * 					 the document.
 	 * @param pattern	 Start-of-string pattern to match.
-	 * @return List of all attribute processors in the standard dialect.
+	 * @param type		 Processor type to retrieve.
+	 * @param <P>		 Processor type.
+	 * @return List of all matching processors.
 	 */
-	public static List<AttributeProcessor> getAttributeProcessors(IProject project,
-		List<QName> namespaces, String pattern) {
+	@SuppressWarnings("unchecked")
+	public static <P extends Processor> List<P> getProcessors(IProject project,
+		List<QName> namespaces, String pattern, Class<P> type) {
 
 		loadDialectsFromProject(project);
 
-		ArrayList<AttributeProcessor> attributeprocessors = new ArrayList<AttributeProcessor>();
+		ArrayList<P> matchedprocessors = new ArrayList<P>();
 		for (Processor processor: processors) {
-			if (processor instanceof AttributeProcessor &&
+			if (processor.getClass().equals(type) &&
 				processorInProject(processor, project) &&
 				processorInNamespace(processor, namespaces) &&
 				processorMatchesPattern(processor, pattern)) {
-				attributeprocessors.add((AttributeProcessor)processor);
+				matchedprocessors.add((P)processor);
 			}
 		}
-		return attributeprocessors;
+		return matchedprocessors;
 	}
 
 	/**
@@ -168,8 +204,8 @@ public class ProcessorCache {
 	 * @param processor
 	 * @param project
 	 * @return <tt>true</tt> if the project includes the processor's dialect.
-	 * 		   (Dialects bundled with this plugin are considered to be included
-	 * 		   in a project.)
+	 * 		   (Dialects bundled with this plugin are always associated with the
+	 * 		   project.)
 	 */
 	private static boolean processorInProject(Processor processor, IProject project) {
 

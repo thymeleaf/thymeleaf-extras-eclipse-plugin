@@ -50,7 +50,7 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 	 * 
 	 * @return Thymeleaf processor icon.
 	 */
-	public static Image getAttributeImage() {
+	public static Image getProcessorImage() {
 
 		return plugin.getImageRegistry().get(PROCESSOR_IMAGE_KEY);
 	}
