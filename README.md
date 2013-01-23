@@ -38,7 +38,7 @@ Add the namespace for the Thymeleaf standard dialect to your HTML file, like so:
 	<html xmlns:th="http://www.thymeleaf.org">
 
 You should now start getting content assistance for all of Thymeleaf's standard
-processors: suggestions as you type and autocompletion if what you've entered so
+processors: suggestions as you type and autocompletion of what you've entered so
 far if it matches only one result (both of these can be invoked manually using
 CTRL+SPACE), and help text when hovering over the text of a Thymeleaf processor.
 
@@ -54,7 +54,32 @@ Eclipse content assist for your own dialect, read the next section.
 Adding content assist for your dialect
 --------------------------------------
 
-TODO
+The content assist features and help content are driven by XML files containing
+information about a dialect.  XML help files for the Thymeleaf Standard dialect
+comes bundled with this plugin, and you can see how it's structured by
+[taking a look at the XML file itself](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/master/bundles/thymeleaf-extras-eclipse-plugin.content-assist/dialects/Standard-Dialect.xml),
+as well as [taking a look at the schema file it conforms to](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/master/bundles/thymeleaf-extras-eclipse-plugin.dialect/schemas/thymeleaf-dialect-help.xsd).
+
+When content assist is invoked, this plugin will look for XML files in the
+current project, or in the dependencies of the current project, whose XML
+namespace is `http://www.thymeleaf.org/extras/dialect`.  If such a file is found,
+it is loaded and the information in it becomes part of the plugin's content
+assist.
+
+Dialect developers can take advantage of this by including XML help files as
+part of their dialect JARs.  All you need to do is create an XML file that
+conforms to the schema above, then bundle that XML file with your JAR.
+
+Some notes on where you put that file:
+
+ - it cannot go in the default package
+ - the directory it goes in must be a valid Java package name
+
+These are just short-comings of the current dialect scanning method, which
+itself is built upon Eclipse's own lookup mechanisms.
+
+An example of a dialect bundled with an XML file in it's JAR: the [Thymeleaf Layout Dialect](https://github.com/ultraq/thymeleaf-layout-dialect/)
+(see the Java/nz/net/ultraq/web/thymeleaf directory).
 
 
 Changelog
@@ -69,6 +94,7 @@ Changelog
    dialect developers can take advantage of this plugin.
  - Added showing the basic help/documtation appear when hovering over a
    processor.
+ - Added autocomplete/suggestion support for element processors.
 
 ### 0.2.0
  - Added Eclipse API baseline support to work towards other versions of Eclipse.
