@@ -2,15 +2,15 @@
 Thymeleaf Eclipse Plugin
 ========================
 
-A plugin for the Eclipse IDE to add auto-completion support for the Thymeleaf
-standard dialect processors in the Eclipse Web Tools Platform HTML source
-editor.
+A plugin for the Eclipse IDE to add content assist features for the Thymeleaf
+standard dialect processors and expression utility objects, using the Eclipse
+Web Tools Platform HTML source editor.
 
  - Current version: 0.3.0-SNAPSHOT
- - Released: ?? ??? 2013
+ - Released: 27 Jan 2013
 
-Note that this plugin is still _very_ beta, so I welcome any feedback and/or bug
-reports, either through the Thymeleaf forum (on this thread: http://forum.thymeleaf.org/Thymeleaf-content-assist-plugin-for-Eclipse-td4025498.html),
+Note that this plugin is still being developed, so I welcome any feedback and/or
+bug reports, either through the Thymeleaf forum (on this thread: http://forum.thymeleaf.org/Thymeleaf-content-assist-plugin-for-Eclipse-td4025498.html),
 or as issue reports through the GitHub page.
 
 
@@ -25,14 +25,21 @@ Minimum Requirements
 Installation
 ------------
 
-Download the JAR from the Thymeleaf forum thread (http://forum.thymeleaf.org/Thymeleaf-content-assist-plugin-for-Eclipse-td4025498.html)
-and place it in your Eclipse /dropins folder.
+Download the ZIP file from the Thymeleaf forum (http://forum.thymeleaf.org/Thymeleaf-content-assist-plugin-for-Eclipse-td4025498.html).
+Then, in Eclipse, go to Help >> Install New Software... and add the ZIP file as
+an archive repository.  The Thymeleaf Eclipse Plugin item should appear.  Select
+it, and follow the on-screen prompts to install the plugin.
 
 
 Usage
 -----
 
-Add the namespace for the Thymeleaf standard dialect to your HTML file, like so:
+Content assist features are only available for dialects whose namespaces (with
+the matching prefix) are defined in your HTML files, and if that dialect has
+supplied some help files in their JARs.  Help files for Thymeleaf's standard
+processors come bundled with this plugin, so all you have to do to get content
+assist support is to include the Thymeleaf namespace and prefix in your HTML
+file like so:
 
 	<!DOCTYPE html>
 	<html xmlns:th="http://www.thymeleaf.org">
@@ -42,13 +49,11 @@ processors: suggestions as you type and autocompletion of what you've entered so
 far if it matches only one result (both of these can be invoked manually using
 CTRL+SPACE), and help text when hovering over the text of a Thymeleaf processor.
 
-Content assist features are only available for dialects whose namespaces (with
-the matching prefix) are defined in your HTML files, and for any dialects that
-supply help files with their JARs.  (Thymeleaf ones are already bundled with
-this plugin.)
+Support for more of Thymeleaf's features, like expression utility objects, and
+the Thymeleaf Extras modules, is in the works.
 
 If you're developing a Thymeleaf dialect and would like to take advantage of
-Eclipse content assist for your own dialect, read the next section.
+content assist for your own dialect, read the next section.
 
 
 Adding content assist for your dialect
@@ -78,7 +83,7 @@ Some notes on where you put that file:
 These are just short-comings of the current dialect scanning method, which
 itself is built upon Eclipse's own lookup mechanisms.
 
-An example of a dialect bundled with an XML file in it's JAR: the [Thymeleaf Layout Dialect](https://github.com/ultraq/thymeleaf-layout-dialect/)
+An example of a dialect bundled with an XML file in it's JAR: the [Thymeleaf Layout Dialect](https://github.com/ultraq/thymeleaf-layout-dialect/tree/dev)
 (see the Java/nz/net/ultraq/web/thymeleaf directory).
 
 
@@ -95,6 +100,8 @@ Changelog
  - Added showing the basic help/documtation appear when hovering over a
    processor.
  - Added autocomplete/suggestion support for element processors.
+ - Added autocomplete/suggestion support for Thymeleaf's expression utility
+   objects.
 
 ### 0.2.0
  - Added Eclipse API baseline support to work towards other versions of Eclipse.
