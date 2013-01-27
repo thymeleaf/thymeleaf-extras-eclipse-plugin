@@ -284,12 +284,14 @@ public class ProcessorCache {
 				IJavaProject project = findCurrentJavaProject();
 				try {
 					IType type = project.findType(classname);
-					for (IMethod method: type.getMethods()) {
-						if (!method.isConstructor()) {
-							UtilityMethod utilitymethod = new UtilityMethod();
-							utilitymethod.setDialect(dialect);
-							utilitymethod.setName(ref.getName() + "." + method.getElementName());
-							utilitymethods.add(utilitymethod);
+					if (type != null) {
+						for (IMethod method: type.getMethods()) {
+							if (!method.isConstructor()) {
+								UtilityMethod utilitymethod = new UtilityMethod();
+								utilitymethod.setDialect(dialect);
+								utilitymethod.setName(ref.getName() + "." + method.getElementName());
+								utilitymethods.add(utilitymethod);
+							}
 						}
 					}
 				}
