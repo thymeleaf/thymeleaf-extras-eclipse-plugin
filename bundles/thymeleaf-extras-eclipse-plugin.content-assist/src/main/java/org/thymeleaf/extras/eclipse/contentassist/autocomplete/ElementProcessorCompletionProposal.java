@@ -18,10 +18,12 @@ package org.thymeleaf.extras.eclipse.contentassist.autocomplete;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.wst.html.ui.internal.HTMLUIPlugin;
 import org.eclipse.wst.html.ui.internal.preferences.HTMLUIPreferenceNames;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
+import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 /**
  * A completion proposal for Thymeleaf element processors.
@@ -61,6 +63,15 @@ public class ElementProcessorCompletionProposal extends AbstractProcessorComplet
 			replacement += "</" + fullprocessorname + ">";
 		}
 		document.replace(offset, 0, replacement);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Image getImage() {
+
+		return getDefault().getImageRegistry().get(IMAGE_ELEMENT_PROCESSOR);
 	}
 
 	/**

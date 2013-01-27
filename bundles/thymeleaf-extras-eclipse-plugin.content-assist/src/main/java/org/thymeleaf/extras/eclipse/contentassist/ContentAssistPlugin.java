@@ -16,15 +16,21 @@
 
 package org.thymeleaf.extras.eclipse.contentassist;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.wst.html.ui.internal.HTMLUIPlugin;
 import org.eclipse.wst.html.ui.internal.preferences.HTMLUIPreferenceNames;
+import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -37,11 +43,36 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 
 	public static final String PLUGIN_ID = "org.thymeleaf.extras.eclipse.contentassist";
 
-	private static final String PROCESSOR_IMAGE_KEY = "thymeleaf-processor-image";
+	public static final String IMAGE_THYMELEAF           = "thymeleaf";
+	public static final String IMAGE_ATTRIBUTE_PROCESSOR = "attribute-processor";
+	public static final String IMAGE_ELEMENT_PROCESSOR   = "element-processor";
+	public static final String IMAGE_UTILITY_METHOD      = "utility-method";
 
 	static final String AUTO_PROPOSE_PREF = "autoProposeOn";
 
 	private static ContentAssistPlugin plugin;
+
+	/**
+	 * Find the Eclipse project for the file the user is working on.
+	 * 
+	 * @return The project owning the file the user has open.
+	 */
+	public static IJavaProject findCurrentJavaProject() {
+
+		StructuredTextEditor editor = (StructuredTextEditor)getDefault().getWorkbench()
+				.getWorkbenchWindows()[0].getActivePage().getActiveEditor();
+		IFile file = ((IFileEditorInput)editor.getEditorInput()).getFile();
+		IProject project = file.getProject();
+		try {
+			if (project.isNatureEnabled(JavaCore.NATURE_ID)) {
+				return JavaCore.create(project);
+			}
+		}
+		catch (CoreException ex) {
+			logError("Project not open, or doesn't exist", ex);
+		}
+		return null;
+	}
 
 	/**
 	 * Returns the shared instance of this plugin.
@@ -54,23 +85,16 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Return the icon used for Thymeleaf processors.
-	 * 
-	 * @return Thymeleaf processor icon.
-	 */
-	public static Image getProcessorImage() {
-
-		return plugin.getImageRegistry().get(PROCESSOR_IMAGE_KEY);
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void initializeImageRegistry(ImageRegistry reg) {
 
 		super.initializeImageRegistry(reg);
-		reg.put(PROCESSOR_IMAGE_KEY, imageDescriptorFromPlugin(PLUGIN_ID, "icons/Thymeleaf-Leaf.png"));
+		reg.put(IMAGE_THYMELEAF,           imageDescriptorFromPlugin(PLUGIN_ID, "icons/Thymeleaf.png"));
+		reg.put(IMAGE_ATTRIBUTE_PROCESSOR, imageDescriptorFromPlugin(PLUGIN_ID, "icons/Attribute-Processor.png"));
+		reg.put(IMAGE_ELEMENT_PROCESSOR,   imageDescriptorFromPlugin(PLUGIN_ID, "icons/Element-Processor.png"));
+		reg.put(IMAGE_UTILITY_METHOD,      imageDescriptorFromPlugin(PLUGIN_ID, "icons/Utility-Method.png"));
 	}
 
 	/**

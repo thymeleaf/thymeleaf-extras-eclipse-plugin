@@ -32,6 +32,7 @@ import org.thymeleaf.extras.eclipse.contentassist.AbstractProcessorComputer;
 import org.thymeleaf.extras.eclipse.contentassist.ProcessorCache;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
 import org.w3c.dom.Node;
+import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 /**
  * Documentation-on-hover creator for Thymeleaf processors.
@@ -75,7 +76,7 @@ public class InfoHoverComputer extends AbstractProcessorComputer
 
 				if (isProcessorNamePattern(surroundingword)) {
 					Processor processor = ProcessorCache.getProcessor(
-							findCurrentProject(), findNodeNamespaces(node), surroundingword);
+							findCurrentJavaProject(), findNodeNamespaces(node), surroundingword);
 					if (processor != null && processor.isSetDocumentation()) {
 						return processor.getDocumentation().getValue();
 					}

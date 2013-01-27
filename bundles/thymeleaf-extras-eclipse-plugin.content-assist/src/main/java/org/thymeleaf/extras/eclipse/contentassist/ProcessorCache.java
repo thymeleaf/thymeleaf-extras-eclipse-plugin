@@ -16,7 +16,10 @@
 
 package org.thymeleaf.extras.eclipse.contentassist;
 
-import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 import org.thymeleaf.extras.eclipse.dialect.BundledDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.DialectLoader;
 import org.thymeleaf.extras.eclipse.dialect.ProjectDependencyDialectLocator;
@@ -25,7 +28,7 @@ import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
 import org.thymeleaf.extras.eclipse.dialect.xml.UtilityMethod;
-
+import org.thymeleaf.extras.eclipse.dialect.xml.UtilityObjectReference;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.util.ArrayList;
@@ -49,8 +52,8 @@ public class ProcessorCache {
 	private static final ArrayList<Dialect> bundleddialects = new ArrayList<Dialect>();
 
 	// Mapping of projects that contain certain dialects
-	private static final HashMap<IProject,List<Dialect>> projectdialects =
-			new HashMap<IProject,List<Dialect>>();
+	private static final HashMap<IJavaProject,List<Dialect>> projectdialects =
+			new HashMap<IJavaProject,List<Dialect>>();
 
 	// Collection of processors in alphabetical order
 	private static final TreeSet<Processor> processors = new TreeSet<Processor>(new Comparator<Processor>() {
@@ -99,7 +102,7 @@ public class ProcessorCache {
 	 * @return <tt>true</tt> if the project includes the dialect.  (Dialects
 	 * 		   bundled with this plugin are always associated with the project.)
 	 */
-	private static boolean dialectInProject(Dialect dialect, IProject project) {
+	private static boolean dialectInProject(Dialect dialect, IJavaProject project) {
 
 		return bundleddialects.contains(dialect) || projectdialects.get(project).contains(dialect);
 	}
@@ -114,7 +117,7 @@ public class ProcessorCache {
 	 * @param pattern	 Start-of-string pattern to match.
 	 * @return List of all matching attribute processors.
 	 */
-	public static List<AttributeProcessor> getAttributeProcessors(IProject project,
+	public static List<AttributeProcessor> getAttributeProcessors(IJavaProject project,
 		List<QName> namespaces, String pattern) {
 
 		return getProcessors(project, namespaces, pattern, AttributeProcessor.class);
@@ -130,7 +133,7 @@ public class ProcessorCache {
 	 * @param pattern	 Start-of-string pattern to match.
 	 * @return List of all matching element processors
 	 */
-	public static List<ElementProcessor> getElementProcessors(IProject project,
+	public static List<ElementProcessor> getElementProcessors(IJavaProject project,
 		List<QName> namespaces, String pattern) {
 
 		return getProcessors(project, namespaces, pattern, ElementProcessor.class);
@@ -146,7 +149,7 @@ public class ProcessorCache {
 	 * @return Processor for the given prefix and name, or <tt>null</tt> if no
 	 * 		   processor matches.
 	 */
-	public static Processor getProcessor(IProject project, List<QName> namespaces, String processorname) {
+	public static Processor getProcessor(IJavaProject project, List<QName> namespaces, String processorname) {
 
 		loadDialectsFromProject(project);
 
@@ -174,7 +177,7 @@ public class ProcessorCache {
 	 * @return List of all matching processors.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <P extends Processor> List<P> getProcessors(IProject project,
+	public static <P extends Processor> List<P> getProcessors(IJavaProject project,
 		List<QName> namespaces, String pattern, Class<P> type) {
 
 		loadDialectsFromProject(project);
@@ -202,7 +205,7 @@ public class ProcessorCache {
 	 * @return Expression object with the given name, or <tt>null</tt> if no
 	 * 		   expression object matches.
 	 */
-	public static UtilityMethod getUtilityMethod(IProject project, List<QName> namespaces,
+	public static UtilityMethod getUtilityMethod(IJavaProject project, List<QName> namespaces,
 		String utilitymethodname) {
 
 		loadDialectsFromProject(project);
@@ -227,7 +230,7 @@ public class ProcessorCache {
 	 * @param pattern	 Start-of-string pattern to match.
 	 * @return List of all matching utility methods.
 	 */
-	public static List<UtilityMethod> getUtilityMethods(IProject project,
+	public static List<UtilityMethod> getUtilityMethods(IJavaProject project,
 		List<QName> namespaces, String pattern) {
 
 		loadDialectsFromProject(project);
@@ -273,6 +276,27 @@ public class ProcessorCache {
 			else if (dialectitem instanceof UtilityMethod) {
 				utilitymethods.add((UtilityMethod)dialectitem);
 			}
+
+			// Generate utility methods from the given class reference
+			else if (dialectitem instanceof UtilityObjectReference) {
+				UtilityObjectReference ref = (UtilityObjectReference)dialectitem;
+				String classname = ref.getClazz();
+				IJavaProject project = findCurrentJavaProject();
+				try {
+					IType type = project.findType(classname);
+					for (IMethod method: type.getMethods()) {
+						if (!method.isConstructor()) {
+							UtilityMethod utilitymethod = new UtilityMethod();
+							utilitymethod.setDialect(dialect);
+							utilitymethod.setName(ref.getName() + "." + method.getElementName());
+							utilitymethods.add(utilitymethod);
+						}
+					}
+				}
+				catch (JavaModelException ex) {
+					logError("Unable to locate utility object reference: " + classname, ex);
+				}
+			}
 		}
 	}
 
@@ -282,7 +306,7 @@ public class ProcessorCache {
 	 * 
 	 * @param project Project to scan for dialect information.
 	 */
-	private static void loadDialectsFromProject(IProject project) {
+	private static void loadDialectsFromProject(IJavaProject project) {
 
 		if (!projectdialects.containsKey(project)) {
 			List<Dialect> dialects = dialectloader.loadDialects(

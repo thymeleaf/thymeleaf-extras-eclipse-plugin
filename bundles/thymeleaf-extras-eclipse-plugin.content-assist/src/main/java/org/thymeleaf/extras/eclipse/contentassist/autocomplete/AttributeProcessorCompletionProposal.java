@@ -19,8 +19,10 @@ package org.thymeleaf.extras.eclipse.contentassist.autocomplete;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
+import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 /**
  * A completion proposal for Thymeleaf attribute processors.
@@ -51,6 +53,15 @@ public class AttributeProcessorCompletionProposal extends AbstractProcessorCompl
 	protected void applyImpl(IDocument document, char trigger, int offset) throws BadLocationException {
 
 		document.replace(offset, 0, replacementstring.substring(offset - cursorposition) + "=\"\"");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Image getImage() {
+
+		return getDefault().getImageRegistry().get(IMAGE_ATTRIBUTE_PROCESSOR);
 	}
 
 	/**

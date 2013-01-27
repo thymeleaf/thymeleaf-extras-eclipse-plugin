@@ -16,15 +16,10 @@
 
 package org.thymeleaf.extras.eclipse.contentassist;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -41,19 +36,6 @@ public abstract class AbstractProcessorComputer {
 
 	private static final Pattern PROCESSOR_NAME_PATTERN = Pattern.compile("[\\w:-]*");
 	private static final Pattern UTILITY_METHOD_PATTERN = Pattern.compile("#\\w*(\\.\\w*)?");
-
-	/**
-	 * Find the Eclipse project for the file the user is working on.
-	 * 
-	 * @return The project owning the file the user has open.
-	 */
-	protected static IProject findCurrentProject() {
-
-		StructuredTextEditor editor = (StructuredTextEditor)getDefault().getWorkbench()
-				.getWorkbenchWindows()[0].getActivePage().getActiveEditor();
-		IFile file = ((IFileEditorInput)editor.getEditorInput()).getFile();
-		return file.getProject();
-	}
 
 	/**
 	 * Return a list of the namespaces valid at the given node.

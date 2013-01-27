@@ -17,13 +17,11 @@
 package org.thymeleaf.extras.eclipse.dialect;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJarEntryResource;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.JavaCore;
 import org.thymeleaf.extras.eclipse.dialect.DialectLocator;
 import org.xml.sax.InputSource;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
@@ -51,12 +49,9 @@ import javax.xml.xpath.XPathFactory;
  */
 public class ProjectDependencyDialectLocator implements DialectLocator {
 
-	private static final String JAVA_PROJECT_NATURE = "org.eclipse.jdt.core.javanature";
-	private static final String WEB_PROJECT_NATURE  = "org.eclipse.wst.common.project.facet.core.nature";
-
 	private static final String DIALECT_EXTRAS_NAMESPACE = "http://www.thymeleaf.org/extras/dialect";
 
-	private final IProject project;
+	private final IJavaProject project;
 	private final XPathExpression namespaceexpression;
 
 	/**
@@ -65,7 +60,7 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 	 * 
 	 * @param project
 	 */
-	public ProjectDependencyDialectLocator(IProject project) {
+	public ProjectDependencyDialectLocator(IJavaProject project) {
 
 		this.project = project;
 		try {
@@ -136,53 +131,47 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 		final ArrayList<InputStream> dialectstreams = new ArrayList<InputStream>();
 
 		try {
-			// Proceed only if this is a Java web project
-			if (project.isNatureEnabled(JAVA_PROJECT_NATURE) &&
-				project.isNatureEnabled(WEB_PROJECT_NATURE)) {
+			IPackageFragment[] packagefragments = project.getPackageFragments();
 
-				IJavaProject javaproject = JavaCore.create(project);
-				IPackageFragment[] packagefragments = javaproject.getPackageFragments();
+			// Multi-threaded search for dialect files - there are a lot of package
+			// fragments to get through, and the I/O namespace check is a blocker.
+			ArrayList<Future<IStorage>> scannertasks = new ArrayList<Future<IStorage>>();
+			for (final IPackageFragment packagefragment: packagefragments) {
+				scannertasks.add(executorservice.submit(new Callable<IStorage>() {
+					@Override
+					public IStorage call() throws Exception {
 
-				// Multi-threaded search for dialect files - there are a lot of package
-				// fragments to get through, and the I/O namespace check is a blocker.
-				ArrayList<Future<IStorage>> scannertasks = new ArrayList<Future<IStorage>>();
-				for (final IPackageFragment packagefragment: packagefragments) {
-					scannertasks.add(executorservice.submit(new Callable<IStorage>() {
-						@Override
-						public IStorage call() throws Exception {
-
-							for (Object resource: packagefragment.getNonJavaResources()) {
-								IStorage fileorjarentry = (IStorage)resource;
-								if (isDialectHelpXMLFile(fileorjarentry)) {
-									logInfo("...help file found: " + fileorjarentry.getName());
-									return fileorjarentry;
-								}
+						for (Object resource: packagefragment.getNonJavaResources()) {
+							IStorage fileorjarentry = (IStorage)resource;
+							if (isDialectHelpXMLFile(fileorjarentry)) {
+								logInfo("...help file found: " + fileorjarentry.getName());
+								return fileorjarentry;
 							}
-							return null;
 						}
-					}));
-				}
+						return null;
+					}
+				}));
+			}
 
-				// Collate scanner results
-				for (Future<IStorage> scannertask: scannertasks) {
-					try {
-						IStorage fileorjarentry = scannertask.get();
-						if (fileorjarentry != null) {
-							dialectstreams.add(fileorjarentry.getContents());
-						}
+			// Collate scanner results
+			for (Future<IStorage> scannertask: scannertasks) {
+				try {
+					IStorage fileorjarentry = scannertask.get();
+					if (fileorjarentry != null) {
+						dialectstreams.add(fileorjarentry.getContents());
 					}
-					catch (ExecutionException ex) {
-						logError("Unable to execute scanning task", ex);
-					}
-					catch (InterruptedException ex) {
-						logError("Unable to execute scanning task", ex);
-					}
+				}
+				catch (ExecutionException ex) {
+					logError("Unable to execute scanning task", ex);
+				}
+				catch (InterruptedException ex) {
+					logError("Unable to execute scanning task", ex);
 				}
 			}
 		}
 		catch (CoreException ex) {
 			// If we get here, the project cannot be read.  Return the empty list.
-			logError("Project " + project.getName() + " could not be read", ex);
+			logError("Project " + project.getProject().getName() + " could not be read", ex);
 		}
 		finally {
 			executorservice.shutdown();

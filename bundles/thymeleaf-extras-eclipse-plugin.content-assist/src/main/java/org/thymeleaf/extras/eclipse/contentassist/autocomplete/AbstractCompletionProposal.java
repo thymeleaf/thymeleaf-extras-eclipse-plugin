@@ -21,13 +21,10 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension;
 import org.eclipse.jface.text.contentassist.IContextInformation;
-import org.eclipse.swt.graphics.Image;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.Documentation;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
-
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.getProcessorImage;
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.logError;
+import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.util.List;
 
@@ -154,15 +151,6 @@ public abstract class AbstractCompletionProposal implements ICompletionProposal,
 	public int getContextInformationPosition() {
 
 		return contextinformation == null ? -1 : 0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Image getImage() {
-
-		return getProcessorImage();
 	}
 
 	/**

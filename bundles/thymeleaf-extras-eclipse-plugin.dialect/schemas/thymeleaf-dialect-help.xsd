@@ -88,6 +88,7 @@
 					<xsd:element name="attribute-processor" type="AttributeProcessor"/>
 					<xsd:element name="element-processor" type="ElementProcessor"/>
 					<xsd:element name="utility-method" type="UtilityMethod"/>
+					<xsd:element name="utility-object-ref" type="UtilityObjectReference"/>
 				</xsd:choice>
 			</xsd:sequence>
 			<xsd:attribute name="prefix" type="xsd:string" use="required"/>
@@ -210,8 +211,8 @@
 	</xsd:complexType>
 
 
-	<!-- Expression object utility method -->
-	<!-- ================================ -->
+	<!-- Expression utility objects -->
+	<!-- ========================== -->
 
 	<xsd:complexType name="UtilityMethod">
 		<xsd:annotation>
@@ -255,6 +256,17 @@
 			</xsd:element>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:ID" use="required"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="UtilityObjectReference">
+		<xsd:annotation>
+			<xsd:documentation>
+				A reference to a utility object that this dialect adds to the processing
+				context.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="name" type="xsd:string" use="required"/>
+		<xsd:attribute name="class" type="xsd:string" use="required"/>
 	</xsd:complexType>
 
 

@@ -18,8 +18,10 @@ package org.thymeleaf.extras.eclipse.contentassist.autocomplete;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.thymeleaf.extras.eclipse.dialect.xml.UtilityMethod;
+import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 /**
  * A completion proposal for Thymeleaf expression object utility methods.
@@ -44,7 +46,7 @@ public class UtilityMethodCompletionProposal extends AbstractCompletionProposal 
 		super(utilitymethod.getDialect(), ("#" + utilitymethod.getName()).substring(charsentered),
 				utilitymethod.getDocumentation(), cursorposition);
 
-		fullutilitymethodname = "#" + utilitymethod.getName();
+		fullutilitymethodname = utilitymethod.getName();
 	}
 
 	/**
@@ -63,6 +65,15 @@ public class UtilityMethodCompletionProposal extends AbstractCompletionProposal 
 	public String getDisplayString() {
 
 		return fullutilitymethodname;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Image getImage() {
+
+		return getDefault().getImageRegistry().get(IMAGE_UTILITY_METHOD);
 	}
 
 	/**

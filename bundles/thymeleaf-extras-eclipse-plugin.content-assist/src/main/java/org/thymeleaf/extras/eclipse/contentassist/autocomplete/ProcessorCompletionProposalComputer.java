@@ -31,6 +31,7 @@ import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.UtilityMethod;
 import org.w3c.dom.Node;
+import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,7 +72,7 @@ public class ProcessorCompletionProposalComputer extends AbstractProcessorComput
 							Character.isWhitespace(document.getChar(cursorposition - 1))))) {
 
 						List<AttributeProcessor> processors = ProcessorCache.getAttributeProcessors(
-								findCurrentProject(), findNodeNamespaces(node), pattern);
+								findCurrentJavaProject(), findNodeNamespaces(node), pattern);
 						for (AttributeProcessor processor: processors) {
 							proposals.add(new AttributeProcessorCompletionProposal(processor,
 									pattern.length(), cursorposition));
@@ -82,7 +83,7 @@ public class ProcessorCompletionProposalComputer extends AbstractProcessorComput
 				// Collect element processors if we're in an HTML text node
 				else if (node instanceof IDOMText) {
 					List<ElementProcessor> processors = ProcessorCache.getElementProcessors(
-							findCurrentProject(), findNodeNamespaces(node), pattern);
+							findCurrentJavaProject(), findNodeNamespaces(node), pattern);
 					for (ElementProcessor processor: processors) {
 						proposals.add(new ElementProcessorCompletionProposal(processor,
 								pattern.length(), cursorposition));
@@ -93,7 +94,7 @@ public class ProcessorCompletionProposalComputer extends AbstractProcessorComput
 			// Make an expression object proposal
 			else if (isUtilityMethodPattern(pattern)) {
 				List<UtilityMethod> utilitymethods = ProcessorCache.getUtilityMethods(
-						findCurrentProject(), findNodeNamespaces(node), pattern);
+						findCurrentJavaProject(), findNodeNamespaces(node), pattern);
 				for (UtilityMethod expressionobject: utilitymethods) {
 					proposals.add(new UtilityMethodCompletionProposal(expressionobject,
 							pattern.length(), cursorposition));
