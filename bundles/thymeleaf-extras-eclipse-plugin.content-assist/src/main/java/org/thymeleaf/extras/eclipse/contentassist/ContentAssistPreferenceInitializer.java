@@ -16,35 +16,24 @@
 
 package org.thymeleaf.extras.eclipse.contentassist;
 
-import org.thymeleaf.extras.eclipse.dialect.DialectLocator;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.jface.preference.IPreferenceStore;
+import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 /**
- * Locates the Thymeleaf dialect XML files that come bundled with this module.
+ * Initializes preferences for this plugin.
  * 
  * @author Emanuel Rabina
  */
-public class BundledDialectLocator implements DialectLocator {
-
-	private static final String[] DIALECT_FILES = {
-			"dialects/Standard-Dialect.xml",
-			"dialects/Spring-Security-Dialect.xml"
-	};
+public class ContentAssistPreferenceInitializer extends AbstractPreferenceInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<InputStream> locateDialects() {
+	public void initializeDefaultPreferences() {
 
-		ArrayList<InputStream> dialectstreams = new ArrayList<InputStream>();
-		for (String dialectfile: DIALECT_FILES) {
-			dialectstreams.add(BundledDialectLocator.class.getClassLoader()
-					.getResourceAsStream(dialectfile));
-		}
-		return dialectstreams;
+		IPreferenceStore preferences = getDefault().getPreferenceStore();
+		preferences.setDefault(AUTO_PROPOSE_PREF, true);
 	}
 }

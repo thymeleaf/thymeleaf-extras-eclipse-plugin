@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.contentassist;
+package org.thymeleaf.extras.eclipse.dialect;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.JavaCore;
 import org.thymeleaf.extras.eclipse.dialect.DialectLocator;
 import org.xml.sax.InputSource;
+import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -103,11 +104,11 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 			return false;
 		}
 		catch (XPathExpressionException ex) {
-			ContentAssistPlugin.logError("Unable to execute XPath expression", ex);
+			logError("Unable to execute XPath expression", ex);
 			return false;
 		}
 		catch (CoreException ex) {
-			ContentAssistPlugin.logError("Unable to open an input stream over resource", ex);
+			logError("Unable to open an input stream over resource", ex);
 			return false;
 		}
 		finally {
@@ -128,7 +129,7 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 	@Override
 	public List<InputStream> locateDialects() {
 
-		ContentAssistPlugin.logInfo("Scanning for dialect help files on project dependencies...");
+		logInfo("Scanning for dialect help files on project dependencies...");
 		long start = System.currentTimeMillis();
 
 		ExecutorService executorservice = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -153,7 +154,7 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 							for (Object resource: packagefragment.getNonJavaResources()) {
 								IStorage fileorjarentry = (IStorage)resource;
 								if (isDialectHelpXMLFile(fileorjarentry)) {
-									ContentAssistPlugin.logInfo("...help file found: " + fileorjarentry.getName());
+									logInfo("...help file found: " + fileorjarentry.getName());
 									return fileorjarentry;
 								}
 							}
@@ -171,17 +172,17 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 						}
 					}
 					catch (ExecutionException ex) {
-						ContentAssistPlugin.logError("Unable to execute scanning task", ex);
+						logError("Unable to execute scanning task", ex);
 					}
 					catch (InterruptedException ex) {
-						ContentAssistPlugin.logError("Unable to execute scanning task", ex);
+						logError("Unable to execute scanning task", ex);
 					}
 				}
 			}
 		}
 		catch (CoreException ex) {
 			// If we get here, the project cannot be read.  Return the empty list.
-			ContentAssistPlugin.logError("Project " + project.getName() + " could not be read", ex);
+			logError("Project " + project.getName() + " could not be read", ex);
 		}
 		finally {
 			executorservice.shutdown();
@@ -195,7 +196,7 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 			}
 		}
 
-		ContentAssistPlugin.logInfo("...scanning complete.  Execution time: " + (System.currentTimeMillis() - start) + "ms");
+		logInfo("...scanning complete.  Execution time: " + (System.currentTimeMillis() - start) + "ms");
 		return dialectstreams;
 	}
 }

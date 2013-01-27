@@ -52,26 +52,42 @@
 	 * Returns if this dialect is equal to another.
 	 * 
 	 * @param other The other dialect to compare against.
-	 * @return <tt>true</tt> if the other object is a dialect and the share the
-	 * 		   same namespace.
+	 * @return <tt>true</tt> if the other object is a dialect and they share the
+	 * 		   same prefix and namespace.
 	 */
 	@Override
 	public boolean equals(Object other) {
 
-		return other instanceof Dialect && namespaceUri.equals(((Dialect)other).namespaceUri);
+		if (other instanceof Dialect) {
+			Dialect o = (Dialect)other;
+			return prefix.equals(o.prefix) && namespaceUri.equals(o.namespaceUri);
+		}
+		return false;
+	}
+
+	/**
+	 * Returns a hashcode based on this dialect's information.
+	 * 
+	 * @return Dialect hashcode.
+	 */
+	@Override
+	public int hashCode() {
+
+		return prefix.hashCode() * namespaceUri.hashCode();
 	}
 					]]></ci:code>
 				</xsd:appinfo>
 			</xsd:annotation>
 			<xsd:sequence>
-				<xsd:choice maxOccurs="unbounded">
+				<xsd:choice minOccurs="0" maxOccurs="unbounded">
 					<xsd:annotation>
 						<xsd:appinfo>
-							<jxb:property name="processors"/>
+							<jxb:property name="dialectItems"/>
 						</xsd:appinfo>
 					</xsd:annotation>
 					<xsd:element name="attribute-processor" type="AttributeProcessor"/>
 					<xsd:element name="element-processor" type="ElementProcessor"/>
+					<xsd:element name="utility-method" type="UtilityMethod"/>
 				</xsd:choice>
 			</xsd:sequence>
 			<xsd:attribute name="prefix" type="xsd:string" use="required"/>
@@ -117,7 +133,7 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="documentation" type="ProcessorDocumentation" minOccurs="0">
+			<xsd:element name="documentation" type="Documentation" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<jxb:property generateIsSetMethod="true"/>
@@ -126,40 +142,6 @@
 			</xsd:element>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:ID" use="required"/>
-	</xsd:complexType>
-
-	<xsd:complexType name="ProcessorDocumentation">
-		<xsd:annotation>
-			<xsd:documentation>
-				Notes to help generate some documentation about a processor.
-			</xsd:documentation>
-		</xsd:annotation>
-		<xsd:simpleContent>
-			<xsd:extension base="xsd:string">
-				<xsd:attribute name="see-also" type="xsd:IDREFS">
-					<xsd:annotation>
-						<xsd:documentation>
-							List of tags related to this one, suggesting where else
-							the user can go to get more information or understanding.
-						</xsd:documentation>
-						<xsd:appinfo>
-							<jxb:property generateIsSetMethod="true"/>
-						</xsd:appinfo>
-					</xsd:annotation>
-				</xsd:attribute>
-				<xsd:attribute name="reference" type="xsd:string">
-					<xsd:annotation>
-						<xsd:documentation>
-							An 'official' document and the section/page within it
-							to get more information.
-						</xsd:documentation>
-						<xsd:appinfo>
-							<jxb:property generateIsSetMethod="true"/>
-						</xsd:appinfo>
-					</xsd:annotation>
-				</xsd:attribute>
-			</xsd:extension>
-		</xsd:simpleContent>
 	</xsd:complexType>
 
 	<!-- Attribute processor -->
@@ -225,6 +207,92 @@
 		<xsd:complexContent>
 			<xsd:extension base="Processor"/>
 		</xsd:complexContent>
+	</xsd:complexType>
+
+
+	<!-- Expression object utility method -->
+	<!-- ================================ -->
+
+	<xsd:complexType name="UtilityMethod">
+		<xsd:annotation>
+			<xsd:documentation>
+				A utility object method added by the dialect to be used by processors.
+			</xsd:documentation>
+			<xsd:appinfo>
+				<ci:code><![CDATA[
+	@javax.xml.bind.annotation.XmlTransient
+	protected Dialect dialect;
+
+	/**
+	 * Gets the dialect this utility method belongs to.
+	 * 
+	 * @return Dialect this utility method is from.
+	 */
+	public Dialect getDialect() {
+
+		return dialect;
+	}
+
+	/**
+	 * Set the dialect this utility method belongs to.
+	 * 
+	 * @param dialect
+	 */
+	public void setDialect(Dialect dialect) {
+
+		this.dialect = dialect;
+	}
+				]]></ci:code>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="documentation" type="Documentation" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<jxb:property generateIsSetMethod="true"/>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:ID" use="required"/>
+	</xsd:complexType>
+
+
+	<!-- Documentation -->
+	<!-- ============= -->
+
+	<xsd:complexType name="Documentation">
+		<xsd:annotation>
+			<xsd:documentation>
+				Notes to help generate some documentation about a processor.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="see-also" type="xsd:IDREFS">
+					<xsd:annotation>
+						<xsd:documentation>
+							List of tags related to this one, suggesting where else
+							the user can go to get more information or understanding.
+						</xsd:documentation>
+						<xsd:appinfo>
+							<jxb:property generateIsSetMethod="true"/>
+						</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:attribute>
+				<xsd:attribute name="reference" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>
+							An 'official' document and the section/page within it
+							to get more information.
+						</xsd:documentation>
+						<xsd:appinfo>
+							<jxb:property generateIsSetMethod="true"/>
+						</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>
 	</xsd:complexType>
 
 </xsd:schema>

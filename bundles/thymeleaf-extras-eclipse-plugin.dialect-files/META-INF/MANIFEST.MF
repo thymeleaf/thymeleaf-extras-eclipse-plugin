@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Thymeleaf Dialect Help/Documentation Files
+Bundle-SymbolicName: org.thymeleaf.extras.eclipse.dialect.files
+Bundle-Version: 0.3.0.qualifier
+Bundle-Vendor: Thymeleaf Project
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: .
+Require-Bundle: org.thymeleaf.extras.eclipse.dialect
+Export-Package: org.thymeleaf.extras.eclipse.dialect
+Bundle-ActivationPolicy: lazy

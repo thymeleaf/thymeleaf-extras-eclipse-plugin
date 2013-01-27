@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.wst.sse.ui.contentassist.CompletionProposalInvocationContext;
 import org.eclipse.wst.sse.ui.contentassist.ICompletionProposalComputer;
 import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils;
@@ -30,12 +29,12 @@ import org.thymeleaf.extras.eclipse.contentassist.AbstractProcessorComputer;
 import org.thymeleaf.extras.eclipse.contentassist.ProcessorCache;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
+import org.thymeleaf.extras.eclipse.dialect.xml.UtilityMethod;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import javax.xml.namespace.QName;
 
 /**
  * Auto-completion proposal generator for the Thymeleaf processors.
@@ -59,35 +58,44 @@ public class ProcessorCompletionProposalComputer extends AbstractProcessorComput
 			IDocument document = context.getDocument();
 			int cursorposition = context.getInvocationOffset();
 			Node node = (Node)ContentAssistUtils.getNodeAt(context.getViewer(), cursorposition);
-
-			// Get all the known namespaces for this point in the document
-			ArrayList<QName> namespaces = findNodeNamespaces(node);
-
-			// Get the text entered before the cursor of this auto-completion invocation
 			String pattern = findPattern(document, cursorposition);
 
-			// Collect attribute processors if we're in an HTML element
-			if (node instanceof IDOMElement) {
+			// Make processor proposals
+			if (isProcessorNamePattern(pattern)) {
 
-				// Make sure there's some whitespace before new attribute suggestions
-				if (!pattern.isEmpty() || (pattern.isEmpty() && (cursorposition == 0 ||
-						Character.isWhitespace(document.getChar(cursorposition - 1))))) {
+				// Collect attribute processors if we're in an HTML element
+				if (node instanceof IDOMElement) {
 
-					List<AttributeProcessor> processors = ProcessorCache.getAttributeProcessors(
-							findCurrentProject(), namespaces, pattern);
-					for (AttributeProcessor processor: processors) {
-						proposals.add(new AttributeProcessorCompletionProposal(processor,
+					// Make sure there's some whitespace before new attribute suggestions
+					if (!pattern.isEmpty() || (pattern.isEmpty() && (cursorposition == 0 ||
+							Character.isWhitespace(document.getChar(cursorposition - 1))))) {
+
+						List<AttributeProcessor> processors = ProcessorCache.getAttributeProcessors(
+								findCurrentProject(), findNodeNamespaces(node), pattern);
+						for (AttributeProcessor processor: processors) {
+							proposals.add(new AttributeProcessorCompletionProposal(processor,
+									pattern.length(), cursorposition));
+						}
+					}
+				}
+
+				// Collect element processors if we're in an HTML text node
+				else if (node instanceof IDOMText) {
+					List<ElementProcessor> processors = ProcessorCache.getElementProcessors(
+							findCurrentProject(), findNodeNamespaces(node), pattern);
+					for (ElementProcessor processor: processors) {
+						proposals.add(new ElementProcessorCompletionProposal(processor,
 								pattern.length(), cursorposition));
 					}
 				}
 			}
 
-			// Collect element processors if we're in an HTML text node
-			else if (node instanceof IDOMText) {
-				List<ElementProcessor> processors = ProcessorCache.getElementProcessors(
-						findCurrentProject(), namespaces, pattern);
-				for (ElementProcessor processor: processors) {
-					proposals.add(new ElementProcessorCompletionProposal(processor,
+			// Make an expression object proposal
+			else if (isUtilityMethodPattern(pattern)) {
+				List<UtilityMethod> utilitymethods = ProcessorCache.getUtilityMethods(
+						findCurrentProject(), findNodeNamespaces(node), pattern);
+				for (UtilityMethod expressionobject: utilitymethods) {
+					proposals.add(new UtilityMethodCompletionProposal(expressionobject,
 							pattern.length(), cursorposition));
 				}
 			}
@@ -106,25 +114,25 @@ public class ProcessorCompletionProposalComputer extends AbstractProcessorComput
 	@SuppressWarnings("rawtypes")
 	public List computeContextInformation(CompletionProposalInvocationContext context, IProgressMonitor monitor) {
 
-		return new ArrayList<IContextInformation>();
+		return Collections.EMPTY_LIST;
 	}
 
 	/**
-	 * Return the pattern to match a processor against, if the text before the
-	 * current document position constitutes a processor name.
+	 * Return the pattern before the cursor position.
 	 * 
 	 * @param document
 	 * @param cursorposition
 	 * @return The text entered up to the document offset, if the text could
-	 * 		   constitute a processor name.
+	 * 		   constitute a processor or expression object name.
 	 * @throws BadLocationException
 	 */
 	private static String findPattern(IDocument document, int cursorposition) throws BadLocationException {
 
-		// Trace backwards from the cursor until we hit a character that can't be in a processor name
+		// Trace backwards from the cursor until we hit a character that can't be in
+		// a processor or expression object name
 		int position = cursorposition;
 		int length = 0;
-		while (--position > 0 && isProcessorChar(document.getChar(position))) {
+		while (--position > 0 && isProcessorOrUtilityMethodChar(document.getChar(position))) {
 			length++;
 		}
 		return document.get(position + 1, length);

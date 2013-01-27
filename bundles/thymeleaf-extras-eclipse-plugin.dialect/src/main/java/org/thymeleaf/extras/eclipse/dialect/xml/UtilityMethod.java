@@ -13,7 +13,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -21,16 +20,15 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * 
- * 				Common data between the 2 Thymeleaf processor types: attribute processors
- * 				and element processors.
+ * 				A utility object method added by the dialect to be used by processors.
  * 			
  * 
- * <p>Java class for Processor complex type.
+ * <p>Java class for UtilityMethod complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Processor">
+ * &lt;complexType name="UtilityMethod">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -45,14 +43,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Processor", propOrder = {
+@XmlType(name = "UtilityMethod", propOrder = {
     "documentation"
 })
-@XmlSeeAlso({
-    AttributeProcessor.class,
-    ElementProcessor.class
-})
-public abstract class Processor {
+public class UtilityMethod {
 
     protected Documentation documentation;
     @XmlAttribute(name = "name", required = true)
@@ -117,9 +111,9 @@ public abstract class Processor {
 	protected Dialect dialect;
 
 	/**
-	 * Gets the dialect this processor belongs to.
+	 * Gets the dialect this utility method belongs to.
 	 * 
-	 * @return Dialect this processor is for.
+	 * @return Dialect this utility method is from.
 	 */
 	public Dialect getDialect() {
 
@@ -127,7 +121,7 @@ public abstract class Processor {
 	}
 
 	/**
-	 * Set the dialect this processor belongs to.
+	 * Set the dialect this utility method belongs to.
 	 * 
 	 * @param dialect
 	 */

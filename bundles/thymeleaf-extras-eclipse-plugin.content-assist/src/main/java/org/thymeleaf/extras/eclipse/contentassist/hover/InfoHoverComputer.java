@@ -18,7 +18,6 @@ package org.thymeleaf.extras.eclipse.contentassist.hover;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
@@ -40,7 +39,7 @@ import org.w3c.dom.Node;
  * @author Emanuel Rabina
  */
 @SuppressWarnings("restriction")
-public class ProcessorInfoHoverComputer extends AbstractProcessorComputer
+public class InfoHoverComputer extends AbstractProcessorComputer
 	implements ITextHover, ITextHoverExtension {
 
 	/**
@@ -70,15 +69,29 @@ public class ProcessorInfoHoverComputer extends AbstractProcessorComputer
 			int cursorposition = hoverRegion.getOffset();
 			Node node = (Node)ContentAssistUtils.getNodeAt(textViewer, cursorposition);
 
-			// Retrieve processor documentation on attribute or element nodes
+			// Retrieve documentation on attribute or element nodes
 			if (node instanceof IDOMElement) {
-				String surroundingword = getSurroundingWord(textViewer.getDocument(), hoverRegion.getOffset());
-				Processor processor = ProcessorCache.getProcessor(
-						findCurrentProject(), findNodeNamespaces(node), surroundingword);
-				if (processor != null && processor.isSetDocumentation()) {
-					return processor.getDocumentation().getValue();
+				String surroundingword = textViewer.getDocument().get(hoverRegion.getOffset(), hoverRegion.getLength());
+
+				if (isProcessorNamePattern(surroundingword)) {
+					Processor processor = ProcessorCache.getProcessor(
+							findCurrentProject(), findNodeNamespaces(node), surroundingword);
+					if (processor != null && processor.isSetDocumentation()) {
+						return processor.getDocumentation().getValue();
+					}
 				}
-			}
+
+				// NOTE: The HTML editor currently doesn't give a precise enough offset
+				//       to determine the _exact_ point being hovered over, making it
+				//       difficult to pick out utility methods and grab their help text.
+/*				else if (isUtilityMethodPattern(surroundingword)) {
+					UtilityMethod utilitymethod = ProcessorCache.getUtilityMethod(
+							findCurrentProject(), findNodeNamespaces(node), surroundingword);
+					if (utilitymethod != null && utilitymethod.isSetDocumentation()) {
+						return utilitymethod.getDocumentation().getValue();
+					}
+				}
+*/			}
 		}
 		catch (BadLocationException ex) {
 			ex.printStackTrace();
@@ -95,39 +108,5 @@ public class ProcessorInfoHoverComputer extends AbstractProcessorComputer
 
 		// Don't think we need to specify a special region, so use the default
 		return null;
-	}
-
-	/**
-	 * Get whatever word is in the document around the cursor position.
-	 * 
-	 * @param document
-	 * @param cursorposition
-	 * @return The word at the document position.
-	 * @throws BadLocationException
-	 */
-	private static String getSurroundingWord(IDocument document, int cursorposition)
-		throws BadLocationException {
-
-		int backtrace = cursorposition;
-		while (backtrace > 0) {
-			if (isProcessorChar(document.getChar(backtrace - 1))) {
-				backtrace--;
-			}
-			else {
-				break;
-			}
-		}
-
-		int forwardtrace = cursorposition;
-		while (forwardtrace < document.getLength() - 1) {
-			if (isProcessorChar(document.getChar(forwardtrace + 1))) {
-				forwardtrace++;
-			}
-			else {
-				break;
-			}
-		}
-
-		return document.get(backtrace, forwardtrace - backtrace + 1);
 	}
 }

@@ -24,8 +24,10 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 
@@ -37,6 +39,9 @@ import javax.xml.namespace.QName;
  */
 public abstract class AbstractProcessorComputer {
 
+	private static final Pattern PROCESSOR_NAME_PATTERN = Pattern.compile("[\\w:-]*");
+	private static final Pattern UTILITY_METHOD_PATTERN = Pattern.compile("#\\w*(\\.\\w*)?");
+
 	/**
 	 * Find the Eclipse project for the file the user is working on.
 	 * 
@@ -44,8 +49,8 @@ public abstract class AbstractProcessorComputer {
 	 */
 	protected static IProject findCurrentProject() {
 
-		StructuredTextEditor editor = (StructuredTextEditor)ContentAssistPlugin.getDefault()
-				.getWorkbench().getWorkbenchWindows()[0].getActivePage().getActiveEditor();
+		StructuredTextEditor editor = (StructuredTextEditor)getDefault().getWorkbench()
+				.getWorkbenchWindows()[0].getActivePage().getActiveEditor();
 		IFile file = ((IFileEditorInput)editor.getEditorInput()).getFile();
 		return file.getProject();
 	}
@@ -78,15 +83,37 @@ public abstract class AbstractProcessorComputer {
 	}
 
 	/**
-	 * Returns whether or not the given character is a valid processor name
-	 * character.
+	 * Returns whether or not the given pattern is a utility method string.
+	 * 
+	 * @param pattern The autocomplete pattern to check against.
+	 * @return <tt>true</tt> if the pattern matches a utility method.
+	 */
+	protected static boolean isUtilityMethodPattern(String pattern) {
+
+		return UTILITY_METHOD_PATTERN.matcher(pattern).matches();
+	}
+
+	/**
+	 * Returns whether or not the given pattern is a processor name string.
+	 * 
+	 * @param pattern The autocomplete pattern to check against.
+	 * @return <tt>true</tt> if the pattern matches a processor name.
+	 */
+	protected static boolean isProcessorNamePattern(String pattern) {
+
+		return PROCESSOR_NAME_PATTERN.matcher(pattern).matches();
+	}
+
+	/**
+	 * Returns whether or not the given character is a valid processor name or
+	 * utility method character.
 	 * 
 	 * @param c
 	 * @return <tt>true</tt> if <tt>char</tt> is an alphanumeric character, or
-	 * 		   one of the following symbols: <tt>: - </tt>
+	 * 		   one of the following symbols: <tt>: - # .</tt>
 	 */
-	protected static boolean isProcessorChar(char c) {
+	protected static boolean isProcessorOrUtilityMethodChar(char c) {
 
-		return Character.isLetterOrDigit(c) || c == ':' || c == '-';
+		return Character.isLetterOrDigit(c) || c == ':' || c == '-' || c == '#' || c =='.';
 	}
 }

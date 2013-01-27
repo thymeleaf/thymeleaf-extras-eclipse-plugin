@@ -8,8 +8,8 @@
 	<artifactId>org.thymeleaf.extras.eclipse.dialect</artifactId>
 	<packaging>eclipse-plugin</packaging>
 
-	<name>thymeleaf-extras-eclipse-plugin.dialect</name>
-	<description>Dialect help/documentation schemas module for the Thymeleaf Eclipse Plugin</description>
+	<name>thymeleaf-extras-eclipse-plugin.dialect-files</name>
+	<description>Dialect help/documentation files module for the Thymeleaf Eclipse Plugin</description>
 	<parent>
 		<groupId>org.thymeleaf.extras</groupId>
 		<artifactId>thymeleaf-extras-eclipse-plugin</artifactId>

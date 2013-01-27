@@ -20,6 +20,7 @@ import nz.net.ultraq.jaxb.XMLReader;
 
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
+import org.thymeleaf.extras.eclipse.dialect.xml.UtilityMethod;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -49,10 +50,15 @@ public class DialectLoader {
 		ArrayList<Dialect> dialects = new ArrayList<Dialect>();
 		for (InputStream dialectfilestream: locator.locateDialects()) {
 
-			// Link a processor with it's dialect
+			// Link processors and utility methods with their dialect
 			Dialect dialect = xmlreader.readXMLData(dialectfilestream);
-			for (Processor processor: dialect.getProcessors()) {
-				processor.setDialect(dialect);
+			for (Object dialectitem: dialect.getDialectItems()) {
+				if (dialectitem instanceof Processor) {
+					((Processor)dialectitem).setDialect(dialect);
+				}
+				else if (dialectitem instanceof UtilityMethod) {
+					((UtilityMethod)dialectitem).setDialect(dialect);
+				}
 			}
 			dialects.add(dialect);
 		}

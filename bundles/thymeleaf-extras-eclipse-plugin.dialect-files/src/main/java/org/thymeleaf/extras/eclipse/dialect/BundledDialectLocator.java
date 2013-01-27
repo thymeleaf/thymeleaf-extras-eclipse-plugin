@@ -16,47 +16,35 @@
 
 package org.thymeleaf.extras.eclipse.dialect;
 
-import org.eclipse.core.runtime.Plugin;
-import org.osgi.framework.BundleContext;
+import org.thymeleaf.extras.eclipse.dialect.DialectLocator;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Bundle activator for the Thymeleaf dialect module.
+ * Locates the Thymeleaf dialect XML files that come bundled with this plugin.
  * 
  * @author Emanuel Rabina
  */
-public class DialectPlugin extends Plugin {
+public class BundledDialectLocator implements DialectLocator {
 
-	public static final String PLUGIN_ID = "org.thymeleaf.extras.eclipse.dialect";
-
-	private static DialectPlugin plugin;
-
-	/**
-	 * Returns the shared instance of this plugin.
-	 *
-	 * @return This plugin instance.
-	 */
-	public static DialectPlugin getDefault() {
-
-		return plugin;
-	}
+	private static final String[] DIALECT_FILES = {
+			"dialects/Standard-Dialect.xml",
+			"dialects/Spring-Security-Dialect.xml"
+	};
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public List<InputStream> locateDialects() {
 
-		super.start(context);
-		plugin = this;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void stop(BundleContext context) throws Exception {
-
-		plugin = null;
-		super.stop(context);
+		ArrayList<InputStream> dialectstreams = new ArrayList<InputStream>();
+		for (String dialectfile: DIALECT_FILES) {
+			dialectstreams.add(BundledDialectLocator.class.getClassLoader()
+					.getResourceAsStream(dialectfile));
+		}
+		return dialectstreams;
 	}
 }

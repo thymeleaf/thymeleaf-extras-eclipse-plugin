@@ -562,4 +562,121 @@
 	<attribute-processor name="width"/>
 	<attribute-processor name="wrap"/>
 
+
+	<!-- Thymeleaf Expression Object Utility Methods -->
+	<!-- =========================================== -->
+
+	<!-- Dates -->
+	<utility-method name="dates.format"/>
+	<utility-method name="dates.arrayFormat"/>
+	<utility-method name="dates.listFormat"/>
+	<utility-method name="dates.setFormat"/>
+
+	<utility-method name="dates.day"/>
+	<utility-method name="dates.arrayDay"/>
+	<utility-method name="dates.listDay"/>
+	<utility-method name="dates.setDay"/>
+	<utility-method name="dates.month"/>
+	<utility-method name="dates.arrayMonth"/>
+	<utility-method name="dates.listMonth"/>
+	<utility-method name="dates.setMonth"/>
+	<utility-method name="dates.monthName"/>
+	<utility-method name="dates.arrayMonthName"/>
+	<utility-method name="dates.listMonthName"/>
+	<utility-method name="dates.setMonthName"/>
+	<utility-method name="dates.monthNameShort"/>
+	<utility-method name="dates.arrayMonthNameShort"/>
+	<utility-method name="dates.listMonthNameShort"/>
+	<utility-method name="dates.setMonthNameShort"/>
+	<utility-method name="dates.year"/>
+	<utility-method name="dates.arrayYear"/>
+	<utility-method name="dates.listYear"/>
+	<utility-method name="dates.setYear"/>
+	<utility-method name="dates.dayOfWeek"/>
+	<utility-method name="dates.arrayDayOfWeek"/>
+	<utility-method name="dates.listDayOfWeek"/>
+	<utility-method name="dates.setDayOfWeek"/>
+	<utility-method name="dates.dayOfWeekName"/>
+	<utility-method name="dates.arrayDayOfWeekName"/>
+	<utility-method name="dates.listDayOfWeekName"/>
+	<utility-method name="dates.setDayOfWeekName"/>
+	<utility-method name="dates.dayOfWeekNameShort"/>
+	<utility-method name="dates.arrayDayOfWeekNameShort"/>
+	<utility-method name="dates.listDayOfWeekNameShort"/>
+	<utility-method name="dates.setDayOfWeekNameShort"/>
+	<utility-method name="dates.hour"/>
+	<utility-method name="dates.arrayHour"/>
+	<utility-method name="dates.listHour"/>
+	<utility-method name="dates.setHour"/>
+	<utility-method name="dates.minute"/>
+	<utility-method name="dates.arrayMinute"/>
+	<utility-method name="dates.listMinute"/>
+	<utility-method name="dates.setMinute"/>
+	<utility-method name="dates.second"/>
+	<utility-method name="dates.arraySecond"/>
+	<utility-method name="dates.listSecond"/>
+	<utility-method name="dates.setSecond"/>
+	<utility-method name="dates.millisecond"/>
+	<utility-method name="dates.arrayMillisecond"/>
+	<utility-method name="dates.listMillisecond"/>
+	<utility-method name="dates.setMillisecond"/>
+
+	<utility-method name="dates.create"/>
+	<utility-method name="dates.createNow"/>
+	<utility-method name="dates.createToday"/>
+
+	<!-- Calendars -->
+	<utility-method name="calendars.format"/>
+	<utility-method name="calendars.arrayFormat"/>
+	<utility-method name="calendars.listFormat"/>
+	<utility-method name="calendars.setFormat"/>
+	<utility-method name="calendars.day"/>
+	<utility-method name="calendars.arrayDay"/>
+	<utility-method name="calendars.listDay"/>
+	<utility-method name="calendars.setDay"/>
+	<utility-method name="calendars.month"/>
+	<utility-method name="calendars.arrayMonth"/>
+	<utility-method name="calendars.listMonth"/>
+	<utility-method name="calendars.setMonth"/>
+	<utility-method name="calendars.monthName"/>
+	<utility-method name="calendars.arrayMonthName"/>
+	<utility-method name="calendars.listMonthName"/>
+	<utility-method name="calendars.setMonthName"/>
+	<utility-method name="calendars.monthNameShort"/>
+	<utility-method name="calendars.arrayMonthNameShort"/>
+	<utility-method name="calendars.listMonthNameShort"/>
+	<utility-method name="calendars.setMonthNameShort"/>
+	<utility-method name="calendars.year"/>
+	<utility-method name="calendars.arrayYear"/>
+	<utility-method name="calendars.listYear"/>
+	<utility-method name="calendars.setYear"/>
+	<utility-method name="calendars.dayOfWeek"/>
+	<utility-method name="calendars.arrayDayOfWeek"/>
+	<utility-method name="calendars.listDayOfWeek"/>
+	<utility-method name="calendars.setDayOfWeek"/>
+	<utility-method name="calendars.dayOfWeekName"/>
+	<utility-method name="calendars.arrayDayOfWeekName"/>
+	<utility-method name="calendars.listDayOfWeekName"/>
+	<utility-method name="calendars.setDayOfWeekName"/>
+	<utility-method name="calendars.dayOfWeekNameShort"/>
+	<utility-method name="calendars.arrayDayOfWeekNameShort"/>
+	<utility-method name="calendars.listDayOfWeekNameShort"/>
+	<utility-method name="calendars.setDayOfWeekNameShort"/>
+	<utility-method name="calendars.hour"/>
+	<utility-method name="calendars.arrayHour"/>
+	<utility-method name="calendars.listHour"/>
+	<utility-method name="calendars.setHour"/>
+	<utility-method name="calendars.minute"/>
+	<utility-method name="calendars.arrayMinute"/>
+	<utility-method name="calendars.listMinute"/>
+	<utility-method name="calendars.setMinute"/>
+	<utility-method name="calendars.second"/>
+	<utility-method name="calendars.arraySecond"/>
+	<utility-method name="calendars.listSecond"/>
+	<utility-method name="calendars.setSecond"/>
+
+	<utility-method name="calendars.create"/>
+	<utility-method name="calendars.createNow"/>
+	<utility-method name="calendars.createToday"/>
+
 </dialect>

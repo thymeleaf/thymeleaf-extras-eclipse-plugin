@@ -17,11 +17,16 @@
 package org.thymeleaf.extras.eclipse.contentassist;
 
 import org.eclipse.core.resources.IProject;
+import org.thymeleaf.extras.eclipse.dialect.BundledDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.DialectLoader;
+import org.thymeleaf.extras.eclipse.dialect.ProjectDependencyDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
+import org.thymeleaf.extras.eclipse.dialect.xml.UtilityMethod;
+
+import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -58,6 +63,46 @@ public class ProcessorCache {
 					d1.getPrefix().compareTo(d2.getPrefix());
 		}
 	});
+
+	// Collection of utility methods in alphabetical order
+	private static final TreeSet<UtilityMethod> utilitymethods = new TreeSet<UtilityMethod>(new Comparator<UtilityMethod>() {
+		@Override
+		public int compare(UtilityMethod m1, UtilityMethod m2) {
+			return m1.getName().compareTo(m2.getName());
+		}
+	});
+
+	/**
+	 * Checks if the dialect is in the list of given namespaces.
+	 * 
+	 * @param dialect
+	 * @param namespaces
+	 * @return <tt>true</tt> if the dialect prefix and namespace are listed in
+	 * 		   the <tt>namespaces</tt> collection.
+	 */
+	private static boolean dialectInNamespace(Dialect dialect, List<QName> namespaces) {
+
+		for (QName namespace: namespaces) {
+			if (dialect.getPrefix().equals(namespace.getPrefix()) &&
+				dialect.getNamespaceUri().equals(namespace.getNamespaceURI())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the dialect is included in the given project.
+	 * 
+	 * @param dialect
+	 * @param project
+	 * @return <tt>true</tt> if the project includes the dialect.  (Dialects
+	 * 		   bundled with this plugin are always associated with the project.)
+	 */
+	private static boolean dialectInProject(Dialect dialect, IProject project) {
+
+		return bundleddialects.contains(dialect) || projectdialects.get(project).contains(dialect);
+	}
 
 	/**
 	 * Retrieve all attribute processors for the given project, whose names
@@ -106,8 +151,9 @@ public class ProcessorCache {
 		loadDialectsFromProject(project);
 
 		for (Processor processor: processors) {
-			if (processorInProject(processor, project) &&
-				processorInNamespace(processor, namespaces) &&
+			Dialect dialect = processor.getDialect();
+			if (dialectInProject(dialect, project) &&
+				dialectInNamespace(processor.getDialect(), namespaces) &&
 				processorMatchesName(processor, processorname)) {
 				return processor;
 			}
@@ -135,9 +181,10 @@ public class ProcessorCache {
 
 		ArrayList<P> matchedprocessors = new ArrayList<P>();
 		for (Processor processor: processors) {
+			Dialect dialect = processor.getDialect();
 			if (processor.getClass().equals(type) &&
-				processorInProject(processor, project) &&
-				processorInNamespace(processor, namespaces) &&
+				dialectInProject(dialect, project) &&
+				dialectInNamespace(dialect, namespaces) &&
 				processorMatchesPattern(processor, pattern)) {
 				matchedprocessors.add((P)processor);
 			}
@@ -146,17 +193,86 @@ public class ProcessorCache {
 	}
 
 	/**
+	 * Retrieve the utility method with the full matching name.
+	 * 
+	 * @param project			The current project.
+	 * @param namespaces		List of namespaces available at the current
+	 * 							point in the document.
+	 * @param utilitymethodname Full name of the utility method.
+	 * @return Expression object with the given name, or <tt>null</tt> if no
+	 * 		   expression object matches.
+	 */
+	public static UtilityMethod getUtilityMethod(IProject project, List<QName> namespaces,
+		String utilitymethodname) {
+
+		loadDialectsFromProject(project);
+
+		for (UtilityMethod expressionobject: utilitymethods) {
+			if (dialectInProject(expressionobject.getDialect(), project) &&
+				dialectInNamespace(expressionobject.getDialect(), namespaces) &&
+				utilityMethodMatchesName(expressionobject, utilitymethodname)) {
+				return expressionobject;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Retrieve all utility methods for the given project, whose names match
+	 * the starting pattern.
+	 * 
+	 * @param project	 The current project.
+	 * @param namespaces List of namespaces available at the current point in
+	 * 					 the document.
+	 * @param pattern	 Start-of-string pattern to match.
+	 * @return List of all matching utility methods.
+	 */
+	public static List<UtilityMethod> getUtilityMethods(IProject project,
+		List<QName> namespaces, String pattern) {
+
+		loadDialectsFromProject(project);
+
+		ArrayList<UtilityMethod> matchedexpressionobjects = new ArrayList<UtilityMethod>();
+		for (UtilityMethod utilitymethod: utilitymethods) {
+			Dialect dialect = utilitymethod.getDialect();
+			if (dialectInProject(dialect, project) &&
+				dialectInNamespace(dialect, namespaces) &&
+				utilityMethodMatchesPattern(utilitymethod, pattern)) {
+				matchedexpressionobjects.add(utilitymethod);
+			}
+		}
+		return matchedexpressionobjects;
+	}
+
+	/**
 	 * Initialize the processor cache with the Thymeleaf dialects bundled with
 	 * this plugin.
 	 */
 	public static void initialize() {
 
-		ContentAssistPlugin.logInfo("Loading bundled dialect files");
+		logInfo("Loading bundled dialect files");
 
 		List<Dialect> dialects = dialectloader.loadDialects(new BundledDialectLocator());
 		for (Dialect dialect: dialects) {
 			bundleddialects.add(dialect);
-			processors.addAll(dialect.getProcessors());
+			loadDialectItems(dialect);
+		}
+	}
+
+	/**
+	 * Puts dialect items into their rightful collections.
+	 * 
+	 * @param dialect
+	 */
+	private static void loadDialectItems(Dialect dialect) {
+
+		for (Object dialectitem: dialect.getDialectItems()) {
+			if (dialectitem instanceof Processor) {
+				processors.add((Processor)dialectitem);
+			}
+			else if (dialectitem instanceof UtilityMethod) {
+				utilitymethods.add((UtilityMethod)dialectitem);
+			}
 		}
 	}
 
@@ -173,59 +289,27 @@ public class ProcessorCache {
 					new ProjectDependencyDialectLocator(project));
 			projectdialects.put(project, dialects);
 			for (Dialect dialect: dialects) {
-				processors.addAll(dialect.getProcessors());
+				loadDialectItems(dialect);
 			}
 		}
-	}
-
-	/**
-	 * Checks if the processor's dialect is in the list of given namespaces.
-	 * 
-	 * @param processor
-	 * @param namespaces
-	 * @return <tt>true</tt> if the processor's dialect prefix and namespace are
-	 * 		   listed in the <tt>namespaces</tt> collection.
-	 */
-	private static boolean processorInNamespace(Processor processor, List<QName> namespaces) {
-
-		Dialect dialect = processor.getDialect();
-		for (QName namespace: namespaces) {
-			if (dialect.getPrefix().equals(namespace.getPrefix()) &&
-				dialect.getNamespaceUri().equals(namespace.getNamespaceURI())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Checks if the processor's dialect is included in the given project.
-	 * 
-	 * @param processor
-	 * @param project
-	 * @return <tt>true</tt> if the project includes the processor's dialect.
-	 * 		   (Dialects bundled with this plugin are always associated with the
-	 * 		   project.)
-	 */
-	private static boolean processorInProject(Processor processor, IProject project) {
-
-		Dialect dialect = processor.getDialect();
-		return bundleddialects.contains(dialect) || projectdialects.get(project).contains(dialect);
 	}
 
 	/**
 	 * Checks if the processor name (prefix:name) matches the given name.
 	 * 
 	 * @param processor
-	 * @param processorname
+	 * @param name
 	 * @return <tt>true</tt> if the name matches the full processor name.
 	 */
-	private static boolean processorMatchesName(Processor processor, String processorname) {
+	private static boolean processorMatchesName(Processor processor, String name) {
 
-		int separatorindex = processorname.indexOf(':');
+		if (name == null || name.isEmpty()) {
+			return false;
+		}
+		int separatorindex = name.indexOf(':');
 		return separatorindex != -1 &&
-				processor.getDialect().getPrefix().equals(processorname.substring(0, separatorindex)) &&
-				processor.getName().equals(processorname.substring(separatorindex + 1));
+				processor.getDialect().getPrefix().equals(name.substring(0, separatorindex)) &&
+				processor.getName().equals(name.substring(separatorindex + 1));
 	}
 
 	/**
@@ -240,5 +324,34 @@ public class ProcessorCache {
 	private static boolean processorMatchesPattern(Processor processor, String pattern) {
 
 		return pattern != null && (processor.getDialect().getPrefix() + ":" + processor.getName()).startsWith(pattern);
+	}
+
+	/**
+	 * Checks if the utility method matches the given name.
+	 * 
+	 * @param utilitymethod
+	 * @param name
+	 * @return <tt>true</tt> if the name matches the expression object name.
+	 */
+	private static boolean utilityMethodMatchesName(UtilityMethod utilitymethod, String name) {
+
+		if (name == null || name.isEmpty()) {
+			return false;
+		}
+		return name.indexOf('#') == 0 && utilitymethod.getName().equals(name.substring(1));
+	}
+
+	/**
+	 * Checks if the utility method name matches the given start-of-string
+	 * pattern.
+	 * 
+	 * @param utilitymethod
+	 * @param pattern
+	 * @return <tt>true</tt> if the pattern matches against the expression
+	 * 		   object name.
+	 */
+	private static boolean utilityMethodMatchesPattern(UtilityMethod utilitymethod, String pattern) {
+
+		return pattern != null && ("#" + utilitymethod.getName()).startsWith(pattern);
 	}
 }

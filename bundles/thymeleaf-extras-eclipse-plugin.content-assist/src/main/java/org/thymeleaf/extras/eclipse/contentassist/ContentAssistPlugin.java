@@ -17,9 +17,14 @@
 package org.thymeleaf.extras.eclipse.contentassist;
 
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.wst.html.ui.internal.HTMLUIPlugin;
+import org.eclipse.wst.html.ui.internal.preferences.HTMLUIPreferenceNames;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -27,11 +32,14 @@ import org.osgi.framework.BundleContext;
  * 
  * @author Emanuel Rabina
  */
+@SuppressWarnings("restriction")
 public class ContentAssistPlugin extends AbstractUIPlugin {
 
 	public static final String PLUGIN_ID = "org.thymeleaf.extras.eclipse.contentassist";
 
 	private static final String PROCESSOR_IMAGE_KEY = "thymeleaf-processor-image";
+
+	static final String AUTO_PROPOSE_PREF = "autoProposeOn";
 
 	private static ContentAssistPlugin plugin;
 
@@ -94,6 +102,27 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 
 		super.start(context);
 		plugin = this;
+
+		// Add the # character to the list of activation characters, then track if it
+		// is ever removed by the user so that we know not to put it back again automatically.
+		if (getPreferenceStore().getBoolean(AUTO_PROPOSE_PREF)) {
+			IPreferenceStore htmluiprefs = HTMLUIPlugin.getDefault().getPreferenceStore();
+
+			htmluiprefs.setValue(HTMLUIPreferenceNames.AUTO_PROPOSE_CODE,
+					htmluiprefs.getString(HTMLUIPreferenceNames.AUTO_PROPOSE_CODE) + "#");
+
+			htmluiprefs.addPropertyChangeListener(new IPropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent event) {
+					if (event.getProperty().equals(HTMLUIPreferenceNames.AUTO_PROPOSE_CODE)) {
+						if (((String)event.getOldValue()).contains("#") &&
+						   !((String)event.getNewValue()).contains("#")) {
+							getPreferenceStore().setValue(AUTO_PROPOSE_PREF, false);
+						}
+					}
+				}
+			});
+		}
 
 		// Initialize the processor cache
 		ProcessorCache.initialize();
