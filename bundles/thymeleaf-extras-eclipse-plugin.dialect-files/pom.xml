@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>org.thymeleaf.extras.eclipse.dialect</artifactId>
+	<artifactId>org.thymeleaf.extras.eclipse.dialect.files</artifactId>
 	<packaging>eclipse-plugin</packaging>
 
 	<name>thymeleaf-extras-eclipse-plugin.dialect-files</name>
