@@ -19,13 +19,60 @@
 <dialect xmlns="http://www.thymeleaf.org/extras/dialect"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.thymeleaf.org/extras/dialect
-						http://www.thymeleaf.org/xsd/extras/thymeleaf-dialect-help-0.2.xsd"
-	prefix="sec" namespace-uri="http://www.thymeleaf.org/extras/spring-security">
+						http://www.thymeleaf.org/xsd/extras/thymeleaf-dialect-help-0.3.xsd"
+	prefix="sec" namespace-uri="http://www.thymeleaf.org/extras/spring-security" namespace-strict="false">
 
-	<attribute-processor name="authentication"/>
-	<attribute-processor name="authorize"/>
-	<attribute-processor name="authorize-acl"/>
-	<attribute-processor name="authorize-expr"/>
-	<attribute-processor name="authorize-url"/>
+	<attribute-processor name="authentication">
+		<documentation reference="Thymeleaf Spring Security 3 integration module readme">
+			<![CDATA[
+			Outputs a property of the authentication object, similar to the Spring
+			Security &lt;sec:authentication/&gt; JSP tag.
+			]]>
+		</documentation>
+	</attribute-processor>
+
+	<attribute-processor name="authorize">
+		<documentation reference="Thymeleaf Spring Security 3 integration module readme">
+			<![CDATA[
+			Renders the element children (*tag content*) if the authenticated user
+			is authorized to see it according to the specified <i>Spring Security
+			expression</i>.
+			]]>
+		</documentation>
+	</attribute-processor>
+
+	<attribute-processor name="authorize-acl">
+		<documentation reference="Thymeleaf Spring Security 3 integration module readme">
+			<![CDATA[
+			Takes the form sec:authorize-acl="object :: permissions", renders the
+			element children (*tag content*) if the authenticated user has the specified
+			permissions on the specified domain object, according to Spring Source's
+			Access Control List system.
+			]]>
+		</documentation>
+	</attribute-processor>
+
+	<attribute-processor name="authorize-expr">
+		<documentation reference="Thymeleaf Spring Security 3 integration module readme">
+			<![CDATA[
+			An alias for <b>sec:authorize</b>, renders the element children (*tag
+			content*) if the authenticated user is authorized to see it according
+			to the specified <i>Spring Security expression</i>.
+			]]>
+		</documentation>
+	</attribute-processor>
+
+	<attribute-processor name="authorize-url">
+		<documentation reference="Thymeleaf Spring Security 3 integration module readme">
+			<![CDATA[
+			Renders the element children (*tag content*) if the authenticated user
+			is authorized to see the specified URL.
+			]]>
+		</documentation>
+	</attribute-processor>
+
+
+	<utility-object-ref name="authentication" class="org.springframework.security.core.Authentication"/>
+	<utility-object-ref name="authorization" class="org.thymeleaf.extras.springsecurity3.auth.Authorization"/>
 
 </dialect>

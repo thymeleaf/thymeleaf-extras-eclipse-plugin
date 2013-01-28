@@ -93,6 +93,7 @@
 			</xsd:sequence>
 			<xsd:attribute name="prefix" type="xsd:string" use="required"/>
 			<xsd:attribute name="namespace-uri" type="xsd:anyURI" use="required"/>
+			<xsd:attribute name="namespace-strict" type="xsd:boolean" default="true"/>
 		</xsd:complexType>
 	</xsd:element>
 
@@ -221,6 +222,30 @@
 			</xsd:documentation>
 			<xsd:appinfo>
 				<ci:code><![CDATA[
+	/**
+	 * Return if this utility method is equal to another one.
+	 * 
+	 * @param other The utility method to compare against.
+	 * @return <tt>true</tt> if both this an the other method share the same
+	 *         name.
+	 */
+	@Override
+	public boolean equals(Object other) {
+
+		return other instanceof UtilityMethod && name.equals(((UtilityMethod)other).name);
+	}
+
+	/**
+	 * Returns a hashcode based on this method data.
+	 * 
+	 * @return Method hashcode.
+	 */
+	@Override
+	public int hashCode() {
+
+		return name.hashCode();
+	}
+
 	@javax.xml.bind.annotation.XmlTransient
 	protected Dialect dialect;
 

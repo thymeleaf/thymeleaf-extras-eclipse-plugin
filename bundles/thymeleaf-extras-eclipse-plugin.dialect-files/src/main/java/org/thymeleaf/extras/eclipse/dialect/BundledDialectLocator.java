@@ -31,7 +31,8 @@ public class BundledDialectLocator implements DialectLocator {
 
 	private static final String[] DIALECT_FILES = {
 			"dialects/Standard-Dialect.xml",
-			"dialects/Spring-Security-Dialect.xml"
+			"dialects/Spring-Security-Dialect.xml",
+			"dialects/Tiles-Dialect.xml"
 	};
 
 	/**

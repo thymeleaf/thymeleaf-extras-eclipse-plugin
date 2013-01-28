@@ -34,6 +34,7 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -80,15 +81,20 @@ public class ProcessorCache {
 	 * 
 	 * @param dialect
 	 * @param namespaces
-	 * @return <tt>true</tt> if the dialect prefix and namespace are listed in
-	 * 		   the <tt>namespaces</tt> collection.
+	 * @return <tt>true</tt> if the dialect prefix (and namespace if the dialect
+	 * 		   is namespace strict) are listed in the <tt>namespaces</tt>
+	 * 		   collection.
 	 */
 	private static boolean dialectInNamespace(Dialect dialect, List<QName> namespaces) {
 
 		for (QName namespace: namespaces) {
-			if (dialect.getPrefix().equals(namespace.getPrefix()) &&
-				dialect.getNamespaceUri().equals(namespace.getNamespaceURI())) {
-				return true;
+			if (dialect.getPrefix().equals(namespace.getPrefix())) {
+				if (!dialect.isNamespaceStrict()) {
+					return true;
+				}
+				else if (dialect.getNamespaceUri().equals(namespace.getNamespaceURI())) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -105,6 +111,61 @@ public class ProcessorCache {
 	private static boolean dialectInProject(Dialect dialect, IJavaProject project) {
 
 		return bundleddialects.contains(dialect) || projectdialects.get(project).contains(dialect);
+	}
+
+	/**
+	 * Creates utility method suggestions from a utility object reference.
+	 * 
+	 * @param dialect	Parent dialect.
+	 * @param objectref The utility object reference.
+	 * @return Set of utility method suggestions based on the visible methods
+	 * 		   of the utility object.
+	 */
+	private static HashSet<UtilityMethod> generateUtilityMethods(Dialect dialect,
+		UtilityObjectReference objectref) {
+
+		HashSet<UtilityMethod> generatedmethods = new HashSet<UtilityMethod>();
+
+		String classname = objectref.getClazz();
+		IJavaProject project = findCurrentJavaProject();
+		try {
+			IType type = project.findType(classname);
+			if (type != null) {
+				for (IMethod method: type.getMethods()) {
+					if (!method.isConstructor()) {
+
+						UtilityMethod utilitymethod = new UtilityMethod();
+						utilitymethod.setDialect(dialect);
+
+						// For Java bean methods, convert the suggestion to a property
+						String methodname = method.getElementName();
+						int propertypoint =
+								methodname.startsWith("get") || methodname.startsWith("set") ? 3 :
+								methodname.startsWith("is") ? 2 :
+								-1;
+
+						if (propertypoint != -1 && methodname.length() > propertypoint &&
+							Character.isUpperCase(methodname.charAt(propertypoint))) {
+
+							StringBuilder propertyname = new StringBuilder(methodname.substring(propertypoint));
+							propertyname.insert(0, Character.toLowerCase(propertyname.charAt(0)));
+							propertyname.deleteCharAt(1);
+							utilitymethod.setName(objectref.getName() + "." + propertyname);
+						}
+						else {
+							utilitymethod.setName(objectref.getName() + "." + methodname);
+						}
+
+						utilitymethods.add(utilitymethod);
+					}
+				}
+			}
+		}
+		catch (JavaModelException ex) {
+			logError("Unable to locate utility object reference: " + classname, ex);
+		}
+
+		return generatedmethods;
 	}
 
 	/**
@@ -279,25 +340,7 @@ public class ProcessorCache {
 
 			// Generate utility methods from the given class reference
 			else if (dialectitem instanceof UtilityObjectReference) {
-				UtilityObjectReference ref = (UtilityObjectReference)dialectitem;
-				String classname = ref.getClazz();
-				IJavaProject project = findCurrentJavaProject();
-				try {
-					IType type = project.findType(classname);
-					if (type != null) {
-						for (IMethod method: type.getMethods()) {
-							if (!method.isConstructor()) {
-								UtilityMethod utilitymethod = new UtilityMethod();
-								utilitymethod.setDialect(dialect);
-								utilitymethod.setName(ref.getName() + "." + method.getElementName());
-								utilitymethods.add(utilitymethod);
-							}
-						}
-					}
-				}
-				catch (JavaModelException ex) {
-					logError("Unable to locate utility object reference: " + classname, ex);
-				}
+				utilitymethods.addAll(generateUtilityMethods(dialect, (UtilityObjectReference)dialectitem));
 			}
 		}
 	}

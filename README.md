@@ -7,7 +7,7 @@ standard dialect processors and expression utility objects, using the Eclipse
 Web Tools Platform HTML source editor.
 
  - Current version: 0.3.0-SNAPSHOT
- - Released: 27 Jan 2013
+ - Released: 28 Jan 2013
 
 Note that this plugin is still being developed, so I welcome any feedback and/or
 bug reports, either through the Thymeleaf forum (on this thread: http://forum.thymeleaf.org/Thymeleaf-content-assist-plugin-for-Eclipse-td4025498.html),
@@ -37,9 +37,9 @@ Usage
 Content assist features are only available for dialects whose namespaces (with
 the matching prefix) are defined in your HTML files, and if that dialect has
 supplied some help files in their JARs.  Help files for Thymeleaf's standard
-processors come bundled with this plugin, so all you have to do to get content
-assist support is to include the Thymeleaf namespace and prefix in your HTML
-file like so:
+processors, as well as the Thymeleaf Extras modules, come bundled with this
+plugin, so all you have to do to get content assist support is to include the
+Thymeleaf namespace and prefix in your HTML file like so:
 
 	<!DOCTYPE html>
 	<html xmlns:th="http://www.thymeleaf.org">
@@ -48,9 +48,6 @@ You should now start getting content assistance for all of Thymeleaf's standard
 processors: suggestions as you type and autocompletion of what you've entered so
 far if it matches only one result (both of these can be invoked manually using
 CTRL+SPACE), and help text when hovering over the text of a Thymeleaf processor.
-
-Support for more of Thymeleaf's features, like expression utility objects, and
-the Thymeleaf Extras modules, is in the works.
 
 If you're developing a Thymeleaf dialect and would like to take advantage of
 content assist for your own dialect, read the next section.
@@ -102,6 +99,8 @@ Changelog
  - Added autocomplete/suggestion support for element processors.
  - Added autocomplete/suggestion support for Thymeleaf's expression utility
    objects.
+ - Added help files for the Thymeleaf Extras modules: Spring Security 3 and Tiles
+   2.
 
 ### 0.2.0
  - Added Eclipse API baseline support to work towards other versions of Eclipse.
