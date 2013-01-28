@@ -151,6 +151,7 @@ public class ProcessorCache {
 							propertyname.insert(0, Character.toLowerCase(propertyname.charAt(0)));
 							propertyname.deleteCharAt(1);
 							utilitymethod.setName(objectref.getName() + "." + propertyname);
+							utilitymethod.setJavaBeanProperty(true);
 						}
 						else {
 							utilitymethod.setName(objectref.getName() + "." + methodname);

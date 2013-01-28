@@ -281,6 +281,7 @@
 			</xsd:element>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:ID" use="required"/>
+		<xsd:attribute name="java-bean-property" type="xsd:boolean" default="false"/>
 	</xsd:complexType>
 
 	<xsd:complexType name="UtilityObjectReference">

@@ -31,6 +31,7 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 public class UtilityMethodCompletionProposal extends AbstractCompletionProposal {
 
 	private final String fullutilitymethodname;
+	private final boolean javabeanproperty;
 
 	/**
 	 * Constructor, set the utility method information.
@@ -47,6 +48,7 @@ public class UtilityMethodCompletionProposal extends AbstractCompletionProposal 
 				utilitymethod.getDocumentation(), cursorposition);
 
 		fullutilitymethodname = utilitymethod.getName();
+		javabeanproperty = utilitymethod.isJavaBeanProperty();
 	}
 
 	/**
@@ -55,7 +57,8 @@ public class UtilityMethodCompletionProposal extends AbstractCompletionProposal 
 	@Override
 	protected void applyImpl(IDocument document, char trigger, int offset) throws BadLocationException {
 
-		document.replace(offset, 0, replacementstring.substring(offset - cursorposition) + "()");
+		document.replace(offset, 0, replacementstring.substring(offset - cursorposition) +
+				(!javabeanproperty ? "()" : ""));
 	}
 
 	/**
@@ -82,6 +85,6 @@ public class UtilityMethodCompletionProposal extends AbstractCompletionProposal 
 	@Override
 	public Point getSelection(IDocument document) {
 
-		return new Point(cursorposition + replacementstring.length() + 1, 0);
+		return new Point(cursorposition + replacementstring.length() + (!javabeanproperty ? 1 : 0), 0);
 	}
 }
