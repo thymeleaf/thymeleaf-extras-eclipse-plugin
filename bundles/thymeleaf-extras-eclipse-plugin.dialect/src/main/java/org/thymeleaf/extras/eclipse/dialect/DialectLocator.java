@@ -16,22 +16,21 @@
 
 package org.thymeleaf.extras.eclipse.dialect;
 
-import java.io.InputStream;
 import java.util.List;
 
 /**
- * Locates Thymeleaf dialect help/documentation XML files to be loaded at some
- * later time.
+ * Locates Thymeleaf dialect information to be loaded at some later time.
  * 
+ * @param <T> Type of the dialect information.
  * @author Emanuel Rabina
  */
-public interface DialectLocator {
+public interface DialectLocator<T> {
 
 	/**
-	 * Looks for dialects and returns a list of input streams to those dialects
-	 * for loading.
+	 * Looks for dialects and returns them as some type of list to be consumed
+	 * by a {@link DialectLoader} that can accept that type.
 	 * 
 	 * @return List of input streams over the dialect help XML files.
 	 */
-	public List<InputStream> locateDialects();
+	public List<T> locateDialects();
 }

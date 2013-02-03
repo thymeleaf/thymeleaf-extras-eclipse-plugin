@@ -19,8 +19,9 @@
 <dialect xmlns="http://www.thymeleaf.org/extras/dialect"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.thymeleaf.org/extras/dialect
-						http://www.thymeleaf.org/xsd/extras/thymeleaf-dialect-help-0.3.xsd"
-	prefix="sec" namespace-uri="http://www.thymeleaf.org/extras/spring-security" namespace-strict="false">
+						http://www.thymeleaf.org/xsd/extras/thymeleaf-dialect-help-0.4.xsd"
+	prefix="sec" namespace-uri="http://www.thymeleaf.org/extras/spring-security" namespace-strict="false"
+	class="org.thymeleaf.extras.springsecurity3.dialect.SpringSecurityDialect">
 
 	<attribute-processor name="authentication">
 		<documentation reference="Thymeleaf Spring Security 3 integration module readme">

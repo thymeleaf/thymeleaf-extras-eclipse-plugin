@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<dialect xmlns="http://www.thymeleaf.org/extras/dialect"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.thymeleaf.org/extras/dialect
+						http://www.thymeleaf.org/xsd/extras/thymeleaf-dialect-help-0.4.xsd"
+	prefix="th" namespace-uri="http://www.thymeleaf.org/spring" namespace-strict="false"
+	class="org.thymeleaf.spring3.dialect.SpringStandardDialect">
+
+
+	<!-- Introduced processors -->
+	<!-- ===================== -->
+
+	<attribute-processor name="field"/>
+	<attribute-processor name="errors"/>
+
+
+	<!-- General field attribute processors -->
+	<!-- ================================== -->
+
+	<attribute-processor name="color"/>
+	<attribute-processor name="date"/>
+	<attribute-processor name="datetime-local"/>
+	<attribute-processor name="email"/>
+	<attribute-processor name="month"/>
+	<attribute-processor name="number"/>
+	<attribute-processor name="range"/>
+	<attribute-processor name="search"/>
+	<attribute-processor name="tel"/>
+	<attribute-processor name="time"/>
+	<attribute-processor name="url"/>
+	<attribute-processor name="week"/>
+
+
+	<!-- Spring field attribute processors -->
+	<!-- ================================= -->
+
+	<attribute-processor name="field">
+		<restrictions tags="input option select textarea"/>
+	</attribute-processor>
+	<attribute-processor name="method"/>
+
+</dialect>

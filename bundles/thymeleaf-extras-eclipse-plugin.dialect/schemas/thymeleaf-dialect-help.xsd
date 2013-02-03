@@ -44,7 +44,8 @@
 		<xsd:complexType>
 			<xsd:annotation>
 				<xsd:documentation>
-					Information about a dialect and its processors.
+					Information about a dialect, its processors, and its expression
+					objects.
 				</xsd:documentation>
 				<xsd:appinfo>
 					<ci:code><![CDATA[
@@ -87,25 +88,25 @@
 					</xsd:annotation>
 					<xsd:element name="attribute-processor" type="AttributeProcessor"/>
 					<xsd:element name="element-processor" type="ElementProcessor"/>
-					<xsd:element name="utility-method" type="UtilityMethod"/>
-					<xsd:element name="utility-object-ref" type="UtilityObjectReference"/>
+					<xsd:element name="expression-object" type="ExpressionObject"/>
+					<xsd:element name="expression-object-method" type="ExpressionObjectMethod"/>
 				</xsd:choice>
 			</xsd:sequence>
 			<xsd:attribute name="prefix" type="xsd:string" use="required"/>
 			<xsd:attribute name="namespace-uri" type="xsd:anyURI" use="required"/>
 			<xsd:attribute name="namespace-strict" type="xsd:boolean" default="true"/>
+			<xsd:attribute name="class" type="xsd:string" use="required"/>
 		</xsd:complexType>
 	</xsd:element>
 
 
-	<!-- Processor types -->
-	<!-- =============== -->
+	<!-- Common dialect item -->
+	<!-- =================== -->
 
-	<xsd:complexType name="Processor" abstract="true">
+	<xsd:complexType name="DialectItem" abstract="true">
 		<xsd:annotation>
 			<xsd:documentation>
-				Common data between the 2 Thymeleaf processor types: attribute processors
-				and element processors.
+				Common code for Thymeleaf processor and expression objects.
 			</xsd:documentation>
 			<xsd:appinfo>
 				<ci:code><![CDATA[
@@ -113,9 +114,9 @@
 	protected Dialect dialect;
 
 	/**
-	 * Gets the dialect this processor belongs to.
+	 * Gets the dialect this object belongs to.
 	 * 
-	 * @return Dialect this processor is for.
+	 * @return Dialect this object is for.
 	 */
 	public Dialect getDialect() {
 
@@ -123,7 +124,7 @@
 	}
 
 	/**
-	 * Set the dialect this processor belongs to.
+	 * Set the dialect this object belongs to.
 	 * 
 	 * @param dialect
 	 */
@@ -144,7 +145,31 @@
 			</xsd:element>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:ID" use="required"/>
+		<xsd:attribute name="class" type="xsd:string">
+			<xsd:annotation>
+				<xsd:appinfo>
+					<jxb:property generateIsSetMethod="true"/>
+				</xsd:appinfo>
+			</xsd:annotation>
+		</xsd:attribute>
 	</xsd:complexType>
+
+
+	<!-- Processor types -->
+	<!-- =============== -->
+
+	<xsd:complexType name="Processor" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>
+				Common data between the 2 Thymeleaf processor types: attribute processors
+				and element processors.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DialectItem"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+
 
 	<!-- Attribute processor -->
 	<xsd:complexType name="AttributeProcessor">
@@ -212,27 +237,27 @@
 	</xsd:complexType>
 
 
-	<!-- Expression utility objects -->
-	<!-- ========================== -->
+	<!-- Expression objects -->
+	<!-- ================== -->
 
-	<xsd:complexType name="UtilityMethod">
+	<xsd:complexType name="ExpressionObjectMethod">
 		<xsd:annotation>
 			<xsd:documentation>
-				A utility object method added by the dialect to be used by processors.
+				A method in an expression object.
 			</xsd:documentation>
 			<xsd:appinfo>
 				<ci:code><![CDATA[
 	/**
-	 * Return if this utility method is equal to another one.
+	 * Return if this expression object method is equal to another one.
 	 * 
-	 * @param other The utility method to compare against.
-	 * @return <tt>true</tt> if both this an the other method share the same
+	 * @param other The expression object method to compare against.
+	 * @return <tt>true</tt> if both this and the other method share the same
 	 *         name.
 	 */
 	@Override
 	public boolean equals(Object other) {
 
-		return other instanceof UtilityMethod && name.equals(((UtilityMethod)other).name);
+		return other instanceof ExpressionObjectMethod && name.equals(((ExpressionObjectMethod)other).name);
 	}
 
 	/**
@@ -245,54 +270,25 @@
 
 		return name.hashCode();
 	}
-
-	@javax.xml.bind.annotation.XmlTransient
-	protected Dialect dialect;
-
-	/**
-	 * Gets the dialect this utility method belongs to.
-	 * 
-	 * @return Dialect this utility method is from.
-	 */
-	public Dialect getDialect() {
-
-		return dialect;
-	}
-
-	/**
-	 * Set the dialect this utility method belongs to.
-	 * 
-	 * @param dialect
-	 */
-	public void setDialect(Dialect dialect) {
-
-		this.dialect = dialect;
-	}
 				]]></ci:code>
 			</xsd:appinfo>
 		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="documentation" type="Documentation" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<jxb:property generateIsSetMethod="true"/>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-		</xsd:sequence>
-		<xsd:attribute name="name" type="xsd:ID" use="required"/>
-		<xsd:attribute name="java-bean-property" type="xsd:boolean" default="false"/>
+		<xsd:complexContent>
+			<xsd:extension base="DialectItem">
+				<xsd:attribute name="java-bean-property" type="xsd:boolean" default="false"/>
+			</xsd:extension>
+		</xsd:complexContent>
 	</xsd:complexType>
 
-	<xsd:complexType name="UtilityObjectReference">
+	<xsd:complexType name="ExpressionObject">
 		<xsd:annotation>
 			<xsd:documentation>
-				A reference to a utility object that this dialect adds to the processing
-				context.
+				An object added to the processing context to be used by processors.
 			</xsd:documentation>
 		</xsd:annotation>
-		<xsd:attribute name="name" type="xsd:string" use="required"/>
-		<xsd:attribute name="class" type="xsd:string" use="required"/>
+		<xsd:complexContent>
+			<xsd:extension base="DialectItem"/>
+		</xsd:complexContent>
 	</xsd:complexType>
 
 

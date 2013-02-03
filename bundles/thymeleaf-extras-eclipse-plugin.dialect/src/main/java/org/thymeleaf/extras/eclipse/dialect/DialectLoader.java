@@ -16,25 +16,18 @@
 
 package org.thymeleaf.extras.eclipse.dialect;
 
-import nz.net.ultraq.jaxb.XMLReader;
-
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
-import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
-import org.thymeleaf.extras.eclipse.dialect.xml.UtilityMethod;
 
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Loads dialect help/documentation XML files from those returned by a
+ * Loads dialect information of the given type, as retrieved from a
  * {@link DialectLocator}.
  * 
+ * @param <T> Type of the dialect information to accept.
  * @author Emanuel Rabina
  */
-public class DialectLoader {
-
-	private static final XMLReader<Dialect> xmlreader = new XMLReader<Dialect>(Dialect.class);
+public interface DialectLoader<T> {
 
 	/**
 	 * Load all the dialects from the given locator, converting from the XML
@@ -45,24 +38,5 @@ public class DialectLoader {
 	 * @return List of dialects, one for every dialect file returned by the
 	 * 		   dialect locator.
 	 */
-	public List<Dialect> loadDialects(DialectLocator locator) {
-
-		ArrayList<Dialect> dialects = new ArrayList<Dialect>();
-		for (InputStream dialectfilestream: locator.locateDialects()) {
-
-			// Link processors and utility methods with their dialect
-			Dialect dialect = xmlreader.readXMLData(dialectfilestream);
-			for (Object dialectitem: dialect.getDialectItems()) {
-				if (dialectitem instanceof Processor) {
-					((Processor)dialectitem).setDialect(dialect);
-				}
-				else if (dialectitem instanceof UtilityMethod) {
-					((UtilityMethod)dialectitem).setDialect(dialect);
-				}
-			}
-			dialects.add(dialect);
-		}
-
-		return dialects;
-	}
+	public List<Dialect> loadDialects(DialectLocator<T> locator);
 }

@@ -19,8 +19,9 @@
 <dialect xmlns="http://www.thymeleaf.org/extras/dialect"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.thymeleaf.org/extras/dialect
-						http://www.thymeleaf.org/xsd/extras/thymeleaf-dialect-help-0.3.xsd"
-	prefix="th" namespace-uri="http://www.thymeleaf.org">
+						http://www.thymeleaf.org/xsd/extras/thymeleaf-dialect-help-0.4.xsd"
+	prefix="th" namespace-uri="http://www.thymeleaf.org"
+	class="org.thymeleaf.standard.StandardDialect">
 
 
 	<!-- Introduced Thymeleaf attribute processors -->
@@ -563,21 +564,28 @@
 	<attribute-processor name="wrap"/>
 
 
-	<!-- Thymeleaf Expression Utility Objects -->
-	<!-- ==================================== -->
+	<!-- Thymeleaf Expression Objects -->
+	<!-- ============================ -->
 
-	<utility-object-ref name="dates"      class="org.thymeleaf.expression.Dates"/>
-	<utility-object-ref name="calendars"  class="org.thymeleaf.expression.Calendars"/>
-	<utility-object-ref name="numbers"    class="org.thymeleaf.expression.Numbers"/>
-	<utility-object-ref name="strings"    class="org.thymeleaf.expression.Strings"/>
-	<utility-object-ref name="objects"    class="org.thymeleaf.expression.Objects"/>
-	<utility-object-ref name="bools"      class="org.thymeleaf.expression.Bools"/>
-	<utility-object-ref name="arrays"     class="org.thymeleaf.expression.Arrays"/>
-	<utility-object-ref name="lists"      class="org.thymeleaf.expression.Lists"/>
-	<utility-object-ref name="sets"       class="org.thymeleaf.expression.Sets"/>
-	<utility-object-ref name="maps"       class="org.thymeleaf.expression.Maps"/>
-	<utility-object-ref name="aggregates" class="org.thymeleaf.expression.Aggregates"/>
-	<utility-object-ref name="messages"   class="org.thymeleaf.expression.Messages"/>
-	<utility-object-ref name="ids"        class="org.thymeleaf.expression.Ids"/>
+	<expression-object name="ctx"                class="org.thymeleaf.context.IContext"/>
+	<expression-object name="root"               class="org.thymeleaf.context.VariablesMap"/>
+	<expression-object name="vars"               class="org.thymeleaf.context.VariablesMap"/>
+	<expression-object name="locale"             class="java.util.Locale"/>
+	<expression-object name="httpServletRequest" class="javax.servlet.http.HttpServletRequest"/>
+	<expression-object name="httpSession"        class="javax.servlet.http.HttpSession"/>
+
+	<expression-object name="dates"      class="org.thymeleaf.expression.Dates"/>
+	<expression-object name="calendars"  class="org.thymeleaf.expression.Calendars"/>
+	<expression-object name="numbers"    class="org.thymeleaf.expression.Numbers"/>
+	<expression-object name="strings"    class="org.thymeleaf.expression.Strings"/>
+	<expression-object name="objects"    class="org.thymeleaf.expression.Objects"/>
+	<expression-object name="bools"      class="org.thymeleaf.expression.Bools"/>
+	<expression-object name="arrays"     class="org.thymeleaf.expression.Arrays"/>
+	<expression-object name="lists"      class="org.thymeleaf.expression.Lists"/>
+	<expression-object name="sets"       class="org.thymeleaf.expression.Sets"/>
+	<expression-object name="maps"       class="org.thymeleaf.expression.Maps"/>
+	<expression-object name="aggregates" class="org.thymeleaf.expression.Aggregates"/>
+	<expression-object name="messages"   class="org.thymeleaf.expression.Messages"/>
+	<expression-object name="ids"        class="org.thymeleaf.expression.Ids"/>
 
 </dialect>

@@ -19,8 +19,9 @@
 <dialect xmlns="http://www.thymeleaf.org/extras/dialect"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.thymeleaf.org/extras/dialect
-						http://www.thymeleaf.org/xsd/extras/thymeleaf-dialect-help-0.3.xsd"
-	prefix="tiles" namespace-uri="http://www.thymeleaf.org/extras/tiles" namespace-strict="false">
+						http://www.thymeleaf.org/xsd/extras/thymeleaf-dialect-help-0.4.xsd"
+	prefix="tiles" namespace-uri="http://www.thymeleaf.org/extras/tiles" namespace-strict="false"
+	class="org.thymeleaf.extras.tiles2.dialect.TilesDialect">
 
 	<attribute-processor name="fragment">
 		<documentation

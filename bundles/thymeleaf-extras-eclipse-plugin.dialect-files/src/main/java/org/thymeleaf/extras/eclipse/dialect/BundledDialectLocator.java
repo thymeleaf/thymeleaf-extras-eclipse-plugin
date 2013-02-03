@@ -27,10 +27,11 @@ import java.util.List;
  * 
  * @author Emanuel Rabina
  */
-public class BundledDialectLocator implements DialectLocator {
+public class BundledDialectLocator implements DialectLocator<InputStream> {
 
 	private static final String[] DIALECT_FILES = {
 			"dialects/Standard-Dialect.xml",
+			"dialects/Spring-Standard-Dialect.xml",
 			"dialects/Spring-Security-Dialect.xml",
 			"dialects/Tiles-Dialect.xml"
 	};

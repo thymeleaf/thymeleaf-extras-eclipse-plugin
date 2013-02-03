@@ -10,22 +10,20 @@ package org.thymeleaf.extras.eclipse.dialect.xml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
  * 
- * 				Common data between the 2 Thymeleaf processor types: attribute processors
- * 				and element processors.
+ * 				An object added to the processing context to be used by processors.
  * 			
  * 
- * <p>Java class for Processor complex type.
+ * <p>Java class for ExpressionObject complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Processor">
+ * &lt;complexType name="ExpressionObject">
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.thymeleaf.org/extras/dialect}DialectItem">
  *     &lt;/extension>
@@ -36,12 +34,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Processor")
-@XmlSeeAlso({
-    AttributeProcessor.class,
-    ElementProcessor.class
-})
-public abstract class Processor
+@XmlType(name = "ExpressionObject")
+public class ExpressionObject
     extends DialectItem
 {
 
