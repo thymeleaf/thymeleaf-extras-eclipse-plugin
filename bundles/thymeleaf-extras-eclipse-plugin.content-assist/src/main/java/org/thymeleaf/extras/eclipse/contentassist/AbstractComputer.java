@@ -28,14 +28,14 @@ import javax.xml.namespace.QName;
 
 /**
  * Common code between the various processors in this plugin that pick out
- * Thymeleaf processors from the document.
+ * Thymeleaf processors or expression object methods from the document.
  * 
  * @author Emanuel Rabina
  */
-public abstract class AbstractProcessorComputer {
+public abstract class AbstractComputer {
 
-	private static final Pattern PROCESSOR_NAME_PATTERN = Pattern.compile("[\\w:-]*");
-	private static final Pattern UTILITY_METHOD_PATTERN = Pattern.compile("#\\w*(\\.\\w*)?");
+	private static final Pattern PROCESSOR_NAME_PATTERN           = Pattern.compile("[\\w:-]*");
+	private static final Pattern EXPRESSION_OBJECT_METHOD_PATTERN = Pattern.compile("#\\w*(\\.\\w*)?");
 
 	/**
 	 * Return a list of the namespaces valid at the given node.
@@ -65,14 +65,15 @@ public abstract class AbstractProcessorComputer {
 	}
 
 	/**
-	 * Returns whether or not the given pattern is a utility method string.
+	 * Returns whether or not the given pattern is an expression object method
+	 * string.
 	 * 
 	 * @param pattern The autocomplete pattern to check against.
-	 * @return <tt>true</tt> if the pattern matches a utility method.
+	 * @return <tt>true</tt> if the pattern matches an expression object method.
 	 */
-	protected static boolean isUtilityMethodPattern(String pattern) {
+	protected static boolean isExpressionObjectMethodPattern(String pattern) {
 
-		return UTILITY_METHOD_PATTERN.matcher(pattern).matches();
+		return EXPRESSION_OBJECT_METHOD_PATTERN.matcher(pattern).matches();
 	}
 
 	/**
@@ -88,13 +89,13 @@ public abstract class AbstractProcessorComputer {
 
 	/**
 	 * Returns whether or not the given character is a valid processor name or
-	 * utility method character.
+	 * expression object method character.
 	 * 
 	 * @param c
 	 * @return <tt>true</tt> if <tt>char</tt> is an alphanumeric character, or
 	 * 		   one of the following symbols: <tt>: - # .</tt>
 	 */
-	protected static boolean isProcessorOrUtilityMethodChar(char c) {
+	protected static boolean isProcessorOrExpressionObjectMethodChar(char c) {
 
 		return Character.isLetterOrDigit(c) || c == ':' || c == '-' || c == '#' || c =='.';
 	}

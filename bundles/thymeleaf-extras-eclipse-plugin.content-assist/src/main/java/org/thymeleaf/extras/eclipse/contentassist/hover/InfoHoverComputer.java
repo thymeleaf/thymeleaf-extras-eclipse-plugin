@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils;
 import org.eclipse.wst.sse.ui.internal.derived.HTMLTextPresenter;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMElement;
-import org.thymeleaf.extras.eclipse.contentassist.AbstractProcessorComputer;
+import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer;
 import org.thymeleaf.extras.eclipse.contentassist.ProcessorCache;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
 import org.w3c.dom.Node;
@@ -40,8 +40,7 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
  * @author Emanuel Rabina
  */
 @SuppressWarnings("restriction")
-public class InfoHoverComputer extends AbstractProcessorComputer
-	implements ITextHover, ITextHoverExtension {
+public class InfoHoverComputer extends AbstractComputer implements ITextHover, ITextHoverExtension {
 
 	/**
 	 * {@inheritDoc}
@@ -84,7 +83,8 @@ public class InfoHoverComputer extends AbstractProcessorComputer
 
 				// NOTE: The HTML editor currently doesn't give a precise enough offset
 				//       to determine the _exact_ point being hovered over, making it
-				//       difficult to pick out utility methods and grab their help text.
+				//       difficult to pick out expression object methods and grab their
+				//       help text.
 /*				else if (isUtilityMethodPattern(surroundingword)) {
 					UtilityMethod utilitymethod = ProcessorCache.getUtilityMethod(
 							findCurrentProject(), findNodeNamespaces(node), surroundingword);

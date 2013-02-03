@@ -6,8 +6,8 @@ A plugin for the Eclipse IDE to add content assist features for the Thymeleaf
 standard dialect processors and expression utility objects, using the Eclipse
 Web Tools Platform HTML source editor.
 
- - Current version: 0.3.0
- - Released: 28 Jan 2013
+ - Current version: 0.4.0-SNAPSHOT
+ - Released: ?? ??? 2013
 
 Note that this plugin is still being developed, so I welcome any feedback and/or
 bug reports, either through the Thymeleaf forum (on this thread: http://forum.thymeleaf.org/Thymeleaf-content-assist-plugin-for-Eclipse-td4025498.html),
@@ -87,6 +87,10 @@ An example of a dialect bundled with an XML file in it's JAR: the [Thymeleaf Lay
 Changelog
 ---------
 
+### 0.4.0
+ - Resolved [Issue #8](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/8),
+   adding support for the Spring standard dialect.
+
 ### 0.3.0
  - Moved to become a Thymeleaf Extras project.
  - Added a dialect scanning feature, contributed by [Thibault Duchateau](https://github.com/tduchateau),
@@ -113,5 +117,3 @@ Changelog
    
 ### 0.1.0
  - Initial release
-
-

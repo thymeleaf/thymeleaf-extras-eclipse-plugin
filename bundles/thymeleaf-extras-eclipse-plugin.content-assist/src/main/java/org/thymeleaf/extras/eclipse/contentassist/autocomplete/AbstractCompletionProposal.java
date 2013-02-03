@@ -16,16 +16,22 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.ISourceRange;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.core.JavadocContents;
+import org.eclipse.jdt.ui.JavadocContentAccess;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension;
 import org.eclipse.jface.text.contentassist.IContextInformation;
-import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
+import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
 import org.thymeleaf.extras.eclipse.dialect.xml.Documentation;
-import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
+import java.io.Reader;
 import java.util.List;
 
 /**
@@ -44,20 +50,18 @@ public abstract class AbstractCompletionProposal implements ICompletionProposal,
 	/**
 	 * Subclass constructor, set completion information.
 	 * 
-	 * @param dialect
+	 * @param dialectitem
 	 * @param replacementstring Value to be entered into the document if this
 	 * 							proposal is selected.
-	 * @param documentation
 	 * @param cursorposition
 	 */
-	protected AbstractCompletionProposal(Dialect dialect, String replacementstring,
-		Documentation documentation, int cursorposition) {
+	protected AbstractCompletionProposal(DialectItem dialectitem, String replacementstring,
+		int cursorposition) {
 
 		this.replacementstring = replacementstring;
 		this.cursorposition    = cursorposition;
 
-		this.additionalproposalinfo = documentation != null ?
-				generateDocumentation(dialect.getPrefix(), documentation) : null;
+		this.additionalproposalinfo = generateDocumentation(dialectitem);
 		this.contextinformation     = null;
 	}
 
@@ -96,34 +100,64 @@ public abstract class AbstractCompletionProposal implements ICompletionProposal,
 		throws BadLocationException;
 
 	/**
-	 * Creates the documentation/help text to go alongside this suggestion.
+	 * Creates the documentation/help text, either from a &lt;documentation&gt;
+	 * element in a dialect XML help file, or if that isn't present, the
+	 * Javadocs of that item if it's source code is available on a project.
 	 * 
-	 * @param dialectprefix
-	 * @param documentation
+	 * @param dialectitem
 	 * @return Documentation string.
 	 */
-	private static String generateDocumentation(String dialectprefix, Documentation documentation) {
+	private static String generateDocumentation(DialectItem dialectitem) {
 
-		StringBuilder doctext = new StringBuilder(documentation.getValue());
+		// Documentation from <documentation> element
+		if (dialectitem.isSetDocumentation()) {
+			Documentation documentation = dialectitem.getDocumentation();
 
-		// Generate 'see also' text
-		if (documentation.isSetSeeAlso()) {
-			doctext.append("<br/><br/><b>See also:</b> ");
+			StringBuilder doctext = new StringBuilder(documentation.getValue());
 
-			List<Object> seealsolist = documentation.getSeeAlso();
-			for (int i = 0; i < seealsolist.size(); i++) {
-				String seealso = ((Processor)seealsolist.get(i)).getName();
-				doctext.append(dialectprefix + ":" + ((i < seealsolist.size() - 1) ? seealso + ", " : seealso));
+			// Generate 'see also' text
+			if (documentation.isSetSeeAlso()) {
+				doctext.append("<br/><br/><b>See also:</b> ");
+
+				List<Object> seealsolist = documentation.getSeeAlso();
+				for (int i = 0; i < seealsolist.size(); i++) {
+					String seealso = ((DialectItem)seealsolist.get(i)).getName();
+					doctext.append(dialectitem.getDialect().getPrefix() + ":" +
+							((i < seealsolist.size() - 1) ? seealso + ", " : seealso));
+				}
+			}
+
+			// Generate 'document reference' text
+			if (documentation.isSetReference()) {
+				doctext.append((documentation.isSetSeeAlso() ? "<br/>" : "<br/><br/>") + "<b>Reference:</b> ");
+				doctext.append(documentation.getReference());
+			}
+
+			return doctext.toString();
+		}
+
+		// Documentation from Javadocs
+		else if (dialectitem.isSetClazz()) {
+			try {
+				IType type = findCurrentJavaProject().findType(dialectitem.getClazz(),
+						new NullProgressMonitor());
+				String source = type.getSource();
+				if (source != null) {
+					ISourceRange sourcerange = type.getJavadocRange();
+					if (sourcerange != null) {
+
+						// Get and process the javadoc comment
+						Reader reader = JavadocContentAccess.getHTMLContentReader(type, true, false);
+						
+					}
+				}
+			}
+			catch (JavaModelException ex) {
+				logError("Unable to open project", ex);
 			}
 		}
 
-		// Generate 'document reference' text
-		if (documentation.isSetReference()) {
-			doctext.append((documentation.isSetSeeAlso() ? "<br/>" : "<br/><br/>") + "<b>Reference:</b> ");
-			doctext.append(documentation.getReference());
-		}
-
-		return doctext.toString();
+		return null;
 	}
 
 	/**

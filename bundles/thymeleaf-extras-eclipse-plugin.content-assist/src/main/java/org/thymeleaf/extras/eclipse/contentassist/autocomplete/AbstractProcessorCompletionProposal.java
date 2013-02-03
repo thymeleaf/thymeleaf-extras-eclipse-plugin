@@ -38,8 +38,8 @@ public abstract class AbstractProcessorCompletionProposal extends AbstractComple
 	protected AbstractProcessorCompletionProposal(Processor processor, int charsentered,
 		int cursorposition) {
 
-		super(processor.getDialect(), (processor.getDialect().getPrefix() + ":" + processor.getName()).substring(charsentered),
-				processor.getDocumentation(), cursorposition);
+		super(processor, (processor.getDialect().getPrefix() + ":" + processor.getName()).substring(charsentered),
+				cursorposition);
 
 		fullprocessorname = processor.getDialect().getPrefix() + ":" + processor.getName();
 	}

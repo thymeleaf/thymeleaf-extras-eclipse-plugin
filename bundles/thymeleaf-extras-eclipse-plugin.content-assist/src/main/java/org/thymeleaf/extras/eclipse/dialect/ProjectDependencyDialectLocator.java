@@ -43,11 +43,11 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 /**
- * Locates Thymeleaf dialect help XML files from a project's dependencies.
+ * Locates Thymeleaf dialect XML help files from a project's dependencies.
  * 
  * @author Emanuel Rabina
  */
-public class ProjectDependencyDialectLocator implements DialectLocator {
+public class ProjectDependencyDialectLocator implements DialectLocator<InputStream> {
 
 	private static final String DIALECT_EXTRAS_NAMESPACE = "http://www.thymeleaf.org/extras/dialect";
 
@@ -124,19 +124,17 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 	@Override
 	public List<InputStream> locateDialects() {
 
-		logInfo("Scanning for dialect help files on project dependencies...");
+		logInfo("Scanning for dialect help files on project dependencies");
 		long start = System.currentTimeMillis();
 
 		ExecutorService executorservice = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		final ArrayList<InputStream> dialectstreams = new ArrayList<InputStream>();
 
 		try {
-			IPackageFragment[] packagefragments = project.getPackageFragments();
-
 			// Multi-threaded search for dialect files - there are a lot of package
 			// fragments to get through, and the I/O namespace check is a blocker.
 			ArrayList<Future<IStorage>> scannertasks = new ArrayList<Future<IStorage>>();
-			for (final IPackageFragment packagefragment: packagefragments) {
+			for (final IPackageFragment packagefragment: project.getPackageFragments()) {
 				scannertasks.add(executorservice.submit(new Callable<IStorage>() {
 					@Override
 					public IStorage call() throws Exception {
@@ -144,7 +142,7 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 						for (Object resource: packagefragment.getNonJavaResources()) {
 							IStorage fileorjarentry = (IStorage)resource;
 							if (isDialectHelpXMLFile(fileorjarentry)) {
-								logInfo("...help file found: " + fileorjarentry.getName());
+								logInfo("Help file found: " + fileorjarentry.getName());
 								return fileorjarentry;
 							}
 						}
@@ -185,7 +183,7 @@ public class ProjectDependencyDialectLocator implements DialectLocator {
 			}
 		}
 
-		logInfo("...scanning complete.  Execution time: " + (System.currentTimeMillis() - start) + "ms");
+		logInfo("Scanning complete.  Execution time: " + (System.currentTimeMillis() - start) + "ms");
 		return dialectstreams;
 	}
 }

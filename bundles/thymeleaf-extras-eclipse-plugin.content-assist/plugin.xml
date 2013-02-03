@@ -12,7 +12,7 @@
       <proposalComputer
             activate="true"
             categoryId="org.thymeleaf.extras.eclipse.proposalCategory.thymeleafProcessors"
-            class="org.thymeleaf.extras.eclipse.contentassist.autocomplete.ProcessorCompletionProposalComputer"
+            class="org.thymeleaf.extras.eclipse.contentassist.autocomplete.CompletionProposalComputer"
             id="org.thymeleaf.extras.eclipse.proposalComputer.thymeleafProcessors"
             name="Thymeleaf Processor Proposal Computer">
          <contentType

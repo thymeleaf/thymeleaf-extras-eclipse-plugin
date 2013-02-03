@@ -25,11 +25,11 @@ import org.eclipse.wst.sse.ui.contentassist.ICompletionProposalComputer;
 import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMElement;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMText;
-import org.thymeleaf.extras.eclipse.contentassist.AbstractProcessorComputer;
+import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer;
 import org.thymeleaf.extras.eclipse.contentassist.ProcessorCache;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
-import org.thymeleaf.extras.eclipse.dialect.xml.UtilityMethod;
+import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 import org.w3c.dom.Node;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
@@ -38,13 +38,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Auto-completion proposal generator for the Thymeleaf processors.
+ * Auto-completion proposal generator for Thymeleaf processors and expression
+ * object methods.
  * 
  * @author Emanuel Rabina
  */
 @SuppressWarnings("restriction")
-public class ProcessorCompletionProposalComputer extends AbstractProcessorComputer
-	implements ICompletionProposalComputer {
+public class CompletionProposalComputer extends AbstractComputer implements ICompletionProposalComputer {
 
 	/**
 	 * {@inheritDoc}
@@ -91,12 +91,13 @@ public class ProcessorCompletionProposalComputer extends AbstractProcessorComput
 				}
 			}
 
-			// Make an expression object proposal
-			else if (isUtilityMethodPattern(pattern)) {
-				List<UtilityMethod> utilitymethods = ProcessorCache.getUtilityMethods(
-						findCurrentJavaProject(), findNodeNamespaces(node), pattern);
-				for (UtilityMethod expressionobject: utilitymethods) {
-					proposals.add(new UtilityMethodCompletionProposal(expressionobject,
+			// Make an expression object method proposal
+			else if (isExpressionObjectMethodPattern(pattern)) {
+				List<ExpressionObjectMethod> expressionobjectmethods =
+						ProcessorCache.getExpressionObjectMethods(findCurrentJavaProject(),
+								findNodeNamespaces(node), pattern);
+				for (ExpressionObjectMethod expressionobject: expressionobjectmethods) {
+					proposals.add(new ExpressionObjectMethodCompletionProposal(expressionobject,
 							pattern.length(), cursorposition));
 				}
 			}
@@ -133,7 +134,7 @@ public class ProcessorCompletionProposalComputer extends AbstractProcessorComput
 		// a processor or expression object name
 		int position = cursorposition;
 		int length = 0;
-		while (--position > 0 && isProcessorOrUtilityMethodChar(document.getChar(position))) {
+		while (--position > 0 && isProcessorOrExpressionObjectMethodChar(document.getChar(position))) {
 			length++;
 		}
 		return document.get(position + 1, length);

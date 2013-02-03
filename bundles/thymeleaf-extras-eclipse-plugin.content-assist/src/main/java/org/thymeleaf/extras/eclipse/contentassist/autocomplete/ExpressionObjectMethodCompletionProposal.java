@@ -20,35 +20,34 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.thymeleaf.extras.eclipse.dialect.xml.UtilityMethod;
+import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 /**
- * A completion proposal for Thymeleaf expression object utility methods.
+ * A completion proposal for Thymeleaf expression object methods.
  * 
  * @author Emanuel Rabina
  */
-public class UtilityMethodCompletionProposal extends AbstractCompletionProposal {
+public class ExpressionObjectMethodCompletionProposal extends AbstractCompletionProposal {
 
-	private final String fullutilitymethodname;
+	private final String methodname;
 	private final boolean javabeanproperty;
 
 	/**
-	 * Constructor, set the utility method information.
+	 * Constructor, set the expression object method information.
 	 * 
-	 * @param utilitymethod	 Utility method being proposed.
+	 * @param method Expression object method being proposed.
 	 * @param charsentered	 How much of the entire proposal has already been
 	 * 						 entered by the user.
 	 * @param cursorposition
 	 */
-	public UtilityMethodCompletionProposal(UtilityMethod utilitymethod,
+	public ExpressionObjectMethodCompletionProposal(ExpressionObjectMethod method,
 		int charsentered, int cursorposition) {
 
-		super(utilitymethod.getDialect(), ("#" + utilitymethod.getName()).substring(charsentered),
-				utilitymethod.getDocumentation(), cursorposition);
+		super(method, ("#" + method.getName()).substring(charsentered), cursorposition);
 
-		fullutilitymethodname = utilitymethod.getName();
-		javabeanproperty = utilitymethod.isJavaBeanProperty();
+		methodname = method.getName();
+		javabeanproperty = method.isJavaBeanProperty();
 	}
 
 	/**
@@ -67,7 +66,7 @@ public class UtilityMethodCompletionProposal extends AbstractCompletionProposal 
 	@Override
 	public String getDisplayString() {
 
-		return fullutilitymethodname;
+		return methodname;
 	}
 
 	/**
@@ -76,7 +75,7 @@ public class UtilityMethodCompletionProposal extends AbstractCompletionProposal 
 	@Override
 	public Image getImage() {
 
-		return getDefault().getImageRegistry().get(IMAGE_UTILITY_METHOD);
+		return getDefault().getImageRegistry().get(IMAGE_EXPRESSION_OBJECT_METHOD);
 	}
 
 	/**

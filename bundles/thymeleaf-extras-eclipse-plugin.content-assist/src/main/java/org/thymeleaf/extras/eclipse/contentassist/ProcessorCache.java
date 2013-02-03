@@ -16,19 +16,21 @@
 
 package org.thymeleaf.extras.eclipse.contentassist;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.thymeleaf.extras.eclipse.dialect.BundledDialectLocator;
-import org.thymeleaf.extras.eclipse.dialect.DialectLoader;
 import org.thymeleaf.extras.eclipse.dialect.ProjectDependencyDialectLocator;
+import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
+import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
+import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObject;
+import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
-import org.thymeleaf.extras.eclipse.dialect.xml.UtilityMethod;
-import org.thymeleaf.extras.eclipse.dialect.xml.UtilityObjectReference;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ import javax.xml.namespace.QName;
  */
 public class ProcessorCache {
 
-	private static final DialectLoader dialectloader = new DialectLoader();
+	private static final XmlDialectLoader xmldialectloader = new XmlDialectLoader();
 
 	// List of bundled dialects
 	private static final ArrayList<Dialect> bundleddialects = new ArrayList<Dialect>();
@@ -64,16 +66,17 @@ public class ProcessorCache {
 			Dialect d2 = p2.getDialect();
 			return d1 == d2 ?
 					p1.getName().compareTo(p2.getName()) :
-					d1.getPrefix().compareTo(d2.getPrefix());
+					(d1.getPrefix() + p1.getName()).compareTo(d2.getPrefix() + p2.getName());
 		}
 	});
 
-	// Collection of utility methods in alphabetical order
-	private static final TreeSet<UtilityMethod> utilitymethods = new TreeSet<UtilityMethod>(new Comparator<UtilityMethod>() {
-		@Override
-		public int compare(UtilityMethod m1, UtilityMethod m2) {
-			return m1.getName().compareTo(m2.getName());
-		}
+	// Collection of expression object methods in alphabetical order
+	private static final TreeSet<ExpressionObjectMethod> expressionobjectmethods =
+			new TreeSet<ExpressionObjectMethod>(new Comparator<ExpressionObjectMethod>() {
+			@Override
+			public int compare(ExpressionObjectMethod m1, ExpressionObjectMethod m2) {
+				return m1.getName().compareTo(m2.getName());
+			}
 	});
 
 	/**
@@ -105,28 +108,57 @@ public class ProcessorCache {
 	 * 
 	 * @param dialect
 	 * @param project
-	 * @return <tt>true</tt> if the project includes the dialect.  (Dialects
-	 * 		   bundled with this plugin are always associated with the project.)
+	 * @return <tt>true</tt> if the project includes the dialect.
 	 */
 	private static boolean dialectInProject(Dialect dialect, IJavaProject project) {
 
-		return bundleddialects.contains(dialect) || projectdialects.get(project).contains(dialect);
+		return projectdialects.get(project).contains(dialect);
 	}
 
 	/**
-	 * Creates utility method suggestions from a utility object reference.
+	 * Checks if the expression object method matches the given name.
 	 * 
-	 * @param dialect	Parent dialect.
-	 * @param objectref The utility object reference.
-	 * @return Set of utility method suggestions based on the visible methods
-	 * 		   of the utility object.
+	 * @param method
+	 * @param name
+	 * @return <tt>true</tt> if the name matches the expression object name.
 	 */
-	private static HashSet<UtilityMethod> generateUtilityMethods(Dialect dialect,
-		UtilityObjectReference objectref) {
+	private static boolean expressionObjectMethodMatchesName(ExpressionObjectMethod method, String name) {
 
-		HashSet<UtilityMethod> generatedmethods = new HashSet<UtilityMethod>();
+		if (name == null || name.isEmpty()) {
+			return false;
+		}
+		return name.indexOf('#') == 0 && method.getName().equals(name.substring(1));
+	}
 
-		String classname = objectref.getClazz();
+	/**
+	 * Checks if the expression object method name matches the given
+	 * start-of-string pattern.
+	 * 
+	 * @param method
+	 * @param pattern
+	 * @return <tt>true</tt> if the pattern matches against the expression
+	 * 		   object name.
+	 */
+	private static boolean expressionObjectMethodMatchesPattern(ExpressionObjectMethod method, String pattern) {
+
+		return pattern != null && ("#" + method.getName()).startsWith(pattern);
+	}
+
+	/**
+	 * Creates expression object method suggestions from an expression object
+	 * reference.
+	 * 
+	 * @param dialect		   Parent dialect.
+	 * @param expressionobject The exression object reference.
+	 * @return Set of expression object method suggestions based on the visible
+	 * 		   methods of the expression object.
+	 */
+	private static HashSet<ExpressionObjectMethod> generateExpressionObjectMethods(Dialect dialect,
+		ExpressionObject expressionobject) {
+
+		HashSet<ExpressionObjectMethod> generatedmethods = new HashSet<ExpressionObjectMethod>();
+
+		String classname = expressionobject.getClazz();
 		IJavaProject project = findCurrentJavaProject();
 		try {
 			IType type = project.findType(classname);
@@ -134,8 +166,8 @@ public class ProcessorCache {
 				for (IMethod method: type.getMethods()) {
 					if (!method.isConstructor()) {
 
-						UtilityMethod utilitymethod = new UtilityMethod();
-						utilitymethod.setDialect(dialect);
+						ExpressionObjectMethod expressionobjectmethod = new ExpressionObjectMethod();
+						expressionobjectmethod.setDialect(dialect);
 
 						// For Java bean methods, convert the suggestion to a property
 						String methodname = method.getElementName();
@@ -150,20 +182,20 @@ public class ProcessorCache {
 							StringBuilder propertyname = new StringBuilder(methodname.substring(propertypoint));
 							propertyname.insert(0, Character.toLowerCase(propertyname.charAt(0)));
 							propertyname.deleteCharAt(1);
-							utilitymethod.setName(objectref.getName() + "." + propertyname);
-							utilitymethod.setJavaBeanProperty(true);
+							expressionobjectmethod.setName(expressionobject.getName() + "." + propertyname);
+							expressionobjectmethod.setJavaBeanProperty(true);
 						}
 						else {
-							utilitymethod.setName(objectref.getName() + "." + methodname);
+							expressionobjectmethod.setName(expressionobject.getName() + "." + methodname);
 						}
 
-						utilitymethods.add(utilitymethod);
+						expressionobjectmethods.add(expressionobjectmethod);
 					}
 				}
 			}
 		}
 		catch (JavaModelException ex) {
-			logError("Unable to locate utility object reference: " + classname, ex);
+			logError("Unable to locate expression object reference: " + classname, ex);
 		}
 
 		return generatedmethods;
@@ -199,6 +231,58 @@ public class ProcessorCache {
 		List<QName> namespaces, String pattern) {
 
 		return getProcessors(project, namespaces, pattern, ElementProcessor.class);
+	}
+
+	/**
+	 * Retrieve the expression object method with the full matching name.
+	 * 
+	 * @param project	 The current project.
+	 * @param namespaces List of namespaces available at the current point in
+	 * 					 the document.
+	 * @param methodname Full name of the expression object method.
+	 * @return Expression object with the given name, or <tt>null</tt> if no
+	 * 		   expression object matches.
+	 */
+	public static ExpressionObjectMethod getExpressionObjectMethod(IJavaProject project,
+		List<QName> namespaces, String methodname) {
+
+		loadDialectsFromProject(project);
+
+		for (ExpressionObjectMethod expressionobject: expressionobjectmethods) {
+			if (dialectInProject(expressionobject.getDialect(), project) &&
+				dialectInNamespace(expressionobject.getDialect(), namespaces) &&
+				expressionObjectMethodMatchesName(expressionobject, methodname)) {
+				return expressionobject;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Retrieve all expression object methods for the given project, whose names
+	 * match the starting pattern.
+	 * 
+	 * @param project	 The current project.
+	 * @param namespaces List of namespaces available at the current point in
+	 * 					 the document.
+	 * @param pattern	 Start-of-string pattern to match.
+	 * @return List of all matching expression object methods.
+	 */
+	public static List<ExpressionObjectMethod> getExpressionObjectMethods(IJavaProject project,
+		List<QName> namespaces, String pattern) {
+
+		loadDialectsFromProject(project);
+
+		ArrayList<ExpressionObjectMethod> matchedexpressionobjects = new ArrayList<ExpressionObjectMethod>();
+		for (ExpressionObjectMethod expressionobjectmethod: expressionobjectmethods) {
+			Dialect dialect = expressionobjectmethod.getDialect();
+			if (dialectInProject(dialect, project) &&
+				dialectInNamespace(dialect, namespaces) &&
+				expressionObjectMethodMatchesPattern(expressionobjectmethod, pattern)) {
+				matchedexpressionobjects.add(expressionobjectmethod);
+			}
+		}
+		return matchedexpressionobjects;
 	}
 
 	/**
@@ -258,58 +342,6 @@ public class ProcessorCache {
 	}
 
 	/**
-	 * Retrieve the utility method with the full matching name.
-	 * 
-	 * @param project			The current project.
-	 * @param namespaces		List of namespaces available at the current
-	 * 							point in the document.
-	 * @param utilitymethodname Full name of the utility method.
-	 * @return Expression object with the given name, or <tt>null</tt> if no
-	 * 		   expression object matches.
-	 */
-	public static UtilityMethod getUtilityMethod(IJavaProject project, List<QName> namespaces,
-		String utilitymethodname) {
-
-		loadDialectsFromProject(project);
-
-		for (UtilityMethod expressionobject: utilitymethods) {
-			if (dialectInProject(expressionobject.getDialect(), project) &&
-				dialectInNamespace(expressionobject.getDialect(), namespaces) &&
-				utilityMethodMatchesName(expressionobject, utilitymethodname)) {
-				return expressionobject;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Retrieve all utility methods for the given project, whose names match
-	 * the starting pattern.
-	 * 
-	 * @param project	 The current project.
-	 * @param namespaces List of namespaces available at the current point in
-	 * 					 the document.
-	 * @param pattern	 Start-of-string pattern to match.
-	 * @return List of all matching utility methods.
-	 */
-	public static List<UtilityMethod> getUtilityMethods(IJavaProject project,
-		List<QName> namespaces, String pattern) {
-
-		loadDialectsFromProject(project);
-
-		ArrayList<UtilityMethod> matchedexpressionobjects = new ArrayList<UtilityMethod>();
-		for (UtilityMethod utilitymethod: utilitymethods) {
-			Dialect dialect = utilitymethod.getDialect();
-			if (dialectInProject(dialect, project) &&
-				dialectInNamespace(dialect, namespaces) &&
-				utilityMethodMatchesPattern(utilitymethod, pattern)) {
-				matchedexpressionobjects.add(utilitymethod);
-			}
-		}
-		return matchedexpressionobjects;
-	}
-
-	/**
 	 * Initialize the processor cache with the Thymeleaf dialects bundled with
 	 * this plugin.
 	 */
@@ -317,7 +349,7 @@ public class ProcessorCache {
 
 		logInfo("Loading bundled dialect files");
 
-		List<Dialect> dialects = dialectloader.loadDialects(new BundledDialectLocator());
+		List<Dialect> dialects = xmldialectloader.loadDialects(new BundledDialectLocator());
 		for (Dialect dialect: dialects) {
 			bundleddialects.add(dialect);
 			loadDialectItems(dialect);
@@ -331,17 +363,15 @@ public class ProcessorCache {
 	 */
 	private static void loadDialectItems(Dialect dialect) {
 
-		for (Object dialectitem: dialect.getDialectItems()) {
+		for (DialectItem dialectitem: dialect.getDialectItems()) {
 			if (dialectitem instanceof Processor) {
 				processors.add((Processor)dialectitem);
 			}
-			else if (dialectitem instanceof UtilityMethod) {
-				utilitymethods.add((UtilityMethod)dialectitem);
+			else if (dialectitem instanceof ExpressionObjectMethod) {
+				expressionobjectmethods.add((ExpressionObjectMethod)dialectitem);
 			}
-
-			// Generate utility methods from the given class reference
-			else if (dialectitem instanceof UtilityObjectReference) {
-				utilitymethods.addAll(generateUtilityMethods(dialect, (UtilityObjectReference)dialectitem));
+			else if (dialectitem instanceof ExpressionObject) {
+				expressionobjectmethods.addAll(generateExpressionObjectMethods(dialect, (ExpressionObject)dialectitem));
 			}
 		}
 	}
@@ -355,11 +385,25 @@ public class ProcessorCache {
 	private static void loadDialectsFromProject(IJavaProject project) {
 
 		if (!projectdialects.containsKey(project)) {
-			List<Dialect> dialects = dialectloader.loadDialects(
+
+			// Scan for any dialect XML files in the project, including dependencies
+			List<Dialect> dialects = xmldialectloader.loadDialects(
 					new ProjectDependencyDialectLocator(project));
 			projectdialects.put(project, dialects);
 			for (Dialect dialect: dialects) {
 				loadDialectItems(dialect);
+			}
+
+			// Check against the bundled dialects to see if they're also in the project
+			for (Dialect dialect: bundleddialects) {
+				try {
+					if (project.findType(dialect.getClazz(), new NullProgressMonitor()) != null) {
+						projectdialects.get(project).add(dialect);
+					}
+				}
+				catch (JavaModelException ex) {
+					logError("Unable to access project information", ex);
+				}
 			}
 		}
 	}
@@ -394,34 +438,5 @@ public class ProcessorCache {
 	private static boolean processorMatchesPattern(Processor processor, String pattern) {
 
 		return pattern != null && (processor.getDialect().getPrefix() + ":" + processor.getName()).startsWith(pattern);
-	}
-
-	/**
-	 * Checks if the utility method matches the given name.
-	 * 
-	 * @param utilitymethod
-	 * @param name
-	 * @return <tt>true</tt> if the name matches the expression object name.
-	 */
-	private static boolean utilityMethodMatchesName(UtilityMethod utilitymethod, String name) {
-
-		if (name == null || name.isEmpty()) {
-			return false;
-		}
-		return name.indexOf('#') == 0 && utilitymethod.getName().equals(name.substring(1));
-	}
-
-	/**
-	 * Checks if the utility method name matches the given start-of-string
-	 * pattern.
-	 * 
-	 * @param utilitymethod
-	 * @param pattern
-	 * @return <tt>true</tt> if the pattern matches against the expression
-	 * 		   object name.
-	 */
-	private static boolean utilityMethodMatchesPattern(UtilityMethod utilitymethod, String pattern) {
-
-		return pattern != null && ("#" + utilitymethod.getName()).startsWith(pattern);
 	}
 }

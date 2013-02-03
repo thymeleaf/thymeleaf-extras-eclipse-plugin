@@ -43,10 +43,10 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 
 	public static final String PLUGIN_ID = "org.thymeleaf.extras.eclipse.contentassist";
 
-	public static final String IMAGE_THYMELEAF           = "thymeleaf";
-	public static final String IMAGE_ATTRIBUTE_PROCESSOR = "attribute-processor";
-	public static final String IMAGE_ELEMENT_PROCESSOR   = "element-processor";
-	public static final String IMAGE_UTILITY_METHOD      = "utility-method";
+	public static final String IMAGE_THYMELEAF                = "thymeleaf";
+	public static final String IMAGE_ATTRIBUTE_PROCESSOR      = "attribute-processor";
+	public static final String IMAGE_ELEMENT_PROCESSOR        = "element-processor";
+	public static final String IMAGE_EXPRESSION_OBJECT_METHOD = "expression-object-method";
 
 	static final String AUTO_PROPOSE_PREF = "autoProposeOn";
 
@@ -91,10 +91,10 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 	protected void initializeImageRegistry(ImageRegistry reg) {
 
 		super.initializeImageRegistry(reg);
-		reg.put(IMAGE_THYMELEAF,           imageDescriptorFromPlugin(PLUGIN_ID, "icons/Thymeleaf.png"));
-		reg.put(IMAGE_ATTRIBUTE_PROCESSOR, imageDescriptorFromPlugin(PLUGIN_ID, "icons/Attribute-Processor.png"));
-		reg.put(IMAGE_ELEMENT_PROCESSOR,   imageDescriptorFromPlugin(PLUGIN_ID, "icons/Element-Processor.png"));
-		reg.put(IMAGE_UTILITY_METHOD,      imageDescriptorFromPlugin(PLUGIN_ID, "icons/Utility-Method.png"));
+		reg.put(IMAGE_THYMELEAF,                imageDescriptorFromPlugin(PLUGIN_ID, "icons/Thymeleaf.png"));
+		reg.put(IMAGE_ATTRIBUTE_PROCESSOR,      imageDescriptorFromPlugin(PLUGIN_ID, "icons/Attribute-Processor.png"));
+		reg.put(IMAGE_ELEMENT_PROCESSOR,        imageDescriptorFromPlugin(PLUGIN_ID, "icons/Element-Processor.png"));
+		reg.put(IMAGE_EXPRESSION_OBJECT_METHOD, imageDescriptorFromPlugin(PLUGIN_ID, "icons/Expression-Object-Method.png"));
 	}
 
 	/**
