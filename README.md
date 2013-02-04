@@ -72,7 +72,11 @@ Dialect developers can take advantage of this by including XML help files as
 part of their dialect JARs.  All you need to do is create an XML file that
 conforms to the schema above, then bundle that XML file with your JAR.
 
-Some notes on where you put that file:
+When writing documentation to appear in the content assist, you can either:
+ - refer to an existing class file, using its Javadocs as the help text
+ - or write your own documentation in a `<documentation>` element in the XML
+
+When including the XML file with your JAR, some notes on where you put that file:
 
  - it cannot go in the default package
  - the directory it goes in must be a valid Java package name
@@ -81,7 +85,7 @@ These are just short-comings of the current dialect scanning method, which
 itself is built upon Eclipse's own lookup mechanisms.
 
 An example of a dialect bundled with an XML file in it's JAR: the [Thymeleaf Layout Dialect](https://github.com/ultraq/thymeleaf-layout-dialect/tree/dev)
-(see the Java/nz/net/ultraq/web/thymeleaf directory).
+(see the Java/nz/net/ultraq/web/thymeleaf/Layout-Dialect.xml file).
 
 
 Changelog
@@ -90,6 +94,8 @@ Changelog
 ### 0.4.0
  - Resolved [Issue #8](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/8),
    adding support for the Spring standard dialect.
+ - Added the ability to use a processor class' Javadoc content as the help content
+   that would appear with the content assist.
 
 ### 0.3.0
  - Moved to become a Thymeleaf Extras project.

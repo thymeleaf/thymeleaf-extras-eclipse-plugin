@@ -21,18 +21,22 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.ui.JavadocContentAccess;
 import org.thymeleaf.extras.eclipse.dialect.BundledDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.ProjectDependencyDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
+import org.thymeleaf.extras.eclipse.dialect.xml.Documentation;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObject;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -143,6 +147,49 @@ public class DialectCache {
 	private static boolean expressionObjectMethodMatchesPattern(ExpressionObjectMethod method, String pattern) {
 
 		return pattern != null && ("#" + method.getName()).startsWith(pattern);
+	}
+
+	/**
+	 * Creates a documentation element from the Javadocs of a processor class.
+	 * 
+	 * @param processor
+	 * @return Documentation element with the processor's Javadoc content, or
+	 * 		   <tt>null</tt> if the processor had no Javadocs on it.
+	 */
+	private static Documentation generateDocumentation(Processor processor) {
+
+		String processorclassname = processor.getClazz();
+
+		try {
+			IType type = findCurrentJavaProject().findType(processorclassname, new NullProgressMonitor());
+			if (type != null) {
+				Reader reader = JavadocContentAccess.getHTMLContentReader(type, false, false);
+				if (reader != null) {
+					try {
+						StringBuilder javadoc = new StringBuilder();
+						int nextchar = reader.read();
+						while (nextchar != -1) {
+							javadoc.append((char)nextchar);
+							nextchar = reader.read();
+						}
+						Documentation documentation = new Documentation();
+						documentation.setValue(javadoc.toString());
+						return documentation;
+					}
+					finally {
+						reader.close();
+					}
+				}
+			}
+		}
+		catch (JavaModelException ex) {
+			logError("Unable to access " + processorclassname + " in the project", ex);
+		}
+		catch (IOException ex) {
+			logError("Unable to read javadocs from " + processorclassname, ex);
+		}
+
+		return null;
 	}
 
 	/**
@@ -366,7 +413,13 @@ public class DialectCache {
 
 		for (DialectItem dialectitem: dialect.getDialectItems()) {
 			if (dialectitem instanceof Processor) {
-				processors.add((Processor)dialectitem);
+				Processor processor = (Processor) dialectitem;
+
+				// Generate and save javadocs if no documentation present
+				if (!dialectitem.isSetDocumentation() && dialectitem.isSetClazz()) {
+					dialectitem.setDocumentation(generateDocumentation(processor));
+				}
+				processors.add(processor);
 			}
 			else if (dialectitem instanceof ExpressionObjectMethod) {
 				expressionobjectmethods.add((ExpressionObjectMethod)dialectitem);

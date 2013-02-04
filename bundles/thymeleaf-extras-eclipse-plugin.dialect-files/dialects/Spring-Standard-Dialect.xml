@@ -27,8 +27,29 @@
 	<!-- Introduced processors -->
 	<!-- ===================== -->
 
-	<attribute-processor name="field"/>
-	<attribute-processor name="errors"/>
+	<attribute-processor name="field">
+		<documentation
+			reference="Thymeleaf + Spring 3 section 6 on Creating a Form">
+			<![CDATA[
+			Binds an input property with the value in the form's backing bean.<br/>
+			<br/>
+			Values for th:field attributes must be selection expressions (*{...}),
+			as they will be evaluated on the form backing bean and not on the context
+			variables (model attributes in Spring MVC jargon).
+			]]>
+		</documentation>
+		<restrictions tags="input option select textarea"/>
+	</attribute-processor>
+
+	<attribute-processor name="errors">
+		<documentation see-also="fields.errors"
+			reference="Thymeleaf + Spring 3 section 7 on Validation and Error Messages">
+			<![CDATA[
+			Works in a similar way to <b>#fields.errors()</b>, but lists all errors
+			for the given field name, separated by a &lt;br/&gt;
+			]]>
+		</documentation>
+	</attribute-processor>
 
 
 	<!-- General field attribute processors -->
@@ -51,9 +72,29 @@
 	<!-- Spring field attribute processors -->
 	<!-- ================================= -->
 
-	<attribute-processor name="field">
-		<restrictions tags="input option select textarea"/>
-	</attribute-processor>
 	<attribute-processor name="method"/>
+
+
+	<!-- Additional expression objects -->
+	<!-- ============================= -->
+
+	<expression-object-method name="fields.errors">
+		<documentation see-also="errors"
+			reference="Thymeleaf + Spring 3 section 7 on Validation and Error Messages">
+			<![CDATA[
+			Returns a list of error messages for the given field name.
+			]]>
+		</documentation>
+	</expression-object-method>
+
+	<expression-object-method name="fields.hasErrors">
+		<documentation
+			reference="Thymeleaf + Spring 3 section 7 on Validation and Error Messages">
+			<![CDATA[
+			Returns whether any validation errors exist for the field name in the
+			given expression.
+			]]>
+		</documentation>
+	</expression-object-method>
 
 </dialect>

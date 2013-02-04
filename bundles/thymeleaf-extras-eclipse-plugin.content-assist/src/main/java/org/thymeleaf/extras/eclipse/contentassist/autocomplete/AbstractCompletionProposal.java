@@ -16,11 +16,6 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete;
 
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jdt.core.ISourceRange;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.ui.JavadocContentAccess;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -30,7 +25,6 @@ import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
 import org.thymeleaf.extras.eclipse.dialect.xml.Documentation;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
-import java.io.Reader;
 import java.util.List;
 
 /**
@@ -116,44 +110,30 @@ public abstract class AbstractCompletionProposal implements ICompletionProposal,
 
 			// Generate 'see also' text
 			if (documentation.isSetSeeAlso()) {
-				doctext.append("<br/><br/><b>See also:</b> ");
+				doctext.append("<br/><dl><dt>See also:</dt><dd>");
 
 				List<Object> seealsolist = documentation.getSeeAlso();
 				for (int i = 0; i < seealsolist.size(); i++) {
 					String seealso = ((DialectItem)seealsolist.get(i)).getName();
-					doctext.append(dialectitem.getDialect().getPrefix() + ":" +
-							((i < seealsolist.size() - 1) ? seealso + ", " : seealso));
+					if (!seealso.contains(".")) {
+						doctext.append(dialectitem.getDialect().getPrefix() + ":");
+					}
+					doctext.append((i < seealsolist.size() - 1) ? seealso + ", " : seealso);
 				}
+				doctext.append("</dd>");
 			}
 
 			// Generate 'document reference' text
 			if (documentation.isSetReference()) {
-				doctext.append((documentation.isSetSeeAlso() ? "<br/>" : "<br/><br/>") + "<b>Reference:</b> ");
-				doctext.append(documentation.getReference());
+				doctext.append((documentation.isSetSeeAlso() ? "<dt>" : "<br/><dl><dt>") + "Reference:</dt><dd>");
+				doctext.append(documentation.getReference()).append("</dd>");
+			}
+
+			if (documentation.isSetSeeAlso() || documentation.isSetReference()) {
+				doctext.append("</dl>");
 			}
 
 			return doctext.toString();
-		}
-
-		// Documentation from Javadocs
-		else if (dialectitem.isSetClazz()) {
-			try {
-				IType type = findCurrentJavaProject().findType(dialectitem.getClazz(),
-						new NullProgressMonitor());
-				String source = type.getSource();
-				if (source != null) {
-					ISourceRange sourcerange = type.getJavadocRange();
-					if (sourcerange != null) {
-
-						// Get and process the javadoc comment
-						Reader reader = JavadocContentAccess.getHTMLContentReader(type, true, false);
-						System.out.println("Reader");
-					}
-				}
-			}
-			catch (JavaModelException ex) {
-				logError("Unable to open project", ex);
-			}
 		}
 
 		return null;
