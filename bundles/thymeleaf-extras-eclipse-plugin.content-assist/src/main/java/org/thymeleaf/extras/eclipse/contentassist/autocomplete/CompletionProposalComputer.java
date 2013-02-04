@@ -26,7 +26,7 @@ import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMElement;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMText;
 import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer;
-import org.thymeleaf.extras.eclipse.contentassist.ProcessorCache;
+import org.thymeleaf.extras.eclipse.contentassist.DialectCache;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
@@ -71,7 +71,7 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 					if (!pattern.isEmpty() || (pattern.isEmpty() && (cursorposition == 0 ||
 							Character.isWhitespace(document.getChar(cursorposition - 1))))) {
 
-						List<AttributeProcessor> processors = ProcessorCache.getAttributeProcessors(
+						List<AttributeProcessor> processors = DialectCache.getAttributeProcessors(
 								findCurrentJavaProject(), findNodeNamespaces(node), pattern);
 						for (AttributeProcessor processor: processors) {
 							proposals.add(new AttributeProcessorCompletionProposal(processor,
@@ -82,7 +82,7 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 
 				// Collect element processors if we're in an HTML text node
 				else if (node instanceof IDOMText) {
-					List<ElementProcessor> processors = ProcessorCache.getElementProcessors(
+					List<ElementProcessor> processors = DialectCache.getElementProcessors(
 							findCurrentJavaProject(), findNodeNamespaces(node), pattern);
 					for (ElementProcessor processor: processors) {
 						proposals.add(new ElementProcessorCompletionProposal(processor,
@@ -94,7 +94,7 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 			// Make an expression object method proposal
 			else if (isExpressionObjectMethodPattern(pattern)) {
 				List<ExpressionObjectMethod> expressionobjectmethods =
-						ProcessorCache.getExpressionObjectMethods(findCurrentJavaProject(),
+						DialectCache.getExpressionObjectMethods(findCurrentJavaProject(),
 								findNodeNamespaces(node), pattern);
 				for (ExpressionObjectMethod expressionobject: expressionobjectmethods) {
 					proposals.add(new ExpressionObjectMethodCompletionProposal(expressionobject,

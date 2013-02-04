@@ -148,8 +148,8 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 			});
 		}
 
-		// Initialize the processor cache
-		ProcessorCache.initialize();
+		// Initialize the dialect cache
+		DialectCache.initialize();
 	}
 
 	/**

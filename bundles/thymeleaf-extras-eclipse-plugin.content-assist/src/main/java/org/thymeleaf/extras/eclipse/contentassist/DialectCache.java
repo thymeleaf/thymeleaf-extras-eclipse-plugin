@@ -43,11 +43,12 @@ import java.util.TreeSet;
 import javax.xml.namespace.QName;
 
 /**
- * A basic in-memory store of all the Thymeleaf processors.
+ * A basic in-memory store of all known Thymeleaf dialects and their processors
+ * and expression object methods.
  * 
  * @author Emanuel Rabina
  */
-public class ProcessorCache {
+public class DialectCache {
 
 	private static final XmlDialectLoader xmldialectloader = new XmlDialectLoader();
 
@@ -323,7 +324,7 @@ public class ProcessorCache {
 	 * @return List of all matching processors.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <P extends Processor> List<P> getProcessors(IJavaProject project,
+	private static <P extends Processor> List<P> getProcessors(IJavaProject project,
 		List<QName> namespaces, String pattern, Class<P> type) {
 
 		loadDialectsFromProject(project);
@@ -342,8 +343,8 @@ public class ProcessorCache {
 	}
 
 	/**
-	 * Initialize the processor cache with the Thymeleaf dialects bundled with
-	 * this plugin.
+	 * Initialize the cache with the Thymeleaf dialects bundled with this
+	 * plugin.
 	 */
 	public static void initialize() {
 

@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.core.JavadocContents;
 import org.eclipse.jdt.ui.JavadocContentAccess;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -148,7 +147,7 @@ public abstract class AbstractCompletionProposal implements ICompletionProposal,
 
 						// Get and process the javadoc comment
 						Reader reader = JavadocContentAccess.getHTMLContentReader(type, true, false);
-						
+						System.out.println("Reader");
 					}
 				}
 			}

@@ -29,7 +29,7 @@ import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils;
 import org.eclipse.wst.sse.ui.internal.derived.HTMLTextPresenter;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMElement;
 import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer;
-import org.thymeleaf.extras.eclipse.contentassist.ProcessorCache;
+import org.thymeleaf.extras.eclipse.contentassist.DialectCache;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
 import org.w3c.dom.Node;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
@@ -74,7 +74,7 @@ public class InfoHoverComputer extends AbstractComputer implements ITextHover, I
 				String surroundingword = textViewer.getDocument().get(hoverRegion.getOffset(), hoverRegion.getLength());
 
 				if (isProcessorNamePattern(surroundingword)) {
-					Processor processor = ProcessorCache.getProcessor(
+					Processor processor = DialectCache.getProcessor(
 							findCurrentJavaProject(), findNodeNamespaces(node), surroundingword);
 					if (processor != null && processor.isSetDocumentation()) {
 						return processor.getDocumentation().getValue();
@@ -83,7 +83,7 @@ public class InfoHoverComputer extends AbstractComputer implements ITextHover, I
 
 				// NOTE: The HTML editor currently doesn't give a precise enough offset
 				//       to determine the _exact_ point being hovered over, making it
-				//       difficult to pick out expression object methods and grab their
+				//       difficult to pick out expression object methods and grab its
 				//       help text.
 /*				else if (isUtilityMethodPattern(surroundingword)) {
 					UtilityMethod utilitymethod = ProcessorCache.getUtilityMethod(

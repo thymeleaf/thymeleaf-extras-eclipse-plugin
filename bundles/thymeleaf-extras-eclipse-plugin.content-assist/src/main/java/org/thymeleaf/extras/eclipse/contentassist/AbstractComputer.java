@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
 
 /**
- * Common code between the various processors in this plugin that pick out
+ * Common code between the various content assist computers that pick out
  * Thymeleaf processors or expression object methods from the document.
  * 
  * @author Emanuel Rabina
