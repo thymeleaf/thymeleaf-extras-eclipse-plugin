@@ -27,12 +27,13 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils;
 import org.eclipse.wst.sse.ui.internal.derived.HTMLTextPresenter;
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMElement;
+import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode;
 import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer;
 import org.thymeleaf.extras.eclipse.contentassist.DialectCache;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
-import org.w3c.dom.Node;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
+
+import java.util.regex.Pattern;
 
 /**
  * Documentation-on-hover creator for Thymeleaf processors.
@@ -41,6 +42,9 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
  */
 @SuppressWarnings("restriction")
 public class InfoHoverComputer extends AbstractComputer implements ITextHover, ITextHoverExtension {
+
+	private static final Pattern PROCESSOR_NAME_PATTERN           = Pattern.compile("[\\w:-]*");
+//	private static final Pattern EXPRESSION_OBJECT_METHOD_PATTERN = Pattern.compile("#\\w*(\\.\\w*)?");
 
 	/**
 	 * {@inheritDoc}
@@ -67,10 +71,10 @@ public class InfoHoverComputer extends AbstractComputer implements ITextHover, I
 
 		try {
 			int cursorposition = hoverRegion.getOffset();
-			Node node = (Node)ContentAssistUtils.getNodeAt(textViewer, cursorposition);
+			IDOMNode node = (IDOMNode)ContentAssistUtils.getNodeAt(textViewer, cursorposition);
 
 			// Retrieve documentation on attribute or element nodes
-			if (node instanceof IDOMElement) {
+			if (node.getNodeType() == IDOMNode.ELEMENT_NODE) {
 				String surroundingword = textViewer.getDocument().get(hoverRegion.getOffset(), hoverRegion.getLength());
 
 				if (isProcessorNamePattern(surroundingword)) {
@@ -102,12 +106,34 @@ public class InfoHoverComputer extends AbstractComputer implements ITextHover, I
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Does nothing so as to use the default hover region.
 	 */
 	@Override
 	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
 
-		// Don't think we need to specify a special region, so use the default
 		return null;
+	}
+
+	/**
+	 * Returns whether or not the given pattern is an expression object method
+	 * string.
+	 * 
+	 * @param pattern The autocomplete pattern to check against.
+	 * @return <tt>true</tt> if the pattern matches an expression object method.
+	 */
+/*	private static boolean isExpressionObjectMethodPattern(String pattern) {
+
+		return EXPRESSION_OBJECT_METHOD_PATTERN.matcher(pattern).matches();
+	}
+*/
+	/**
+	 * Returns whether or not the given pattern is a processor name string.
+	 * 
+	 * @param pattern The autocomplete pattern to check against.
+	 * @return <tt>true</tt> if the pattern matches a processor name.
+	 */
+	private static boolean isProcessorNamePattern(String pattern) {
+
+		return PROCESSOR_NAME_PATTERN.matcher(pattern).matches();
 	}
 }

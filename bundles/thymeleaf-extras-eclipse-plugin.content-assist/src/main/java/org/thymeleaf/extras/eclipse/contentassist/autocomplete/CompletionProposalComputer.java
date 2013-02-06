@@ -36,7 +36,6 @@ import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeRestrictions;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
-import org.w3c.dom.Node;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.util.ArrayList;
@@ -79,6 +78,7 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 				proposals.addAll(computeAttributeProcessorSuggestions(node, document, cursorposition));
 			}
 			else {
+				// Allow the combining of restriction suggestions and expression object suggestions
 				if (makeAttributeRestrictionSuggestions(node, textregion)) {
 					proposals.addAll(computeAttributeRestrictionSuggestions(node, textregion,
 							documentregion, document, cursorposition));
@@ -118,7 +118,7 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 	private static List<AttributeProcessorCompletionProposal> computeAttributeProcessorSuggestions(
 		IDOMNode node, IStructuredDocument document, int cursorposition) throws BadLocationException {
 
-		String pattern = findPattern(document, cursorposition);
+		String pattern = findProcessorNamePattern(document, cursorposition);
 
 		List<AttributeProcessor> processors = DialectCache.getAttributeProcessors(
 				findCurrentJavaProject(), findNodeNamespaces(node), pattern);
@@ -160,8 +160,10 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 			AttributeProcessor attributeprocessor = (AttributeProcessor)DialectCache.getProcessor(
 					findCurrentJavaProject(), findNodeNamespaces(node), attributename);
 			if (attributeprocessor != null && attributeprocessor.isSetRestrictions()) {
+
 				AttributeRestrictions restrictions = attributeprocessor.getRestrictions();
 				if (restrictions.isSetValues()) {
+
 					ArrayList<AttributeRestrictionCompletionProposal> proposals =
 							new ArrayList<AttributeRestrictionCompletionProposal>();
 					for (String value: restrictions.getValues()) {
@@ -192,7 +194,7 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 	private static List<ElementProcessorCompletionProposal> computeElementProcessorSuggestions(
 		IDOMNode node, IStructuredDocument document, int cursorposition) throws BadLocationException {
 
-		String pattern = findPattern(document, cursorposition);
+		String pattern = findProcessorNamePattern(document, cursorposition);
 
 		List<ElementProcessor> processors = DialectCache.getElementProcessors(
 				findCurrentJavaProject(), findNodeNamespaces(node), pattern);
@@ -222,7 +224,7 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 	private static List<ExpressionObjectMethodCompletionProposal> computeExpressionObjectMethodSuggestions(
 		IDOMNode node, IStructuredDocument document, int cursorposition) throws BadLocationException {
 
-		String pattern = findPattern(document, cursorposition);
+		String pattern = findExpressionObjectMethodNamePattern(document, cursorposition);
 
 		List<ExpressionObjectMethod> expressionobjectmethods = DialectCache.getExpressionObjectMethods(
 				findCurrentJavaProject(), findNodeNamespaces(node), pattern);
@@ -240,21 +242,41 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 	}
 
 	/**
-	 * Return the pattern before the cursor position.
+	 * Return the expression object method name pattern before the cursor
+	 * position.
 	 * 
 	 * @param document
 	 * @param cursorposition
 	 * @return The text entered up to the document offset, if the text could
-	 * 		   constitute a processor or expression object name.
+	 * 		   constitute an expression object method name.
 	 * @throws BadLocationException
 	 */
-	private static String findPattern(IDocument document, int cursorposition) throws BadLocationException {
+	private static String findExpressionObjectMethodNamePattern(IDocument document, int cursorposition)
+		throws BadLocationException {
 
-		// Trace backwards from the cursor until we hit a character that can't be in
-		// a processor or expression object name
 		int position = cursorposition;
 		int length = 0;
-		while (--position > 0 && isProcessorOrExpressionObjectMethodChar(document.getChar(position))) {
+		while (--position > 0 && isExpressionObjectMethodChar(document.getChar(position))) {
+			length++;
+		}
+		return document.get(position + 1, length);
+	}
+
+	/**
+	 * Return the processor name pattern before the cursor position.
+	 * 
+	 * @param document
+	 * @param cursorposition
+	 * @return The text entered up to the document offset, if the text could
+	 * 		   constitute a processor name.
+	 * @throws BadLocationException
+	 */
+	private static String findProcessorNamePattern(IDocument document, int cursorposition)
+		throws BadLocationException {
+
+		int position = cursorposition;
+		int length = 0;
+		while (--position > 0 && isProcessorChar(document.getChar(position))) {
 			length++;
 		}
 		return document.get(position + 1, length);
@@ -285,7 +307,7 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 		IStructuredDocumentRegion documentregion, IStructuredDocument document, int cursorposition)
 		throws BadLocationException {
 
-		if (node.getNodeType() == Node.ELEMENT_NODE) {
+		if (node.getNodeType() == IDOMNode.ELEMENT_NODE) {
 			if (Character.isWhitespace(document.getChar(cursorposition - 1))) {
 				return true;
 			}
@@ -311,7 +333,7 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 	 */
 	private static boolean makeAttributeRestrictionSuggestions(IDOMNode node, ITextRegion textregion) {
 
-		if (node.getNodeType() == Node.ELEMENT_NODE &&
+		if (node.getNodeType() == IDOMNode.ELEMENT_NODE &&
 			textregion.getType() == DOMRegionContext.XML_TAG_ATTRIBUTE_VALUE) {
 			return true;
 		}
@@ -337,7 +359,7 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 
 		// If we're in a text node, then the first non-whitespace character before
 		// the cursor in the document should be an opening bracket
-		case Node.TEXT_NODE:
+		case IDOMNode.TEXT_NODE:
 			int position = cursorposition - 1;
 			while (position >= 0 && Character.isWhitespace(document.getChar(position))) {
 				position--;
@@ -349,7 +371,7 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 
 		// If we're in an element node, then the previous text region should be an
 		// opening XML tag
-		case Node.ELEMENT_NODE:
+		case IDOMNode.ELEMENT_NODE:
 			ITextRegionList textregionlist = documentregion.getRegions();
 			int currentregionindex = textregionlist.indexOf(textregion);
 			try {
@@ -378,7 +400,7 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 	 */
 	private static boolean makeExpressionObjectMethodSuggestions(IDOMNode node, ITextRegion textregion) {
 
-		if (node.getNodeType() == Node.ELEMENT_NODE &&
+		if (node.getNodeType() == IDOMNode.ELEMENT_NODE &&
 			textregion.getType() == DOMRegionContext.XML_TAG_ATTRIBUTE_VALUE) {
 			return true;
 		}
