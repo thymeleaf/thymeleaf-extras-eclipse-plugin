@@ -18,6 +18,7 @@ package org.thymeleaf.extras.eclipse.contentassist.autocomplete;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.contentassist.ContextInformation;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension;
 import org.eclipse.jface.text.contentassist.IContextInformation;
@@ -43,6 +44,18 @@ public abstract class AbstractCompletionProposal implements ICompletionProposal,
 	/**
 	 * Subclass constructor, set completion information.
 	 * 
+	 * @param replacementstring Value to be entered into the document if this
+	 * 							proposal is selected.
+	 * @param cursorposition
+	 */
+	protected AbstractCompletionProposal(String replacementstring, int cursorposition) {
+
+		this(null, replacementstring, cursorposition);
+	}
+
+	/**
+	 * Subclass constructor, set completion information.
+	 * 
 	 * @param dialectitem
 	 * @param replacementstring Value to be entered into the document if this
 	 * 							proposal is selected.
@@ -54,7 +67,7 @@ public abstract class AbstractCompletionProposal implements ICompletionProposal,
 		this.replacementstring = replacementstring;
 		this.cursorposition    = cursorposition;
 
-		this.additionalproposalinfo = generateDocumentation(dialectitem);
+		this.additionalproposalinfo = dialectitem != null ? generateDocumentation(dialectitem) : null;
 		this.contextinformation     = null;
 	}
 
@@ -154,7 +167,8 @@ public abstract class AbstractCompletionProposal implements ICompletionProposal,
 	@Override
 	public IContextInformation getContextInformation() {
 
-		return contextinformation;
+//		return contextinformation;
+		return new ContextInformation("Context string", "Information string");
 	}
 
 	/**

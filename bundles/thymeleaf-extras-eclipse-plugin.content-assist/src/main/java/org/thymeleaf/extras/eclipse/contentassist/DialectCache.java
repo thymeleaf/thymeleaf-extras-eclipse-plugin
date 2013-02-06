@@ -379,7 +379,7 @@ public class DialectCache {
 		ArrayList<P> matchedprocessors = new ArrayList<P>();
 		for (Processor processor: processors) {
 			Dialect dialect = processor.getDialect();
-			if (processor.getClass().equals(type) &&
+			if (processor.getClass() == type &&
 				dialectInProject(dialect, project) &&
 				dialectInNamespace(dialect, namespaces) &&
 				processorMatchesPattern(processor, pattern)) {

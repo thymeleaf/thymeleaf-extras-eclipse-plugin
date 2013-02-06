@@ -96,6 +96,8 @@ Changelog
    adding support for the Spring standard dialect.
  - Added the ability to use a processor class' Javadoc content as the help content
    that would appear with the content assist.
+ - Added autocomplete/suggestion support for attribute processors with a limited
+   value set (eg: `th:inline` can accept only `text`, `javascript`, or `dart`).
 
 ### 0.3.0
  - Moved to become a Thymeleaf Extras project.

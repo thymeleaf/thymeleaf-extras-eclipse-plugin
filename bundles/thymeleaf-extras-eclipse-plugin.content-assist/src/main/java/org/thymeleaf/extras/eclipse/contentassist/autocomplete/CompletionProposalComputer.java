@@ -19,15 +19,21 @@ package org.thymeleaf.extras.eclipse.contentassist.autocomplete;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument;
+import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion;
+import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion;
+import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegionList;
 import org.eclipse.wst.sse.ui.contentassist.CompletionProposalInvocationContext;
 import org.eclipse.wst.sse.ui.contentassist.ICompletionProposalComputer;
 import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils;
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMElement;
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMText;
+import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode;
+import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext;
 import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer;
 import org.thymeleaf.extras.eclipse.contentassist.DialectCache;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
+import org.thymeleaf.extras.eclipse.dialect.xml.AttributeRestrictions;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 import org.w3c.dom.Node;
@@ -56,54 +62,34 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 		ArrayList<ICompletionProposal> proposals = new ArrayList<ICompletionProposal>();
 
 		try {
-			IDocument document = context.getDocument();
+			ITextViewer viewer = context.getViewer();
+			IStructuredDocument document = (IStructuredDocument)context.getDocument();
 			int cursorposition = context.getInvocationOffset();
-			Node node = (Node)ContentAssistUtils.getNodeAt(context.getViewer(), cursorposition);
-			String pattern = findPattern(document, cursorposition);
 
-			// Make processor proposals
-			if (isProcessorNamePattern(pattern)) {
+			IDOMNode node = (IDOMNode)ContentAssistUtils.getNodeAt(viewer, cursorposition);
+			IStructuredDocumentRegion documentregion = ContentAssistUtils.getStructuredDocumentRegion(
+					viewer, cursorposition);
+			ITextRegion textregion = documentregion.getRegionAtCharacterOffset(cursorposition);
 
-				// Collect attribute processors if we're in an HTML element
-				if (node instanceof IDOMElement) {
-
-					// Make sure there's some whitespace before new attribute suggestions
-					if (!pattern.isEmpty() || (pattern.isEmpty() && (cursorposition == 0 ||
-							Character.isWhitespace(document.getChar(cursorposition - 1))))) {
-
-						List<AttributeProcessor> processors = DialectCache.getAttributeProcessors(
-								findCurrentJavaProject(), findNodeNamespaces(node), pattern);
-						for (AttributeProcessor processor: processors) {
-							proposals.add(new AttributeProcessorCompletionProposal(processor,
-									pattern.length(), cursorposition));
-						}
-					}
-				}
-
-				// Collect element processors if we're in an HTML text node
-				else if (node instanceof IDOMText) {
-					List<ElementProcessor> processors = DialectCache.getElementProcessors(
-							findCurrentJavaProject(), findNodeNamespaces(node), pattern);
-					for (ElementProcessor processor: processors) {
-						proposals.add(new ElementProcessorCompletionProposal(processor,
-								pattern.length(), cursorposition));
-					}
-				}
+			// Figure out which type of suggestions to make
+			if (makeElementProcessorSuggestions(node, textregion, documentregion, document, cursorposition)) {
+				proposals.addAll(computeElementProcessorSuggestions(node, document, cursorposition));
 			}
-
-			// Make an expression object method proposal
-			else if (isExpressionObjectMethodPattern(pattern)) {
-				List<ExpressionObjectMethod> expressionobjectmethods =
-						DialectCache.getExpressionObjectMethods(findCurrentJavaProject(),
-								findNodeNamespaces(node), pattern);
-				for (ExpressionObjectMethod expressionobject: expressionobjectmethods) {
-					proposals.add(new ExpressionObjectMethodCompletionProposal(expressionobject,
-							pattern.length(), cursorposition));
+			else if (makeAttributeProcessorSuggestions(node, textregion, documentregion, document, cursorposition)) {
+				proposals.addAll(computeAttributeProcessorSuggestions(node, document, cursorposition));
+			}
+			else {
+				if (makeAttributeRestrictionSuggestions(node, textregion)) {
+					proposals.addAll(computeAttributeRestrictionSuggestions(node, textregion,
+							documentregion, document, cursorposition));
+				}
+				if (makeExpressionObjectMethodSuggestions(node, textregion)) {
+					proposals.addAll(computeExpressionObjectMethodSuggestions(node, document, cursorposition));
 				}
 			}
 		}
 		catch (BadLocationException ex) {
-			ex.printStackTrace();
+			logError("Unable to retrieve data at the current document position", ex);
 		}
 
 		return proposals;
@@ -115,6 +101,140 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 	@Override
 	@SuppressWarnings("rawtypes")
 	public List computeContextInformation(CompletionProposalInvocationContext context, IProgressMonitor monitor) {
+
+		return Collections.EMPTY_LIST;
+	}
+
+	/**
+	 * Collect attribute processor suggestions.
+	 * 
+	 * @param node
+	 * @param document
+	 * @param cursorposition
+	 * @return List of attribute processor suggestions.
+	 * @throws BadLocationException
+	 */
+	@SuppressWarnings("unchecked")
+	private static List<AttributeProcessorCompletionProposal> computeAttributeProcessorSuggestions(
+		IDOMNode node, IStructuredDocument document, int cursorposition) throws BadLocationException {
+
+		String pattern = findPattern(document, cursorposition);
+
+		List<AttributeProcessor> processors = DialectCache.getAttributeProcessors(
+				findCurrentJavaProject(), findNodeNamespaces(node), pattern);
+		if (!processors.isEmpty()) {
+			ArrayList<AttributeProcessorCompletionProposal> proposals =
+					new ArrayList<AttributeProcessorCompletionProposal>();
+			for (AttributeProcessor processor: processors) {
+				proposals.add(new AttributeProcessorCompletionProposal(processor,
+						pattern.length(), cursorposition));
+			}
+			return proposals;
+		}
+
+		return Collections.EMPTY_LIST;
+	}
+
+	/**
+	 * Collect attribute restriction suggestions.
+	 * 
+	 * @param node
+	 * @param textregion
+	 * @param documentregion
+	 * @param document
+	 * @param cursorposition
+	 * @return List of attribute restriction suggestions.
+	 * @throws BadLocationException
+	 */
+	@SuppressWarnings("unchecked")
+	private static List<AttributeRestrictionCompletionProposal> computeAttributeRestrictionSuggestions(
+		IDOMNode node, ITextRegion textregion, IStructuredDocumentRegion documentregion,
+		IStructuredDocument document, int cursorposition) throws BadLocationException {
+
+		try {
+			ITextRegionList textregions = documentregion.getRegions();
+			ITextRegion attributenametextregion = textregions.get(textregions.indexOf(textregion) - 2);
+			String attributename = document.get(documentregion.getStartOffset() +
+					attributenametextregion.getStart(), attributenametextregion.getTextLength());
+
+			AttributeProcessor attributeprocessor = (AttributeProcessor)DialectCache.getProcessor(
+					findCurrentJavaProject(), findNodeNamespaces(node), attributename);
+			if (attributeprocessor != null && attributeprocessor.isSetRestrictions()) {
+				AttributeRestrictions restrictions = attributeprocessor.getRestrictions();
+				if (restrictions.isSetValues()) {
+					ArrayList<AttributeRestrictionCompletionProposal> proposals =
+							new ArrayList<AttributeRestrictionCompletionProposal>();
+					for (String value: restrictions.getValues()) {
+						proposals.add(new AttributeRestrictionCompletionProposal(value,
+								documentregion.getStartOffset(textregion) + 1,
+								textregion.getTextLength() - 2, cursorposition));
+					}
+					return proposals;
+				}
+			}
+		}
+		catch (ArrayIndexOutOfBoundsException ex) {
+		}
+
+		return Collections.EMPTY_LIST;
+	}
+
+	/**
+	 * Collect element processor suggestions.
+	 * 
+	 * @param node
+	 * @param document
+	 * @param cursorposition
+	 * @return List of element processor suggestions.
+	 * @throws BadLocationException
+	 */
+	@SuppressWarnings("unchecked")
+	private static List<ElementProcessorCompletionProposal> computeElementProcessorSuggestions(
+		IDOMNode node, IStructuredDocument document, int cursorposition) throws BadLocationException {
+
+		String pattern = findPattern(document, cursorposition);
+
+		List<ElementProcessor> processors = DialectCache.getElementProcessors(
+				findCurrentJavaProject(), findNodeNamespaces(node), pattern);
+		if (!processors.isEmpty()) {
+			ArrayList<ElementProcessorCompletionProposal> proposals =
+					new ArrayList<ElementProcessorCompletionProposal>();
+			for (ElementProcessor processor: processors) {
+				proposals.add(new ElementProcessorCompletionProposal(processor,
+						pattern.length(), cursorposition));
+			}
+			return proposals;
+		}
+
+		return Collections.EMPTY_LIST;
+	}
+
+	/**
+	 * Collect expression object method suggestions.
+	 * 
+	 * @param node
+	 * @param document
+	 * @param cursorposition
+	 * @return List of expression object method suggestions
+	 * @throws BadLocationException
+	 */
+	@SuppressWarnings("unchecked")
+	private static List<ExpressionObjectMethodCompletionProposal> computeExpressionObjectMethodSuggestions(
+		IDOMNode node, IStructuredDocument document, int cursorposition) throws BadLocationException {
+
+		String pattern = findPattern(document, cursorposition);
+
+		List<ExpressionObjectMethod> expressionobjectmethods = DialectCache.getExpressionObjectMethods(
+				findCurrentJavaProject(), findNodeNamespaces(node), pattern);
+		if (!expressionobjectmethods.isEmpty()) {
+			ArrayList<ExpressionObjectMethodCompletionProposal> proposals =
+					new ArrayList<ExpressionObjectMethodCompletionProposal>();
+			for (ExpressionObjectMethod expressionobject: expressionobjectmethods) {
+				proposals.add(new ExpressionObjectMethodCompletionProposal(expressionobject,
+						pattern.length(), cursorposition));
+			}
+			return proposals;
+		}
 
 		return Collections.EMPTY_LIST;
 	}
@@ -147,6 +267,123 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 	public String getErrorMessage() {
 
 		return null;
+	}
+
+	/**
+	 * Check if, given everything, attribute processor suggestions should be
+	 * made.
+	 * 
+	 * @param node
+	 * @param textregion
+	 * @param documentregion
+	 * @param document
+	 * @param cursorposition
+	 * @return <tt>true</tt> if attribute processor suggestions should be made.
+	 * @throws BadLocationException
+	 */
+	private static boolean makeAttributeProcessorSuggestions(IDOMNode node, ITextRegion textregion,
+		IStructuredDocumentRegion documentregion, IStructuredDocument document, int cursorposition)
+		throws BadLocationException {
+
+		if (node.getNodeType() == Node.ELEMENT_NODE) {
+			if (Character.isWhitespace(document.getChar(cursorposition - 1))) {
+				return true;
+			}
+			if (textregion.getType() == DOMRegionContext.XML_TAG_ATTRIBUTE_NAME) {
+				return true;
+			}
+			ITextRegionList textregionlist = documentregion.getRegions();
+			ITextRegion previousregion = textregionlist.get(textregionlist.indexOf(textregion) - 1);
+			if (previousregion.getType() == DOMRegionContext.XML_TAG_ATTRIBUTE_NAME) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Check if, given everything, attribute restriction suggestions should be
+	 * made.
+	 * 
+	 * @param node
+	 * @param textregion
+	 * @return <tt>true</tt> if attribute processor suggestions should be made.
+	 */
+	private static boolean makeAttributeRestrictionSuggestions(IDOMNode node, ITextRegion textregion) {
+
+		if (node.getNodeType() == Node.ELEMENT_NODE &&
+			textregion.getType() == DOMRegionContext.XML_TAG_ATTRIBUTE_VALUE) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Check if, given everything, element processor suggestions should be made.
+	 * 
+	 * @param node
+	 * @param textregion
+	 * @param documentregion
+	 * @param document
+	 * @param cursorposition
+	 * @return <tt>true</tt> if element processor suggestions should be made.
+	 * @throws BadLocationException
+	 */
+	private static boolean makeElementProcessorSuggestions(IDOMNode node, ITextRegion textregion,
+		IStructuredDocumentRegion documentregion, IStructuredDocument document, int cursorposition)
+		throws BadLocationException {
+
+		switch (node.getNodeType()) {
+
+		// If we're in a text node, then the first non-whitespace character before
+		// the cursor in the document should be an opening bracket
+		case Node.TEXT_NODE:
+			int position = cursorposition - 1;
+			while (position >= 0 && Character.isWhitespace(document.getChar(position))) {
+				position--;
+			}
+			if (document.getChar(position) == '<') {
+				return true;
+			}
+			break;
+
+		// If we're in an element node, then the previous text region should be an
+		// opening XML tag
+		case Node.ELEMENT_NODE:
+			ITextRegionList textregionlist = documentregion.getRegions();
+			int currentregionindex = textregionlist.indexOf(textregion);
+			try {
+				ITextRegion previousregion = textregionlist.get(currentregionindex - 1);
+				if ((previousregion.getType() == DOMRegionContext.XML_TAG_OPEN) &&
+					!Character.isWhitespace(document.getChar(cursorposition - 1))) {
+					return true;
+				}
+			}
+			catch (ArrayIndexOutOfBoundsException ex) {
+			}
+			break;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if, given everything, expression object method suggestions should
+	 * be made.
+	 * 
+	 * @param node
+	 * @param textregion
+	 * @return <tt>true</tt> if expression object method suggestions should be
+	 * 		   made.
+	 */
+	private static boolean makeExpressionObjectMethodSuggestions(IDOMNode node, ITextRegion textregion) {
+
+		if (node.getNodeType() == Node.ELEMENT_NODE &&
+			textregion.getType() == DOMRegionContext.XML_TAG_ATTRIBUTE_VALUE) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
