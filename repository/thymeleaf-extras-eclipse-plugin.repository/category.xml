@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.thymeleaf.extras.eclipse.contentassist.feature_0.3.0.qualifier.jar" id="org.thymeleaf.extras.eclipse.contentassist.feature" version="0.3.0.qualifier">
+   <feature url="features/org.thymeleaf.extras.eclipse.contentassist.feature_0.4.0.qualifier.jar" id="org.thymeleaf.extras.eclipse.contentassist.feature" version="0.4.0.qualifier">
       <category name="org.thymeleaf.eclipse"/>
    </feature>
    <category-def name="org.thymeleaf.eclipse" label="Thymeleaf Eclipse Plugin">
