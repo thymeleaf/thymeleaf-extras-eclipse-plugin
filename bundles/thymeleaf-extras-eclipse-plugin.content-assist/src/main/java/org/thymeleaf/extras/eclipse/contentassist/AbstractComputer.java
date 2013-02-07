@@ -22,7 +22,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 
@@ -33,9 +32,6 @@ import javax.xml.namespace.QName;
  * @author Emanuel Rabina
  */
 public abstract class AbstractComputer {
-
-	private static final Pattern PROCESSOR_NAME_PATTERN           = Pattern.compile("[\\w:-]*");
-	private static final Pattern EXPRESSION_OBJECT_METHOD_PATTERN = Pattern.compile("#\\w*(\\.\\w*)?");
 
 	/**
 	 * Return a list of the namespaces valid at the given node.
@@ -65,38 +61,28 @@ public abstract class AbstractComputer {
 	}
 
 	/**
-	 * Returns whether or not the given pattern is an expression object method
-	 * string.
-	 * 
-	 * @param pattern The autocomplete pattern to check against.
-	 * @return <tt>true</tt> if the pattern matches an expression object method.
-	 */
-	protected static boolean isExpressionObjectMethodPattern(String pattern) {
-
-		return EXPRESSION_OBJECT_METHOD_PATTERN.matcher(pattern).matches();
-	}
-
-	/**
-	 * Returns whether or not the given pattern is a processor name string.
-	 * 
-	 * @param pattern The autocomplete pattern to check against.
-	 * @return <tt>true</tt> if the pattern matches a processor name.
-	 */
-	protected static boolean isProcessorNamePattern(String pattern) {
-
-		return PROCESSOR_NAME_PATTERN.matcher(pattern).matches();
-	}
-
-	/**
-	 * Returns whether or not the given character is a valid processor name or
-	 * expression object method character.
+	 * Returns whether or not the given character is a valid expression object
+	 * method name character.
 	 * 
 	 * @param c
 	 * @return <tt>true</tt> if <tt>char</tt> is an alphanumeric character, or
-	 * 		   one of the following symbols: <tt>: - # .</tt>
+	 * 		   one of the following symbols: <tt># .</tt>
 	 */
-	protected static boolean isProcessorOrExpressionObjectMethodChar(char c) {
+	protected static boolean isExpressionObjectMethodChar(char c) {
 
-		return Character.isLetterOrDigit(c) || c == ':' || c == '-' || c == '#' || c =='.';
+		return Character.isLetterOrDigit(c) || c == '#' || c =='.';
+	}
+
+	/**
+	 * Returns whether or not the given character is a valid processor name
+	 * character.
+	 * 
+	 * @param c
+	 * @return <tt>true</tt> if <tt>char</tt> is an alphanumeric character, or
+	 * 		   one of the following symbols: <tt>: -</tt>
+	 */
+	protected static boolean isProcessorChar(char c) {
+
+		return Character.isLetterOrDigit(c) || c == ':' || c == '-';
 	}
 }
