@@ -125,9 +125,25 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 		if (!processors.isEmpty()) {
 			ArrayList<AttributeProcessorCompletionProposal> proposals =
 					new ArrayList<AttributeProcessorCompletionProposal>();
+
 			for (AttributeProcessor processor: processors) {
-				proposals.add(new AttributeProcessorCompletionProposal(processor,
-						pattern.length(), cursorposition));
+				AttributeProcessorCompletionProposal proposal = new AttributeProcessorCompletionProposal(
+						processor, pattern.length(), cursorposition);
+
+				// Don't include the proposal if it's not meant for the current element
+				if (processor.isSetRestrictions()) {
+					AttributeRestrictions restrictions = processor.getRestrictions();
+					if (restrictions.isSetTags()) {
+						List<String> tags = restrictions.getTags();
+						String elementname = node.getNodeName();
+						if (tags.contains(elementname) && !tags.contains("-" + elementname)) {
+							proposals.add(proposal);
+						}
+					}
+				}
+				else {
+					proposals.add(proposal);
+				}
 			}
 			return proposals;
 		}

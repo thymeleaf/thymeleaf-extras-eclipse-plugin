@@ -22,5 +22,12 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Thymeleaf Project
 Export-Package: org.thymeleaf.extras.eclipse.contentassist,
  org.thymeleaf.extras.eclipse.contentassist.autocomplete,
- org.thymeleaf.extras.eclipse.contentassist.hover
-Bundle-ClassPath: .
+ org.thymeleaf.extras.eclipse.contentassist.hover,
+ org.thymeleaf.extras.eclipse.dialect
+Bundle-ClassPath: .,
+ libs/activation-1.1.1.jar,
+ libs/jaxb-api-2.2.6.jar,
+ libs/jaxb-impl-2.2.6.jar,
+ libs/jaxb-utilities-1.2.3.jar,
+ libs/joda-time-2.1.jar,
+ libs/jsr173_api-1.0.jar

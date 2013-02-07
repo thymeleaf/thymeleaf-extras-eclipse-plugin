@@ -7,6 +7,5 @@ Bundle-Vendor: Thymeleaf Project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.thymeleaf.extras.eclipse.dialect,
  org.thymeleaf.extras.eclipse.dialect.xml
-Bundle-ClassPath: .,
- libs/jaxb-utilities-1.2.3.jar
+Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy

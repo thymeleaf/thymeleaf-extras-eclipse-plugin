@@ -205,7 +205,9 @@
 		<xsd:attribute name="tags">
 			<xsd:annotation>
 				<xsd:documentation>
-					A list of tags that this processor can or cannot appear in.
+					A list of tags that this processor can or cannot appear in.  To
+					list a tag that it can't appear in, prefix that tag name with a
+					minus symbol, eg: -head
 				</xsd:documentation>
 				<xsd:appinfo>
 					<jxb:property generateIsSetMethod="true"/>
