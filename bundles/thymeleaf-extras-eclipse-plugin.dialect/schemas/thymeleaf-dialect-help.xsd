@@ -164,6 +164,24 @@
 				Common data between the 2 Thymeleaf processor types: attribute processors
 				and element processors.
 			</xsd:documentation>
+			<xsd:appinfo>
+				<ci:code>
+	private String fullname;
+
+	/**
+	 * Return the full name of this processor.
+	 * 
+	 * @return prefix:name
+	 */
+	public String getFullName() {
+
+		if (fullname == null) {
+			fullname = dialect.getPrefix() + ":" + name;
+		}
+		return fullname;
+	}
+				</ci:code>
+			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:complexContent>
 			<xsd:extension base="DialectItem"/>
@@ -277,6 +295,21 @@
 	public int hashCode() {
 
 		return name.hashCode();
+	}
+
+	private String fullname;
+
+	/**
+	 * Return the full name of this expression object method.
+	 * 
+	 * @return #name
+	 */
+	public String getFullName() {
+
+		if (fullname == null) {
+			fullname = "#" + name;
+		}
+		return fullname;
 	}
 				]]></ci:code>
 			</xsd:appinfo>

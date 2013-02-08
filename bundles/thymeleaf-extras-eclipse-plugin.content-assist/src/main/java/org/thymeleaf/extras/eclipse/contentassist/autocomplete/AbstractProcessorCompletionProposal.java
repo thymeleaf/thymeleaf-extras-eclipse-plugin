@@ -35,13 +35,11 @@ public abstract class AbstractProcessorCompletionProposal extends AbstractComple
 	 * 						  entered by the user.
 	 * @param cursorposition
 	 */
-	protected AbstractProcessorCompletionProposal(Processor processor, int charsentered,
-		int cursorposition) {
+	protected AbstractProcessorCompletionProposal(Processor processor, int charsentered, int cursorposition) {
 
-		super(processor, (processor.getDialect().getPrefix() + ":" + processor.getName()).substring(charsentered),
-				cursorposition);
+		super(processor, processor.getFullName().substring(charsentered), cursorposition);
 
-		fullprocessorname = processor.getDialect().getPrefix() + ":" + processor.getName();
+		fullprocessorname = processor.getFullName();
 	}
 
 	/**

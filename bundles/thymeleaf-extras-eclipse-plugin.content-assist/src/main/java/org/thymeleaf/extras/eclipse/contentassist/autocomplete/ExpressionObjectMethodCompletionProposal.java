@@ -44,7 +44,7 @@ public class ExpressionObjectMethodCompletionProposal extends AbstractCompletion
 	public ExpressionObjectMethodCompletionProposal(ExpressionObjectMethod method,
 		int charsentered, int cursorposition) {
 
-		super(method, ("#" + method.getName()).substring(charsentered), cursorposition);
+		super(method, method.getFullName().substring(charsentered), cursorposition);
 
 		methodname = method.getName();
 		javabeanproperty = method.isJavaBeanProperty();

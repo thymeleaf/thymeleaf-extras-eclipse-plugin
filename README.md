@@ -98,6 +98,9 @@ Changelog
    that would appear with the content assist.
  - Added autocomplete/suggestion support for attribute processors with a limited
    value set (eg: `th:inline` can accept only `text`, `javascript`, or `dart`).
+ - Resolved [Issue #10](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/10),
+   so attribute processors already in use in the same element will not be
+   suggested in content assist.
 
 ### 0.3.0
  - Moved to become a Thymeleaf Extras project.

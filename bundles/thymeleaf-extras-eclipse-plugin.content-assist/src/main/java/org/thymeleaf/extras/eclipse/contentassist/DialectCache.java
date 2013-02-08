@@ -71,7 +71,7 @@ public class DialectCache {
 			Dialect d2 = p2.getDialect();
 			return d1 == d2 ?
 					p1.getName().compareTo(p2.getName()) :
-					(d1.getPrefix() + p1.getName()).compareTo(d2.getPrefix() + p2.getName());
+					p1.getFullName().compareTo(p2.getFullName());
 		}
 	});
 
@@ -132,7 +132,7 @@ public class DialectCache {
 		if (name == null || name.isEmpty()) {
 			return false;
 		}
-		return name.indexOf('#') == 0 && method.getName().equals(name.substring(1));
+		return name.equals(method.getFullName());
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class DialectCache {
 	 */
 	private static boolean expressionObjectMethodMatchesPattern(ExpressionObjectMethod method, String pattern) {
 
-		return pattern != null && ("#" + method.getName()).startsWith(pattern);
+		return pattern != null && method.getFullName().startsWith(pattern);
 	}
 
 	/**
@@ -491,6 +491,6 @@ public class DialectCache {
 	 */
 	private static boolean processorMatchesPattern(Processor processor, String pattern) {
 
-		return pattern != null && (processor.getDialect().getPrefix() + ":" + processor.getName()).startsWith(pattern);
+		return pattern != null && processor.getFullName().startsWith(pattern);
 	}
 }

@@ -36,6 +36,8 @@ import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeRestrictions;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
+import org.w3c.dom.NamedNodeMap;
+
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.util.ArrayList;
@@ -125,12 +127,13 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 		if (!processors.isEmpty()) {
 			ArrayList<AttributeProcessorCompletionProposal> proposals =
 					new ArrayList<AttributeProcessorCompletionProposal>();
+			NamedNodeMap existingattributes = node.getAttributes();
 
 			for (AttributeProcessor processor: processors) {
 				AttributeProcessorCompletionProposal proposal = new AttributeProcessorCompletionProposal(
 						processor, pattern.length(), cursorposition);
 
-				// Don't include the proposal if it's not meant for the current element
+				// Only include the proposal if it's meant for the current element
 				if (processor.isSetRestrictions()) {
 					AttributeRestrictions restrictions = processor.getRestrictions();
 					if (restrictions.isSetTags()) {
@@ -141,7 +144,8 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 						}
 					}
 				}
-				else {
+				// Only include the proposal if it isn't already in the element
+				else if (existingattributes.getNamedItem(processor.getFullName()) == null) {
 					proposals.add(proposal);
 				}
 			}
