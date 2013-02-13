@@ -6,8 +6,8 @@ A plugin for the Eclipse IDE to add content assist features for the Thymeleaf
 standard dialect processors and expression utility objects, using the Eclipse
 Web Tools Platform HTML source editor.
 
- - Current version: 0.4.0
- - Released: 8 Feb 2013
+ - Current version: 2.0.0
+ - Released: ?? ??? 2013
 
 
 Minimum Requirements
@@ -21,29 +21,32 @@ Minimum Requirements
 Installation
 ------------
 
-Download the ZIP file from the Thymeleaf forum (http://forum.thymeleaf.org/Thymeleaf-content-assist-plugin-for-Eclipse-td4025498.html).
-Then, in Eclipse, go to Help >> Install New Software... and add the ZIP file as
-an archive repository.  The Thymeleaf Eclipse Plugin item should appear.  Select
-it, and follow the on-screen prompts to install the plugin.
+Download the Eclipse plugin ZIP file from the [Thymeleaf Eclipse Plugin SourceForge](https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/)
+page.  Then, in Eclipse, go to Help >> Install New Software... and add the ZIP
+file as an archive repository.  The Thymeleaf Eclipse Plugin item should appear.
+Select it, and follow the on-screen prompts to install the plugin.
 
 
 Usage
 -----
 
-Content assist features are only available for dialects whose namespaces (with
-the matching prefix) are defined in your HTML files, and if that dialect has
-supplied some help files in their JARs.  Help files for Thymeleaf's standard
-processors, as well as the Thymeleaf Extras modules, come bundled with this
-plugin, so all you have to do to get content assist support is to include the
-Thymeleaf namespace and prefix in your HTML file like so:
+Content assist features are available for dialects whose namespaces (with the
+matching prefix) are defined in your HTML files, and if that dialect has
+supplied some help files in their JARs.  Help files for Thymeleaf's standard and
+Spring standard dialects, as well as the Thymeleaf Extras modules (Spring
+Security 3 and Tiles 2), come bundled with this plugin, so all you have to do to
+get content assist support is to include the Thymeleaf namespace and prefix in
+your HTML file like so:
 
 	<!DOCTYPE html>
 	<html xmlns:th="http://www.thymeleaf.org">
 
-You should now start getting content assistance for all of Thymeleaf's standard
-processors: suggestions as you type and autocompletion of what you've entered so
-far if it matches only one result (both of these can be invoked manually using
-CTRL+SPACE), and help text when hovering over the text of a Thymeleaf processor.
+You should now start getting content assistance for all of the processors and
+expression objects in Thymeleaf's standard dialect (as well as the Spring
+dialect if you've included it in your project).  This includes suggestions as
+you type and autocompletion of what you've entered so far if it matches only one
+result (both of these can be invoked manually using CTRL+SPACE), and help text
+when hovering the cursoer over a Thymeleaf processor.
 
 If you're developing a Thymeleaf dialect and would like to take advantage of
 content assist for your own dialect, read the next section.
@@ -86,6 +89,9 @@ An example of a dialect bundled with an XML file in it's JAR: the [Thymeleaf Lay
 
 Changelog
 ---------
+
+### 2.0.0
+ - Moved to a 'Thymeleaf extras' branching and versioning scheme.
 
 ### 0.4.0
  - Resolved [Issue #8](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/8),
