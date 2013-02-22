@@ -49,6 +49,7 @@
 		<module>bundles/thymeleaf-extras-eclipse-plugin.dialect</module>
 		<module>bundles/thymeleaf-extras-eclipse-plugin.dialect-files</module>
 		<module>features/thymeleaf-extras-eclipse-plugin.content-assist.feature</module>
+		<module>features/thymeleaf-extras-eclipse-plugin.content-assist.feature.source</module>
 		<module>repository/thymeleaf-extras-eclipse-plugin.repository</module>
 	</modules>
 
@@ -141,6 +142,47 @@
 					<repositoryName>Thymeleaf Eclipse Plugin repository</repositoryName>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<executions>
+					<execution>
+						<id>plugin-source</id>
+						<goals>
+							<goal>plugin-source</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- <plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-source-feature-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<executions>
+					<execution>
+						<id>source-feature</id>
+						<phase>package</phase>
+						<goals>
+							<goal>source-feature</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<executions>
+					<execution>
+						<id>attached-p2-metadata</id>
+						<phase>package</phase>
+						<goals>
+							<goal>p2-metadata</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin> -->
 		</plugins>
 	</build>
 

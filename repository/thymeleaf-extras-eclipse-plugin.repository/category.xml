@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.thymeleaf.extras.eclipse.contentassist.feature_2.0.0.qualifier.jar" id="org.thymeleaf.extras.eclipse.contentassist.feature" version="2.0.0.qualifier">
-      <category name="org.thymeleaf.eclipse"/>
+   <feature url="features/org.thymeleaf.extras.eclipse.contentassist.feature_0.0.0.jar" id="org.thymeleaf.extras.eclipse.contentassist.feature" version="0.0.0">
+      <category name="org.thymeleaf.extras.eclipse"/>
    </feature>
-   <category-def name="org.thymeleaf.eclipse" label="Thymeleaf Eclipse Plugin">
+   <feature url="features/org.thymeleaf.extras.eclipse.contentassist.feature.source_2.0.0.qualifier.jar" id="org.thymeleaf.extras.eclipse.contentassist.feature.source" version="2.0.0.qualifier">
+      <category name="org.thymeleaf.extras.eclipse"/>
+   </feature>
+   <category-def name="org.thymeleaf.extras.eclipse" label="Thymeleaf Eclipse Plugin">
       <description>
-         Thymeleaf Eclipse Plugin
+         The Thymeleaf Eclipse Plugin adds content assist features to your HTML editor for the standard dialects (incl. Spring), the extras modules (Spring Security, Tiles), and any other custom dialects which have included meta data that this plugin can understand.
       </description>
    </category-def>
 </site>

@@ -21,10 +21,10 @@ Minimum Requirements
 Installation
 ------------
 
-Download the Eclipse plugin ZIP file from the [Thymeleaf Eclipse Plugin SourceForge](https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/)
-page.  Then, in Eclipse, go to Help >> Install New Software... and add the ZIP
-file as an archive repository.  The Thymeleaf Eclipse Plugin item should appear.
-Select it, and follow the on-screen prompts to install the plugin.
+Download the Eclipse plugin ZIP file from the [Thymeleaf Eclipse Plugin SourceForge page](https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/).
+Then, in Eclipse, go to Help >> Install New Software... and add the ZIP file as
+an archive repository.  The Thymeleaf Eclipse Plugin item should appear.  Select
+it, and follow the on-screen prompts to install the plugin.
 
 
 Usage
@@ -55,11 +55,11 @@ content assist for your own dialect, read the next section.
 Adding content assist for your dialect
 --------------------------------------
 
-The content assist features and help content are driven by XML files containing
-information about a dialect.  XML help files for the Thymeleaf Standard dialect
-comes bundled with this plugin, and you can see how it's structured by
-[taking a look at the XML file itself](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/master/bundles/thymeleaf-extras-eclipse-plugin.content-assist/dialects/Standard-Dialect.xml),
-as well as [taking a look at the schema file it conforms to](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/master/bundles/thymeleaf-extras-eclipse-plugin.dialect/schemas/thymeleaf-dialect-help.xsd).
+The content assist features and help content are driven by meta data about a
+dialect, currently done using XML files.  XML files for the Thymeleaf Standard
+dialect comes bundled with this plugin, and you can see how it's structured by
+taking a look at [the XML file itself](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/master/bundles/thymeleaf-extras-eclipse-plugin.content-assist/dialects/Standard-Dialect.xml),
+as well as taking a look at [the schema file it conforms to](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/master/bundles/thymeleaf-extras-eclipse-plugin.dialect/schemas/thymeleaf-dialect-help.xsd).
 
 When content assist is invoked, this plugin will look for XML files in the
 current project, or in the dependencies of the current project, whose XML
@@ -92,6 +92,8 @@ Changelog
 
 ### 2.0.0
  - Moved to a 'Thymeleaf extras' branching and versioning scheme.
+ - Added a source code feature to the generated repository file so that you have
+   the option of installing the source code of this plugin.
 
 ### 0.4.0
  - Resolved [Issue #8](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/8),
