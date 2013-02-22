@@ -63,9 +63,9 @@ as well as taking a look at [the schema file it conforms to](https://github.com/
 
 When content assist is invoked, this plugin will look for XML files in the
 current project, or in the dependencies of the current project, whose XML
-namespace is `http://www.thymeleaf.org/extras/dialect`.  If such a file is found,
-it is loaded and the information in it becomes part of the plugin's content
-assist.
+namespace is `http://www.thymeleaf.org/extras/dialect`.  If such a file is
+found, it is loaded and the information in it becomes part of the plugin's
+content assist.
 
 Dialect developers can take advantage of this by including XML help files as
 part of their dialect JARs.  All you need to do is create an XML file that
@@ -75,7 +75,8 @@ When writing documentation to appear in the content assist, you can either:
  - refer to an existing class file, using its Javadocs as the help text
  - or write your own documentation in a `<documentation>` element in the XML
 
-When including the XML file with your JAR, some notes on where you put that file:
+When including the XML file with your JAR, some notes on where you put that
+file:
 
  - it cannot go in the default package
  - the directory it goes in must be a valid Java package name
@@ -94,12 +95,14 @@ Changelog
  - Moved to a 'Thymeleaf extras' branching and versioning scheme.
  - Added a source code feature to the generated repository file so that you have
    the option of installing the source code of this plugin.
+ - Fixed an issue where negative restrictions (ie: tags that the processor
+   cannot appear on) were not being proposed at all.
 
 ### 0.4.0
  - Resolved [Issue #8](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/8),
    adding support for the Spring standard dialect.
- - Added the ability to use a processor class' Javadoc content as the help content
-   that would appear with the content assist.
+ - Added the ability to use a processor class' Javadoc content as the help
+   content that would appear with the content assist.
  - Added autocomplete/suggestion support for attribute processors with a limited
    value set (eg: `th:inline` can accept only `text`, `javascript`, or `dart`).
  - Resolved [Issue #10](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/10),
@@ -118,8 +121,8 @@ Changelog
  - Added autocomplete/suggestion support for element processors.
  - Added autocomplete/suggestion support for Thymeleaf's expression utility
    objects.
- - Added help files for the Thymeleaf Extras modules: Spring Security 3 and Tiles
-   2.
+ - Added help files for the Thymeleaf Extras modules: Spring Security 3 and
+   Tiles 2.
 
 ### 0.2.0
  - Added Eclipse API baseline support to work towards other versions of Eclipse.

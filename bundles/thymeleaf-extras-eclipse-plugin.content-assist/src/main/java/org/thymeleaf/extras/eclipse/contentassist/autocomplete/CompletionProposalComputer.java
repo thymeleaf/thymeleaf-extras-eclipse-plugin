@@ -37,7 +37,6 @@ import org.thymeleaf.extras.eclipse.dialect.xml.AttributeRestrictions;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 import org.w3c.dom.NamedNodeMap;
-
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.util.ArrayList;
@@ -143,8 +142,13 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 						if (restrictions.isSetTags()) {
 							List<String> tags = restrictions.getTags();
 							String elementname = node.getNodeName();
-							if (tags.contains(elementname) && !tags.contains("-" + elementname)) {
-								proposals.add(proposal);
+							for (String tag: tags) {
+								if (tag.startsWith("-") && !tag.substring(1).equals(elementname)) {
+									proposals.add(proposal);
+								}
+								else if (tag.equals(elementname)) {
+									proposals.add(proposal);
+								}
 							}
 						}
 					}
