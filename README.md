@@ -58,7 +58,7 @@ Adding content assist for your dialect
 The content assist features and help content are driven by meta data about a
 dialect, currently done using XML files.  XML files for the Thymeleaf Standard
 dialect comes bundled with this plugin, and you can see how it's structured by
-taking a look at [the XML file itself](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/master/bundles/thymeleaf-extras-eclipse-plugin.content-assist/dialects/Standard-Dialect.xml),
+taking a look at [the XML file itself](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/2.0-master/bundles/thymeleaf-extras-eclipse-plugin.dialect-files/dialects/Standard-Dialect.xml),
 as well as taking a look at [the schema file it conforms to](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/master/bundles/thymeleaf-extras-eclipse-plugin.dialect/schemas/thymeleaf-dialect-help.xsd).
 
 When content assist is invoked, this plugin will look for XML files in the
@@ -84,8 +84,8 @@ file:
 These are just short-comings of the current dialect scanning method, which
 itself is built upon Eclipse's own lookup mechanisms.
 
-An example of a dialect bundled with an XML file in it's JAR: the [Thymeleaf Layout Dialect](https://github.com/ultraq/thymeleaf-layout-dialect/tree/dev)
-(see the Java/nz/net/ultraq/web/thymeleaf/Layout-Dialect.xml file).
+For an example of a dialect bundled with an XML file, see the [Thymeleaf Layout Dialect](https://github.com/ultraq/thymeleaf-layout-dialect)
+and its [Layout-Dialect.xml file](https://github.com/ultraq/thymeleaf-layout-dialect/blob/master/Resources/nz/net/ultraq/web/thymeleaf/Layout-Dialect.xml).
 
 
 Changelog
