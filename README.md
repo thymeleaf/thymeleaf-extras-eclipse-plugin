@@ -59,7 +59,7 @@ The content assist features and help content are driven by meta data about a
 dialect, currently done using XML files.  XML files for the Thymeleaf Standard
 dialect comes bundled with this plugin, and you can see how it's structured by
 taking a look at [the XML file itself](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/2.0-master/bundles/thymeleaf-extras-eclipse-plugin.dialect-files/dialects/Standard-Dialect.xml),
-as well as taking a look at [the schema file it conforms to](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/master/bundles/thymeleaf-extras-eclipse-plugin.dialect/schemas/thymeleaf-dialect-help.xsd).
+as well as taking a look at [the schema file it conforms to](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/2.0-master/bundles/thymeleaf-extras-eclipse-plugin.dialect/schemas/thymeleaf-dialect-help.xsd).
 
 When content assist is invoked, this plugin will look for XML files in the
 current project, or in the dependencies of the current project, whose XML
@@ -114,7 +114,7 @@ Changelog
  - Added a dialect scanning feature, contributed by [Thibault Duchateau](https://github.com/tduchateau),
    so that content assist can extend to dialects other than the standard
    Thymeleaf ones bundled with the plugin.  See the [Adding content assist for
-   your dialect](adding-content-assist-for-your-dialect) section to find out how
+   your dialect](#adding-content-assist-for-your-dialect) section to find out how
    dialect developers can take advantage of this plugin.
  - Added showing the basic help/documtation appear when hovering over a
    processor.
@@ -126,12 +126,11 @@ Changelog
 
 ### 0.2.0
  - Added Eclipse API baseline support to work towards other versions of Eclipse.
- - Resolved [Issue #1](https://github.com/ultraq/thymeleaf-eclipse-plugin/issues/1)
-   so the plugin can now work on Java 6, and Eclipse 3.7.2 w/ WTP 3.3.2.
+ - Relaxed the plugin requirements so it can now work in Java 6 and Eclipse
+   3.7.2 w/ WTP 3.3.2.
  - Fixed some spelling mistakes in the standard attribute processor suggestions,
    which would insert misspelled processors into your code!  Whoops!
- - Started work on resolving [Issue #2](https://github.com/ultraq/thymeleaf-eclipse-plugin/issues/1)
-   by adding some documentation to many of the standard attribute processors.
+ - Added help/documentation for many more of the standard attribute processors.
    
 ### 0.1.0
  - Initial release
