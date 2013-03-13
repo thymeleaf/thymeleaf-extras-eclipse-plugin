@@ -150,11 +150,10 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 									proposals.add(proposal);
 								}
 							}
+							continue;
 						}
 					}
-					else {
-						proposals.add(proposal);
-					}
+					proposals.add(proposal);
 				}
 			}
 			return proposals;

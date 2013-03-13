@@ -6,8 +6,8 @@ A plugin for the Eclipse IDE to add content assist features for the Thymeleaf
 standard dialect processors and expression utility objects, using the Eclipse
 Web Tools Platform HTML source editor.
 
- - Current version: 2.0.0
- - Released: 23 Feb 2013
+ - Current version: 2.0.1
+ - Released: ?? ??? 2013
 
 
 Minimum Requirements
@@ -90,6 +90,10 @@ and its [Layout-Dialect.xml file](https://github.com/ultraq/thymeleaf-layout-dia
 
 Changelog
 ---------
+
+### 2.0.1
+ - Resolved [Issue #12](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/12),
+   so that `th:inline` is part of the suggested attribute processors list.
 
 ### 2.0.0
  - Moved to a 'Thymeleaf extras' branching and versioning scheme.

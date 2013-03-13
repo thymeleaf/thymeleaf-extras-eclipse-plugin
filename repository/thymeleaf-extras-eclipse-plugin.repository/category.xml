@@ -3,7 +3,7 @@
    <feature url="features/org.thymeleaf.extras.eclipse.contentassist.feature_0.0.0.jar" id="org.thymeleaf.extras.eclipse.contentassist.feature" version="0.0.0">
       <category name="org.thymeleaf.extras.eclipse"/>
    </feature>
-   <feature url="features/org.thymeleaf.extras.eclipse.contentassist.feature.source_2.0.0.qualifier.jar" id="org.thymeleaf.extras.eclipse.contentassist.feature.source" version="2.0.0.qualifier">
+   <feature url="features/org.thymeleaf.extras.eclipse.contentassist.feature.source_0.0.0.jar" id="org.thymeleaf.extras.eclipse.contentassist.feature.source" version="0.0.0">
       <category name="org.thymeleaf.extras.eclipse"/>
    </feature>
    <category-def name="org.thymeleaf.extras.eclipse" label="Thymeleaf Eclipse Plugin">
