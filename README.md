@@ -94,6 +94,9 @@ Changelog
 ### 2.0.1
  - Resolved [Issue #12](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/12),
    so that `th:inline` is part of the suggested attribute processors list.
+ - Added support for the upcoming Thymeleaf-Spring3 `#themes.code(...)`
+   expression object and method, which is the Thymeleaf equivalent of the Spring
+   `<spring:theme code=''/>` JSP tag.
 
 ### 2.0.0
  - Moved to a 'Thymeleaf extras' branching and versioning scheme.

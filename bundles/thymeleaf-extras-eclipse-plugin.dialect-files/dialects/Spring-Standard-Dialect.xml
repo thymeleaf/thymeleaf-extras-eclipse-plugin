@@ -94,4 +94,6 @@
 		</documentation>
 	</expression-object-method>
 
+	<expression-object name="themes" class="org.thymeleaf.spring3.expression.Themes"/>
+
 </dialect>
