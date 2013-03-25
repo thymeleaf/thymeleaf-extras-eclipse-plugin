@@ -97,6 +97,8 @@ Changelog
  - Added support for the upcoming Thymeleaf-Spring3 `#themes.code(...)`
    expression object and method, which is the Thymeleaf equivalent of the Spring
    `<spring:theme code=''/>` JSP tag.
+ - Updated Tycho to 0.17.0, which now generates source features automatically
+   (explicit source feature sub-project deleted).
 
 ### 2.0.0
  - Moved to a 'Thymeleaf extras' branching and versioning scheme.

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.thymeleaf.extras.eclipse.contentassist.feature"
-      label="Thymeleaf Content Assist"
+      label="%name"
       version="2.0.1.qualifier"
       provider-name="Thymeleaf Project">
 
    <description url="http://www.thymeleaf.org/">
-      Adds content assist features to the Eclipse Web Tools HTML source editor.
+      %description
    </description>
 
    <copyright url="http://www.thymeleaf.org/">
