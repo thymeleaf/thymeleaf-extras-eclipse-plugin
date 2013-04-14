@@ -38,8 +38,10 @@ Security 3 and Tiles 2), come bundled with this plugin, so all you have to do to
 get content assist support is to include the Thymeleaf namespace and prefix in
 your HTML file like so:
 
-	<!DOCTYPE html>
-	<html xmlns:th="http://www.thymeleaf.org">
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+```
 
 You should now start getting content assistance for all of the processors and
 expression objects in Thymeleaf's standard dialect (as well as the Spring
