@@ -64,13 +64,8 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 				.getWorkbenchWindows()[0].getActivePage().getActiveEditor();
 		IFile file = ((IFileEditorInput)editor.getEditorInput()).getFile();
 		IProject project = file.getProject();
-		try {
-			if (project.isNatureEnabled(JavaCore.NATURE_ID)) {
-				return JavaCore.create(project);
-			}
-		}
-		catch (CoreException ex) {
-			logError("Project not open, or doesn't exist", ex);
+		if (isJavaProject(project)) {
+			return JavaCore.create(project);
 		}
 		return null;
 	}
@@ -103,6 +98,23 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 				"icons/Element-Processor.png"));
 		reg.put(IMAGE_EXPRESSION_OBJECT_METHOD, imageDescriptorFromPlugin(PLUGIN_ID,
 				"icons/Expression-Object-Method.png"));
+	}
+
+	/**
+	 * Check if the given project is a Java project.
+	 * 
+	 * @param project
+	 * @return <tt>true</tt> if the project is a Java project.
+	 */
+	public static boolean isJavaProject(IProject project) {
+
+		try {
+			return project.isNatureEnabled(JavaCore.NATURE_ID);
+		}
+		catch (CoreException ex) {
+			logError("Project not open, or doesn't exist", ex);
+		}
+		return false;
 	}
 
 	/**
@@ -166,6 +178,7 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 
+		DialectCache.close();
 		plugin = null;
 		super.stop(context);
 	}

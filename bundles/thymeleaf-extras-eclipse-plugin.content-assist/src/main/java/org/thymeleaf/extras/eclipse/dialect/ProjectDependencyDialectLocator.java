@@ -19,17 +19,21 @@ package org.thymeleaf.extras.eclipse.dialect;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJarEntryResource;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
-import org.thymeleaf.extras.eclipse.dialect.DialectLocator;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.xml.sax.InputSource;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -53,6 +57,7 @@ public class ProjectDependencyDialectLocator implements DialectLocator<InputStre
 
 	private final IJavaProject project;
 	private final XPathExpression namespaceexpression;
+	private final HashSet<IPath> dialectfilepaths = new HashSet<IPath>();
 
 	/**
 	 * Constructor, sets which project will be scanned for Thymeleaf dialect
@@ -71,6 +76,17 @@ public class ProjectDependencyDialectLocator implements DialectLocator<InputStre
 		catch (XPathExpressionException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+
+	/**
+	 * Return a list of the dialect file paths that were encountered during a
+	 * run of {@link #locateDialects}.
+	 * 
+	 * @return List of dialect file paths.
+	 */
+	public Set<IPath> getDialectFilePaths() {
+
+		return dialectfilepaths;
 	}
 
 	/**
@@ -134,21 +150,27 @@ public class ProjectDependencyDialectLocator implements DialectLocator<InputStre
 			// Multi-threaded search for dialect files - there are a lot of package
 			// fragments to get through, and the I/O namespace check is a blocker.
 			ArrayList<Future<IStorage>> scannertasks = new ArrayList<Future<IStorage>>();
-			for (final IPackageFragment packagefragment: project.getPackageFragments()) {
-				scannertasks.add(executorservice.submit(new Callable<IStorage>() {
-					@Override
-					public IStorage call() throws Exception {
 
-						for (Object resource: packagefragment.getNonJavaResources()) {
-							IStorage fileorjarentry = (IStorage)resource;
-							if (isDialectHelpXMLFile(fileorjarentry)) {
-								logInfo("Help file found: " + fileorjarentry.getName());
-								return fileorjarentry;
+			for (IPackageFragmentRoot packagefragmentroot: project.getAllPackageFragmentRoots()) {
+				for (IJavaElement child: packagefragmentroot.getChildren()) {
+					final IPackageFragment packagefragment = (IPackageFragment)child;
+
+					scannertasks.add(executorservice.submit(new Callable<IStorage>() {
+						@Override
+						public IStorage call() throws Exception {
+
+							for (Object resource: packagefragment.getNonJavaResources()) {
+								IStorage fileorjarentry = (IStorage)resource;
+								if (isDialectHelpXMLFile(fileorjarentry)) {
+									logInfo("Help file found: " + fileorjarentry.getName());
+									dialectfilepaths.add(fileorjarentry.getFullPath());
+									return fileorjarentry;
+								}
 							}
+							return null;
 						}
-						return null;
-					}
-				}));
+					}));
+				}
 			}
 
 			// Collate scanner results

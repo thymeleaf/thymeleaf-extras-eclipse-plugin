@@ -16,6 +16,7 @@
 
 package org.thymeleaf.extras.eclipse.dialect;
 
+import nz.net.ultraq.jaxb.XMLException;
 import nz.net.ultraq.jaxb.XMLReader;
 
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
@@ -45,11 +46,16 @@ public class XmlDialectLoader implements DialectLoader<InputStream> {
 		for (InputStream dialectfilestream: locator.locateDialects()) {
 
 			// Link processors and expression objects/methods with their dialect
-			Dialect dialect = xmlreader.readXMLData(dialectfilestream);
-			for (DialectItem dialectitem: dialect.getDialectItems()) {
-				dialectitem.setDialect(dialect);
+			try {
+				Dialect dialect = xmlreader.readXMLData(dialectfilestream);
+				for (DialectItem dialectitem: dialect.getDialectItems()) {
+					dialectitem.setDialect(dialect);
+				}
+				dialects.add(dialect);
 			}
-			dialects.add(dialect);
+			catch (XMLException ex) {
+				// Do nothing
+			}
 		}
 
 		return dialects;

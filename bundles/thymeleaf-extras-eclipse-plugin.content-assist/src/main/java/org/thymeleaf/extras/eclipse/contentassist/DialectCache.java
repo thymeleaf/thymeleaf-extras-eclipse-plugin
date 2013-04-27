@@ -16,14 +16,22 @@
 
 package org.thymeleaf.extras.eclipse.contentassist;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavadocContentAccess;
 import org.thymeleaf.extras.eclipse.dialect.BundledDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.ProjectDependencyDialectLocator;
+import org.thymeleaf.extras.eclipse.dialect.SingleFileDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
@@ -33,6 +41,7 @@ import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObject;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
+import static org.eclipse.core.resources.IResourceChangeEvent.*;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.io.IOException;
@@ -41,8 +50,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.namespace.QName;
 
@@ -83,6 +97,18 @@ public class DialectCache {
 				return m1.getName().compareTo(m2.getName());
 			}
 	});
+
+	// Resource listener and cache updater
+	private static DialectFileChangeListener dialectcacheupdater;
+
+	/**
+	 * Shutdown method of the cache, cleans up any processes that need
+	 * cleaning-up.
+	 */
+	public static void close() {
+
+		dialectcacheupdater.close();
+	}
 
 	/**
 	 * Checks if the dialect is in the list of given namespaces.
@@ -153,15 +179,16 @@ public class DialectCache {
 	 * Creates a documentation element from the Javadocs of a processor class.
 	 * 
 	 * @param processor
+	 * @param project
 	 * @return Documentation element with the processor's Javadoc content, or
 	 * 		   <tt>null</tt> if the processor had no Javadocs on it.
 	 */
-	private static Documentation generateDocumentation(Processor processor) {
+	private static Documentation generateDocumentation(Processor processor, IJavaProject project) {
 
 		String processorclassname = processor.getClazz();
 
 		try {
-			IType type = findCurrentJavaProject().findType(processorclassname, new NullProgressMonitor());
+			IType type = project.findType(processorclassname, new NullProgressMonitor());
 			if (type != null) {
 				Reader reader = JavadocContentAccess.getHTMLContentReader(type, false, false);
 				if (reader != null) {
@@ -400,24 +427,30 @@ public class DialectCache {
 		List<Dialect> dialects = xmldialectloader.loadDialects(new BundledDialectLocator());
 		for (Dialect dialect: dialects) {
 			bundleddialects.add(dialect);
-			loadDialectItems(dialect);
+			loadDialectItems(dialect, findCurrentJavaProject());
 		}
+
+		// Start a resource listener for workspace changes, acting when any dialect
+		// file has been changed
+		dialectcacheupdater = new DialectFileChangeListener();
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(dialectcacheupdater);
 	}
 
 	/**
 	 * Puts dialect items into their rightful collections.
 	 * 
 	 * @param dialect
+	 * @param project
 	 */
-	private static void loadDialectItems(Dialect dialect) {
+	private static void loadDialectItems(Dialect dialect, IJavaProject project) {
 
 		for (DialectItem dialectitem: dialect.getDialectItems()) {
 			if (dialectitem instanceof Processor) {
-				Processor processor = (Processor) dialectitem;
+				Processor processor = (Processor)dialectitem;
 
 				// Generate and save javadocs if no documentation present
 				if (!dialectitem.isSetDocumentation() && dialectitem.isSetClazz()) {
-					dialectitem.setDocumentation(generateDocumentation(processor));
+					dialectitem.setDocumentation(generateDocumentation(processor, project));
 				}
 				processors.add(processor);
 			}
@@ -441,12 +474,12 @@ public class DialectCache {
 		if (!projectdialects.containsKey(project)) {
 
 			// Scan for any dialect XML files in the project, including dependencies
-			List<Dialect> dialects = xmldialectloader.loadDialects(
-					new ProjectDependencyDialectLocator(project));
-			projectdialects.put(project, dialects);
+			ProjectDependencyDialectLocator projectdialectlocator = new ProjectDependencyDialectLocator(project);
+			List<Dialect> dialects = xmldialectloader.loadDialects(projectdialectlocator);
 			for (Dialect dialect: dialects) {
-				loadDialectItems(dialect);
+				loadDialectItems(dialect, project);
 			}
+			projectdialects.put(project, dialects);
 
 			// Check against the bundled dialects to see if they're also in the project
 			for (Dialect dialect: bundleddialects) {
@@ -459,6 +492,9 @@ public class DialectCache {
 					logError("Unable to access project information", ex);
 				}
 			}
+
+			// Update the list of projects to track for changes
+			dialectcacheupdater.dialectfilepaths.addAll(projectdialectlocator.getDialectFilePaths());
 		}
 	}
 
@@ -492,5 +528,95 @@ public class DialectCache {
 	private static boolean processorMatchesPattern(Processor processor, String pattern) {
 
 		return pattern != null && processor.getFullName().startsWith(pattern);
+	}
+
+	/**
+	 * Removes dialect items that are part of the given dialect.
+	 * 
+	 * @param dialect
+	 */
+	private static void removeDialectItems(Dialect dialect) {
+
+		removeDialectItems(dialect, processors);
+		removeDialectItems(dialect, expressionobjectmethods);
+	}
+
+	/**
+	 * Removes the given type of dialect items that are part of the given
+	 * dialect.
+	 * 
+	 * @param dialect
+	 * @param dialectitems
+	 */
+	private static void removeDialectItems(Dialect dialect, TreeSet<? extends DialectItem> dialectitems) {
+
+		Iterator<? extends DialectItem> dialectitemiter = dialectitems.iterator();
+		while (dialectitemiter.hasNext()) {
+			DialectItem dialectitem = dialectitemiter.next();
+			if (dialectitem.getDialect().equals(dialect)) {
+				dialectitemiter.remove();
+			}
+		}
+	}
+
+	/**
+	 * A resource change listener, acting on changes made to any dialect files,
+	 * updating the dialect cache as necessary.
+	 */
+	private static class DialectFileChangeListener implements IResourceChangeListener {
+
+		// Collection of dialect files that will be watched for updates to keep the cache up-to-date
+		private final CopyOnWriteArraySet<IPath> dialectfilepaths = new CopyOnWriteArraySet<IPath>();
+
+		private final ExecutorService resourcechangeexecutor = Executors.newSingleThreadExecutor();
+
+		/**
+		 * Stops the resource change executor.
+		 */
+		private void close() {
+
+			resourcechangeexecutor.shutdown();
+			try {
+				if (resourcechangeexecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+					resourcechangeexecutor.shutdownNow();
+				}
+			}
+			catch (InterruptedException ex) {
+				// Do nothing
+			}
+		}
+
+		/**
+		 * When notified of a resource change, redirect the work to the change
+		 * executor thread so as to not block the event change thread.
+		 */
+		@Override
+		public void resourceChanged(final IResourceChangeEvent event) {
+
+			resourcechangeexecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+
+					if (event.getType() == POST_CHANGE) {
+						IResourceDelta delta = event.getDelta();
+						for (final IPath dialectfilepath: dialectfilepaths) {
+							IResourceDelta dialectfiledelta = delta.findMember(dialectfilepath);
+							if (dialectfiledelta != null) {
+								logInfo("Dialect file " + dialectfilepath.lastSegment() + " changed, reloading dialect");
+
+								List<Dialect> updateddialects = xmldialectloader.loadDialects(
+										new SingleFileDialectLocator(dialectfilepath));
+								for (Dialect updateddialect: updateddialects) {
+									IProject dialectfileproject = dialectfiledelta.getResource().getProject();
+									IJavaProject javaproject = JavaCore.create(dialectfileproject);
+									removeDialectItems(updateddialect);
+									loadDialectItems(updateddialect, javaproject);
+								}
+							}
+						}
+					}
+				}
+			});
+		}
 	}
 }
