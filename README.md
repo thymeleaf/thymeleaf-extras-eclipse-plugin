@@ -92,15 +92,19 @@ An explanation of the XML schema:
 The root element of the XML file, contains information about a dialect, its
 processors, and its expression objects.
 
- - `prefix`        - required attribute, the prefix used by this dialect.
- - `namespace-uri` - required attribute, the namespace used by this dialect.
- - `class`         - required attribute, the dialect class.
+#### Attributes
+ - `prefix`        - required, the prefix used by this dialect.
+ - `namespace-uri` - required, the namespace used by this dialect.
+ - `class`         - required, the dialect class.
 
- - `attribute-processor`      - optional element, see [`<attribute-processor>`](#attribute-processor).
- - `element-processor`        - optional element, see [`<element-processor>`](#element-processor).
- - `expression-object`        - optional element, see [`<expression-object>`](#expression-object)
- - `expression-object-method` - optional element, see [`<expression-object-method>`](#expression-object-method).
+#### Elements
+The following elements can appear 0-or-more times, in any order:
+ - `attribute-processor`      - optional, see [`<attribute-processor>`](#attribute-processor).
+ - `element-processor`        - optional, see [`<element-processor>`](#element-processor).
+ - `expression-object`        - optional, see [`<expression-object>`](#expression-object)
+ - `expression-object-method` - optional, see [`<expression-object-method>`](#expression-object-method).
 
+### Example
 ```xml
 <dialect xmlns="http://www.thymeleaf.org/extras/dialect"
 	prefix="th" namespace-uri="http://www.thymeleaf.org"
@@ -113,18 +117,20 @@ processors, and its expression objects.
 An attribute processor, includes an extra set of restrictions to help with
 deciding where the processor can go and what values it can take.
 
- - `name`  - required attribute, the name of the attribute, minus the prefix
-             part.
- - `class` - optional attribute, points to the attribute processor class.  If
-             you specify this attribute, then the Javadocs on the class are used
-             to generate the documentation that appears in content assist. 
+#### Attributes
+ - `name`  - required, the name of the attribute, minus the prefix part.
+ - `class` - optional, points to the attribute processor class.  If you specify
+             this attribute, then the Javadocs on the class are used to generate
+             the documentation that appears in content assist. 
 
- - `documentation` - optional element, contains the text that appears in content
-                     assist.  See: [<documentation>](#documentation).
- - `restrictions`  - optional element, lists certain restrictions on the use of
-                     the attribute, such as what values it can take, in which
-                     HTML tags it can appear, and so on.  See [`<restrictions>`](#restrictions).
+#### Elements
+ - `documentation` - optional, contains the text that appears in content assist.
+                     See [`<documentation>`](#documentation).
+ - `restrictions`  - optional, lists certain restrictions on the use of the
+                     attribute, such as what values it can take, in which HTML
+                     tags it can appear, and so on.  See [`<restrictions>`](#restrictions).
 
+#### Example
 ```xml
 <attribute-processor name="inline">
 	<documentation
@@ -148,43 +154,47 @@ deciding where the processor can go and what values it can take.
 A set of restrictions on attribute processor use, used to help the content
 assist decide where attribute suggestions should be made.
 
- - `tags`       - optional attribute, a list of tags that this processor can or
-                  cannot appear in.  To list a tag that it can't appear in,
-                  prefix that tag name with a minus symbol, eg: -head
- - `attributes` - optional attribute, A list of attributes that must or must not
-                  be present in the same tag as this processor.  To list an
+#### Attributes
+ - `tags`       - optional, a list of tags that this processor can or cannot
+                  appear in.  To list a tag that it can't appear in, prefix that
+                  tag name with a minus symbol, eg: -head
+ - `attributes` - optional, a list of attributes that must or must not be
+                  present in the same tag as this processor.  To list an
                   attribute that must not be present, prefix that attribute name
                   with a minus symbol, eg: -style
- - `values`     - optional attribute, a list of values this processor can take.
+ - `values`     - optional, a list of values this processor can take.
 
 
 ### `<element-processor>`
 
 An element processor.
 
- - `name`  - required attribute, the name of the attribute, minus the prefix
-             part.
- - `class` - optional attribute, points to the attribute processor class.  If
-             you specify this attribute, then the Javadocs on the class are used
-             to generate the documentation that appears in content assist. 
+#### Attributes
+ - `name`  - required, the name of the attribute, minus the prefix part.
+ - `class` - optional, points to the attribute processor class.  If you specify
+             this attribute, then the Javadocs on the class are used to generate
+             the documentation that appears in content assist. 
 
- - `documentation` - optional element, contains the text that appears in content
-                     assist.  See: [<documentation>](#documentation).
+#### Elements
+ - `documentation` - option, contains the text that appears in content assist.
+                     See [`<documentation>`](#documentation).
 
 
 ### `<expression-object>`
 
 An object added to the processing context to be used by processors.
 
- - `name`  - required attribute, the name of the attribute, minus the prefix
-             part.
- - `class` - optional attribute, points to the attribute processor class.  If
-             you specify this attribute, then the Javadocs on the class are used
-             to generate the documentation that appears in content assist. 
+#### Attributes
+ - `name`  - required, the name of the attribute, minus the prefix part.
+ - `class` - optional, points to the attribute processor class.  If you specify
+             this attribute, then the Javadocs on the class are used to generate
+             the documentation that appears in content assist. 
 
- - `documentation` - optional element, contains the text that appears in content
-                     assist.  See: [<documentation>](#documentation).
+#### Elements
+ - `documentation` - optional, contains the text that appears in content assist.
+                     See [`<documentation>`](#documentation).
 
+#### Example
 ```xml
 <expression-object name="dates" class="org.thymeleaf.expression.Dates"/>
 ```
@@ -194,15 +204,17 @@ An object added to the processing context to be used by processors.
 
 A method in an expression object.
 
- - `name`  - required attribute, the name of the attribute, minus the prefix
-             part.
- - `class` - optional attribute, points to the attribute processor class.  If
-             you specify this attribute, then the Javadocs on the class are used
-             to generate the documentation that appears in content assist. 
+#### Attributes
+ - `name`  - required, the name of the attribute, minus the prefix part.
+ - `class` - optional, points to the attribute processor class.  If you specify
+             this attribute, then the Javadocs on the class are used to generate
+             the documentation that appears in content assist. 
 
- - `documentation` - optional element, contains the text that appears in content
-                     assist.  See: [<documentation>](#documentation).
+#### Elements
+ - `documentation` - optional, contains the text that appears in content assist.
+                     See [`<documentation>`](#documentation).
 
+#### Example
 ```xml
 <expression-object-method name="fields.errors">
 	<documentation see-also="errors"
@@ -219,11 +231,12 @@ A method in an expression object.
 
 Notes to help generate some documentation about a processor.
 
- - `see-also`  - optional attribute, a space-separated list of other dialect
-                 item names related to this one, suggesting where else the user
-                 can go to get more information or understanding.
- - `reference` - optional attribute, names an 'official' document and the
-                 section/page within it to get more information.
+#### Attributes
+ - `see-also`  - optional, a space-separated list of other dialect item names
+                 related to this one, suggesting where else the user can go to
+                 get more information or understanding.
+ - `reference` - optional, names an 'official' document and the section/page
+                 within it to get more information.
 
 
 Changelog
