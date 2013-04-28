@@ -104,7 +104,7 @@ The following elements can appear 0-or-more times, in any order:
  - `expression-object`        - optional, see [`<expression-object>`](#expression-object)
  - `expression-object-method` - optional, see [`<expression-object-method>`](#expression-object-method).
 
-### Example
+#### Example
 ```xml
 <dialect xmlns="http://www.thymeleaf.org/extras/dialect"
 	prefix="th" namespace-uri="http://www.thymeleaf.org"
