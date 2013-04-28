@@ -235,6 +235,21 @@
 				<xsd:list itemType="xsd:string"/>
 			</xsd:simpleType>
 		</xsd:attribute>
+		<xsd:attribute name="attributes">
+			<xsd:annotation>
+				<xsd:documentation>
+					A list of attributes that must or must not be present in the same
+					tag as this processor.  To list an attribute that must not be
+					present, prefix that attribute name with a minus symbol, eg: -style
+				</xsd:documentation>
+				<xsd:appinfo>
+					<jxb:property generateIsSetMethod="true"/>
+				</xsd:appinfo>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:list itemType="xsd:string"/>
+			</xsd:simpleType>
+		</xsd:attribute>
 		<xsd:attribute name="values">
 			<xsd:annotation>
 				<xsd:documentation>

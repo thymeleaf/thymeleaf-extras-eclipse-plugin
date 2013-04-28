@@ -6,8 +6,8 @@ A plugin for the Eclipse IDE to add content assist features for the Thymeleaf
 standard dialect processors and expression utility objects, using the Eclipse
 Web Tools Platform HTML source editor.
 
- - Current version: 2.0.1
- - Released: 25 Mar 2013
+ - Current version: 2.0.2
+ - Released: ?? ??? 2013
 
 
 Minimum Requirements
@@ -73,12 +73,7 @@ Dialect developers can take advantage of this by including XML help files as
 part of their dialect JARs.  All you need to do is create an XML file that
 conforms to the schema above, then bundle that XML file with your JAR.
 
-When writing documentation to appear in the content assist, you can either:
- - refer to an existing class file, using its Javadocs as the help text
- - or write your own documentation in a `<documentation>` element in the XML
-
-When including the XML file with your JAR, some notes on where you put that
-file:
+Some notes on where you put that file in the JAR:
 
  - it cannot go in the default package
  - the directory it goes in must be a valid Java package name
@@ -89,9 +84,160 @@ itself is built upon Eclipse's own lookup mechanisms.
 For an example of a dialect bundled with an XML file, see the [Thymeleaf Layout Dialect](https://github.com/ultraq/thymeleaf-layout-dialect)
 and its [Layout-Dialect.xml file](https://github.com/ultraq/thymeleaf-layout-dialect/blob/master/Resources/nz/net/ultraq/web/thymeleaf/Layout-Dialect.xml).
 
+An explanation of the XML schema:
+
+
+### <dialect>
+
+The root element of the XML file, contains information about a dialect, its
+processors, and its expression objects.
+
+ - `prefix`        - required attribute, the prefix used by this dialect.
+ - `namespace-uri` - required attribute, the namespace used by this dialect.
+ - `class`         - required attribute, the dialect class.
+
+```xml
+<dialect xmlns="http://www.thymeleaf.org/extras/dialect"
+	prefix="th" namespace-uri="http://www.thymeleaf.org"
+	class="org.thymeleaf.standard.StandardDialect">
+```
+
+This root element then contains 0 or more of `attribute-processor`, `element-processor`,
+`expression-object`, or `expression-object-ref`, in any order.
+
+
+### <attribute-processor>
+
+An attribute processor, includes an extra set of restrictions to help with
+deciding where the processor can go and what values it can take.
+
+ - `name`  - required attribute, the name of the attribute, minus the prefix
+             part.
+ - `class` - optional attribute, points to the attribute processor class.  If
+             you specify this attribute, then the Javadocs on the class are used
+             to generate the documentation that appears in content assist. 
+
+ - `documentation` - optional element, contains the text that appears in content
+                     assist.  See: [<documentation>](#documentation).
+ - `restrictions`  - optional element, lists certain restrictions on the use of
+                     the attribute, such as what values it can take, in which
+                     HTML tags it can appear, and so on.  See: [<restrictions>](#restrictions).
+
+```xml
+<attribute-processor name="inline">
+	<documentation
+		reference="Using Thymeleaf section 11 on Inlining">
+		<![CDATA[
+		Lets you use expressions directly in your template.<br/>
+		<br/>
+		If this attribute's value is <b>text</b>, then you can use the [[...]]
+		syntax to put expressions within your text without having to use the
+		th:text attribute processor, eg:<br/>
+		&lt;p th:inline="text"&gt;Hello [[${session.user.name}]]!&lt;p&gt;<br/>
+		]]>
+	</documentation>
+	<restrictions values="text javascript dart"/>
+</attribute-processor>
+```
+
+
+### <restrictions>
+
+A set of restrictions on attribute processor use, used to help the content
+assist decide where attribute suggestions should be made.
+
+ - `tags`       - optional attribute, a list of tags that this processor can or
+                  cannot appear in.  To list a tag that it can't appear in,
+                  prefix that tag name with a minus symbol, eg: -head
+ - `attributes` - optional attribute, A list of attributes that must or must not
+                  be present in the same tag as this processor.  To list an
+                  attribute that must not be present, prefix that attribute name
+                  with a minus symbol, eg: -style
+ - `values`     - optional attribute, a list of values this processor can take.
+
+
+### <element-processor>
+
+An element processor.
+
+ - `name`  - required attribute, the name of the attribute, minus the prefix
+             part.
+ - `class` - optional attribute, points to the attribute processor class.  If
+             you specify this attribute, then the Javadocs on the class are used
+             to generate the documentation that appears in content assist. 
+
+ - `documentation` - optional element, contains the text that appears in content
+                     assist.  See: [<documentation>](#documentation).
+
+
+### <expression-object-method>
+
+A method in an expression object.
+
+ - `name`  - required attribute, the name of the attribute, minus the prefix
+             part.
+ - `class` - optional attribute, points to the attribute processor class.  If
+             you specify this attribute, then the Javadocs on the class are used
+             to generate the documentation that appears in content assist. 
+
+ - `documentation` - optional element, contains the text that appears in content
+                     assist.  See: [<documentation>](#documentation).
+
+```xml
+<expression-object-method name="fields.errors">
+	<documentation see-also="errors"
+		reference="Thymeleaf + Spring 3 section 7 on Validation and Error Messages">
+		<![CDATA[
+		Returns a list of error messages for the given field name.
+		]]>
+	</documentation>
+</expression-object-method>
+```
+
+
+### <expression-object>
+
+An object added to the processing context to be used by processors.
+
+ - `name`  - required attribute, the name of the attribute, minus the prefix
+             part.
+ - `class` - optional attribute, points to the attribute processor class.  If
+             you specify this attribute, then the Javadocs on the class are used
+             to generate the documentation that appears in content assist. 
+
+ - `documentation` - optional element, contains the text that appears in content
+                     assist.  See: [<documentation>](#documentation).
+
+```xml
+<expression-object name="dates" class="org.thymeleaf.expression.Dates"/>
+```
+
+
+### <documentation>
+
+Notes to help generate some documentation about a processor.
+
+ - `see-also`  - optional attribute, a space-separated list of other dialect
+                 item names related to this one, suggesting where else the user
+                 can go to get more information or understanding.
+ - `reference` - optional attribute, names an 'official' document and the
+                 section/page within it to get more information.
+
 
 Changelog
 ---------
+
+### 2.0.2
+ - Fixed [Issue #15](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/15),
+   where dialect files in dependent projects weren't being picked up, either
+   through Eclipse or dependency-management containers (Maven, Gradle).
+ - Added a basic refresh mechanism which tracks changes in scanned dialect files
+   and reflects those changes in the plugin.  This is an ongoing work, which can
+   be tracked against [Issue #21](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/21).
+ - Resolved [Issue #17](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/17),
+   adding a new attribute to the `<restrictions>` element called `attributes`,
+   which lists other attributes that must or must not appear in the same tag for
+   the attribute processor to be suggested.
 
 ### 2.0.1
  - Resolved [Issue #12](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/12),

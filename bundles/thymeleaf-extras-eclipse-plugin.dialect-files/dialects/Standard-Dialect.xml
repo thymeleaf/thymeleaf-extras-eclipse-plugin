@@ -28,6 +28,7 @@
 		<documentation><![CDATA[
 			Sets both the <b>alt</b> and <b>title</b> attributes.
 		]]></documentation>
+		<restrictions tags="div" attributes="class -style"/>
 	</attribute-processor>
 
 	<attribute-processor name="attr">

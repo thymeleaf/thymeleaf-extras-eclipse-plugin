@@ -134,26 +134,43 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 
 				// Only include the proposal if it isn't already in the element
 				if (existingattributes.getNamedItem(processor.getFullName()) == null) {
+					boolean restricted = false;
 
-					// If a restriction is present, make sure it is satisfied before
-					// including the proposal
+					// If a restriction is present, make sure it is satisfied before including the proposal
 					if (processor.isSetRestrictions()) {
 						AttributeRestrictions restrictions = processor.getRestrictions();
+
 						if (restrictions.isSetTags()) {
 							List<String> tags = restrictions.getTags();
 							String elementname = node.getNodeName();
-							for (String tag: tags) {
-								if (tag.startsWith("-") && !tag.substring(1).equals(elementname)) {
-									proposals.add(proposal);
+
+							if (tags.contains("-" + elementname)) {
+								restricted = true;
+							}
+							if (!tags.contains(elementname)) {
+								restricted = true;
+							}
+						}
+
+						if (restrictions.isSetAttributes()) {
+							for (String attribute: restrictions.getAttributes()) {
+								if (attribute.startsWith("-")) {
+									if (existingattributes.getNamedItem(attribute.substring(1)) != null) {
+										restricted = true;
+										break;
+									}
 								}
-								else if (tag.equals(elementname)) {
-									proposals.add(proposal);
+								else if (existingattributes.getNamedItem(attribute) == null) {
+									restricted = true;
+									break;
 								}
 							}
-							continue;
 						}
 					}
-					proposals.add(proposal);
+
+					if (!restricted) {
+						proposals.add(proposal);
+					}
 				}
 			}
 			return proposals;
