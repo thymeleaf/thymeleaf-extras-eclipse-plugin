@@ -87,7 +87,7 @@ and its [Layout-Dialect.xml file](https://github.com/ultraq/thymeleaf-layout-dia
 An explanation of the XML schema:
 
 
-### <dialect>
+### `<dialect>`
 
 The root element of the XML file, contains information about a dialect, its
 processors, and its expression objects.
