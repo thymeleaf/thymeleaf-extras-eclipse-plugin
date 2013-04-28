@@ -144,11 +144,17 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 							List<String> tags = restrictions.getTags();
 							String elementname = node.getNodeName();
 
-							if (tags.contains("-" + elementname)) {
-								restricted = true;
-							}
-							if (!tags.contains(elementname)) {
-								restricted = true;
+							for (String tag: tags) {
+								if (tag.startsWith("-")) {
+									if (tag.substring(1).equals(elementname)) {
+										restricted = true;
+										break;
+									}
+								}
+								else if (!tag.equals(elementname)) {
+									restricted = true;
+									break;
+								}
 							}
 						}
 

@@ -22,10 +22,13 @@ import org.eclipse.jface.text.contentassist.ContextInformation;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension;
 import org.eclipse.jface.text.contentassist.IContextInformation;
+import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
+import org.thymeleaf.extras.eclipse.dialect.xml.AttributeRestrictions;
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
 import org.thymeleaf.extras.eclipse.dialect.xml.Documentation;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -115,23 +118,24 @@ public abstract class AbstractCompletionProposal implements ICompletionProposal,
 	 */
 	private static String generateDocumentation(DialectItem dialectitem) {
 
+		StringBuilder doctext = new StringBuilder();
+
 		// Documentation from <documentation> element
 		if (dialectitem.isSetDocumentation()) {
 			Documentation documentation = dialectitem.getDocumentation();
 
-			StringBuilder doctext = new StringBuilder(documentation.getValue());
+			doctext.append(documentation.getValue());
 
 			// Generate 'see also' text
 			if (documentation.isSetSeeAlso()) {
 				doctext.append("<br/><dl><dt>See also:</dt><dd>");
-
 				List<Object> seealsolist = documentation.getSeeAlso();
 				for (int i = 0; i < seealsolist.size(); i++) {
 					String seealso = ((DialectItem)seealsolist.get(i)).getName();
 					if (!seealso.contains(".")) {
 						doctext.append(dialectitem.getDialect().getPrefix() + ":");
 					}
-					doctext.append((i < seealsolist.size() - 1) ? seealso + ", " : seealso);
+					doctext.append(i < seealsolist.size() - 1 ? seealso + ", " : seealso);
 				}
 				doctext.append("</dd>");
 			}
@@ -145,11 +149,89 @@ public abstract class AbstractCompletionProposal implements ICompletionProposal,
 			if (documentation.isSetSeeAlso() || documentation.isSetReference()) {
 				doctext.append("</dl>");
 			}
-
-			return doctext.toString();
 		}
 
-		return null;
+		// Generate 'restrictions' text
+		if (dialectitem instanceof AttributeProcessor) {
+			AttributeProcessor attributeprocessor = (AttributeProcessor)dialectitem;
+			if (attributeprocessor.isSetRestrictions()) {
+				AttributeRestrictions restrictions = ((AttributeProcessor)dialectitem).getRestrictions();
+				if (restrictions.isSetTags() || restrictions.isSetAttributes() || restrictions.isSetValues()) {
+					doctext.append("<dl>");
+				}
+
+				// Tags the processor can/can't appear in
+				if (restrictions.isSetTags()) {
+					doctext.append(generateDocumentationRestrictions(restrictions.getTags(),
+							"Must appear in tag(s):", "Cannot appear in tag(s):"));
+				}
+
+				// Attributes the processor can/can't appear alongside
+				if (restrictions.isSetAttributes()) {
+					doctext.append(generateDocumentationRestrictions(restrictions.getAttributes(),
+							"Must appear with attribute(s):", "Cannot appear with attribute(s):"));
+				}
+
+				// Values the processor is restricted to
+				if (restrictions.isSetValues()) {
+					doctext.append("<dt>Possible value(s):</dt><dd>");
+					List<String> values = restrictions.getValues();
+					for (int i = 0; i < values.size(); i++) {
+						String value = values.get(i);
+						doctext.append(i < values.size() - 1 ? value + ", " : value);
+					}
+					doctext.append("</dd>");
+				}
+
+				if (restrictions.isSetTags() || restrictions.isSetAttributes() || restrictions.isSetValues()) {
+					doctext.append("</dl>");
+				}
+			}
+		}
+
+		return doctext.length() > 0 ? doctext.toString() : null;
+	}
+
+	/**
+	 * Creates the help text around attribute restriction tags/attributes.
+	 * 
+	 * @param restrictions Space-separated list of tags/attributes that the
+	 * 					   processor can/cannot appear alongside.
+	 * @param yestext	   Text for when the restriction indicates the processor
+	 * 					   must appear with that restriction.
+	 * @param notext	   Text for when the restriction indicates the processor
+	 * 					   must not appear with that restriction.
+	 * @return <tt>StringBuilder</tt> containing the restriction text.
+	 */
+	private static StringBuilder generateDocumentationRestrictions(List<String> restrictions,
+		String yestext, String notext) {
+
+		StringBuilder doctext = new StringBuilder();
+
+		ArrayList<String> yestags = new ArrayList<String>();
+		ArrayList<String> notags  = new ArrayList<String>();
+		for (String tag: restrictions) {
+			if (tag.startsWith("-")) {
+				notags.add(tag);
+			}
+			else {
+				yestags.add(tag);
+			}
+		}
+		if (!yestags.isEmpty()) {
+			doctext.append("<dt>" + yestext + "</dt>");
+			for (String yestag: yestags) {
+				doctext.append("<dd>&lt;" + yestag + "&gt;</dd>");
+			}
+		}
+		if (!notags.isEmpty()) {
+			doctext.append("<dt>" + notext + "</dt>");
+			for (String notag: notags) {
+				doctext.append("<dd>&lt;" + notag.substring(1) + "&gt;</dd>");
+			}
+		}
+
+		return doctext;
 	}
 
 	/**
