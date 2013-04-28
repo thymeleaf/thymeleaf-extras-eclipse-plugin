@@ -96,10 +96,10 @@ processors, and its expression objects.
  - `namespace-uri` - required attribute, the namespace used by this dialect.
  - `class`         - required attribute, the dialect class.
 
- - `attribute-processor`      - optional element, see [<attribute-processor>](#attribute-processor).
- - `element-processor`        - optional element, see [<element-processor>](#element-processor).
- - `expression-object`        - optional element, see [<expression-object>](#expression-object)
- - `expression-object-method` - optional element, see [<expression-object-method>](#expression-object-method).
+ - `attribute-processor`      - optional element, see [`<attribute-processor>`](#attribute-processor).
+ - `element-processor`        - optional element, see [`<element-processor>`](#element-processor).
+ - `expression-object`        - optional element, see [`<expression-object>`](#expression-object)
+ - `expression-object-method` - optional element, see [`<expression-object-method>`](#expression-object-method).
 
 ```xml
 <dialect xmlns="http://www.thymeleaf.org/extras/dialect"
@@ -123,7 +123,7 @@ deciding where the processor can go and what values it can take.
                      assist.  See: [<documentation>](#documentation).
  - `restrictions`  - optional element, lists certain restrictions on the use of
                      the attribute, such as what values it can take, in which
-                     HTML tags it can appear, and so on.  See: [<restrictions>](#restrictions).
+                     HTML tags it can appear, and so on.  See [`<restrictions>`](#restrictions).
 
 ```xml
 <attribute-processor name="inline">
