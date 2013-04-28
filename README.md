@@ -57,10 +57,10 @@ content assist for your own dialect, read the next section.
 Adding content assist for your dialect
 --------------------------------------
 
-The content assist features and help content are driven by meta data about a
-dialect, currently done using XML files.  XML files for the Thymeleaf Standard
-dialect comes bundled with this plugin, and you can see how it's structured by
-taking a look at [the XML file itself](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/2.0-master/bundles/thymeleaf-extras-eclipse-plugin.dialect-files/dialects/Standard-Dialect.xml),
+The content assist features are driven by meta data about a dialect, currently
+done using XML files.  XML files for the Thymeleaf Standard dialect comes
+bundled with this plugin, and you can see how it's structured by taking a look
+at [the XML file itself](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/2.0-master/bundles/thymeleaf-extras-eclipse-plugin.dialect-files/dialects/Standard-Dialect.xml),
 as well as taking a look at [the schema file it conforms to](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/2.0-master/bundles/thymeleaf-extras-eclipse-plugin.dialect/schemas/thymeleaf-dialect-help.xsd).
 
 When content assist is invoked, this plugin will look for XML files in the
@@ -96,17 +96,19 @@ processors, and its expression objects.
  - `namespace-uri` - required attribute, the namespace used by this dialect.
  - `class`         - required attribute, the dialect class.
 
+ - `attribute-processor`      - optional element, see [<attribute-processor>](#attribute-processor).
+ - `element-processor`        - optional element, see [<element-processor>](#element-processor).
+ - `expression-object`        - optional element, see [<expression-object>](#expression-object)
+ - `expression-object-method` - optional element, see [<expression-object-method>](#expression-object-method).
+
 ```xml
 <dialect xmlns="http://www.thymeleaf.org/extras/dialect"
 	prefix="th" namespace-uri="http://www.thymeleaf.org"
 	class="org.thymeleaf.standard.StandardDialect">
 ```
 
-This root element then contains 0 or more of `attribute-processor`, `element-processor`,
-`expression-object`, or `expression-object-ref`, in any order.
 
-
-### <attribute-processor>
+### `<attribute-processor>`
 
 An attribute processor, includes an extra set of restrictions to help with
 deciding where the processor can go and what values it can take.
@@ -141,7 +143,7 @@ deciding where the processor can go and what values it can take.
 ```
 
 
-### <restrictions>
+### `<restrictions>`
 
 A set of restrictions on attribute processor use, used to help the content
 assist decide where attribute suggestions should be made.
@@ -156,7 +158,7 @@ assist decide where attribute suggestions should be made.
  - `values`     - optional attribute, a list of values this processor can take.
 
 
-### <element-processor>
+### `<element-processor>`
 
 An element processor.
 
@@ -170,7 +172,25 @@ An element processor.
                      assist.  See: [<documentation>](#documentation).
 
 
-### <expression-object-method>
+### `<expression-object>`
+
+An object added to the processing context to be used by processors.
+
+ - `name`  - required attribute, the name of the attribute, minus the prefix
+             part.
+ - `class` - optional attribute, points to the attribute processor class.  If
+             you specify this attribute, then the Javadocs on the class are used
+             to generate the documentation that appears in content assist. 
+
+ - `documentation` - optional element, contains the text that appears in content
+                     assist.  See: [<documentation>](#documentation).
+
+```xml
+<expression-object name="dates" class="org.thymeleaf.expression.Dates"/>
+```
+
+
+### `<expression-object-method>`
 
 A method in an expression object.
 
@@ -195,25 +215,7 @@ A method in an expression object.
 ```
 
 
-### <expression-object>
-
-An object added to the processing context to be used by processors.
-
- - `name`  - required attribute, the name of the attribute, minus the prefix
-             part.
- - `class` - optional attribute, points to the attribute processor class.  If
-             you specify this attribute, then the Javadocs on the class are used
-             to generate the documentation that appears in content assist. 
-
- - `documentation` - optional element, contains the text that appears in content
-                     assist.  See: [<documentation>](#documentation).
-
-```xml
-<expression-object name="dates" class="org.thymeleaf.expression.Dates"/>
-```
-
-
-### <documentation>
+### `<documentation>`
 
 Notes to help generate some documentation about a processor.
 
