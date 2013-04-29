@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Thymeleaf Dialect Help/Documentation Files
 Bundle-SymbolicName: org.thymeleaf.extras.eclipse.dialect.files
-Bundle-Version: 2.0.1.qualifier
+Bundle-Version: 2.0.2.qualifier
 Bundle-Vendor: Thymeleaf Project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .

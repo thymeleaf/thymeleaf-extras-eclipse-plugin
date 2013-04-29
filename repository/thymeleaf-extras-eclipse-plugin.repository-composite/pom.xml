@@ -5,10 +5,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>org.thymeleaf.extras.eclipse.repository</artifactId>
-	<packaging>eclipse-repository</packaging>
+	<artifactId>org.thymeleaf.extras.eclipse.repository.composite</artifactId>
+	<packaging>pom</packaging>
 
-	<name>thymeleaf-extras-eclipse-plugin.repository</name>
+	<name>thymeleaf-extras-eclipse-plugin.repository-composite</name>
 	<description>Repository site for the Thymeleaf Eclipse Plugin</description>
 	<parent>
 		<groupId>org.thymeleaf.extras</groupId>
@@ -18,8 +18,7 @@
 	</parent>
 
 	<properties>
-		<repository>../../target/repository</repository>
-		<repository.update-site>${repository}/update-site</repository.update-site>
+		<composite-repository>../../target/compositeRepository</composite-repository>
 	</properties>
 
 	<build>
@@ -32,13 +31,18 @@
 						<phase>package</phase>
 						<configuration>
 							<tasks>
-								<mkdir dir="${repository.update-site}"/>
-								<copy file="${project.basedir}/p2.index" todir="${repository.update-site}"/>
-								<copy todir="${repository.update-site}">
-									<fileset dir="${project.build.directory}/repository" includes="**/*"/>
+								<mkdir dir="${composite-repository}"/>
+								<copy todir="${composite-repository}">
+									<fileset dir="${project.basedir}">
+										<include name="p2.index"/>
+										<include name="composite*.xml"/>
+									</fileset>
+									<filterset>
+										<filter token="timestamp" value="${maven.build.timestamp}"/>
+										<filter token="update-site" value="${thymeleaf.plugin-update-site}"/>
+									</filterset>
 								</copy>
-								<copy file="${project.build.directory}/${project.artifactId}-${project.version}.zip"
-									tofile="${repository}/${thymeleaf.plugin-name}-${project.version}.zip"/>
+								<replace dir="${composite-repository}" token="-SNAPSHOT"/>
 							</tasks>
 						</configuration>
 						<goals>
