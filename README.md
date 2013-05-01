@@ -7,7 +7,7 @@ standard dialect processors and expression utility objects, using the Eclipse
 Web Tools Platform HTML source editor.
 
  - Current version: 2.0.2
- - Released: ?? ??? 2013
+ - Released: 1 May 2013
 
 
 Minimum Requirements
@@ -21,10 +21,13 @@ Minimum Requirements
 Installation
 ------------
 
-Download the Eclipse plugin ZIP file from the [Thymeleaf Eclipse Plugin SourceForge page](https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/).
+In Eclipse, go to Help >> Install New Software... then add the following URL:
+ - *Eclipse plugin update site URL:* [http://www.thymeleaf.org/eclipse-plugin-update-site/](http://www.thymeleaf.org/eclipse-plugin-update-site/)
+
+If you'd rather download the plugin, you can get a ZIP archive from the
+[Thymeleaf Eclipse Plugin SourceForge page](https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/).
 Then, in Eclipse, go to Help >> Install New Software... and add the ZIP file as
-an archive repository.  The Thymeleaf Eclipse Plugin item should appear.  Select
-it, and follow the on-screen prompts to install the plugin.
+an archive repository.
 
 
 Usage
