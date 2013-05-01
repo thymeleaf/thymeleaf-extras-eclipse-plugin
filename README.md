@@ -21,13 +21,11 @@ Minimum Requirements
 Installation
 ------------
 
-In Eclipse, go to Help >> Install New Software... then add the following URL:
- - *Eclipse plugin update site URL:* [http://www.thymeleaf.org/eclipse-plugin-update-site/](http://www.thymeleaf.org/eclipse-plugin-update-site/)
+In Eclipse, go to Help >> Install New Software... then either use the update
+site URL, or download a ZIP archive of the plugin from SourceForge:
 
-If you'd rather download the plugin, you can get a ZIP archive from the
-[Thymeleaf Eclipse Plugin SourceForge page](https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/).
-Then, in Eclipse, go to Help >> Install New Software... and add the ZIP file as
-an archive repository.
+ - _Update site URL:_ [http://www.thymeleaf.org/eclipse-plugin-update-site/](http://www.thymeleaf.org/eclipse-plugin-update-site/)
+ - _ZIP file downloads: [https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/](https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/)
 
 
 Usage
