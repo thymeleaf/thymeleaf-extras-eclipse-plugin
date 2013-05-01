@@ -24,8 +24,8 @@ Installation
 In Eclipse, go to Help >> Install New Software... then either use the update
 site URL, or download a ZIP archive of the plugin from SourceForge:
 
- - _Update site URL:_ [http://www.thymeleaf.org/eclipse-plugin-update-site/](http://www.thymeleaf.org/eclipse-plugin-update-site/)
- - _ZIP file downloads: [https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/](https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/)
+ - Update site URL: [http://www.thymeleaf.org/eclipse-plugin-update-site/](http://www.thymeleaf.org/eclipse-plugin-update-site/)
+ - ZIP file downloads: [https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/](https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/)
 
 
 Usage
@@ -49,7 +49,7 @@ expression objects in Thymeleaf's standard dialect (as well as the Spring
 dialect if you've included it in your project).  This includes suggestions as
 you type and autocompletion of what you've entered so far if it matches only one
 result (both of these can be invoked manually using CTRL+SPACE), and help text
-when hovering the cursoer over a Thymeleaf processor.
+when hovering the cursor over a Thymeleaf processor.
 
 If you're developing a Thymeleaf dialect and would like to take advantage of
 content assist for your own dialect, read the next section.
@@ -100,10 +100,10 @@ processors, and its expression objects.
 
 #### Elements
 The following elements can appear 0-or-more times, in any order:
- - `attribute-processor`      - optional, see [`<attribute-processor>`](#attribute-processor).
- - `element-processor`        - optional, see [`<element-processor>`](#element-processor).
- - `expression-object`        - optional, see [`<expression-object>`](#expression-object)
- - `expression-object-method` - optional, see [`<expression-object-method>`](#expression-object-method).
+ - [`<attribute-processor>`](#attribute-processor)           - optional.
+ - [`<element-processor>`](#element-processor)               - optional.
+ - [`<expression-object>`](#expression-object)               - optional.
+ - [`<expression-object-method>`](#expression-object-method) - optional.
 
 #### Example
 ```xml
@@ -125,11 +125,12 @@ deciding where the processor can go and what values it can take.
              the documentation that appears in content assist. 
 
 #### Elements
- - `documentation` - optional, contains the text that appears in content assist.
-                     See [`<documentation>`](#documentation).
- - `restrictions`  - optional, lists certain restrictions on the use of the
-                     attribute, such as what values it can take, in which HTML
-                     tags it can appear, and so on.  See [`<restrictions>`](#restrictions).
+ - [`<documentation>`](#documentation) - optional, contains the text that
+                                         appears in content assist.
+ - [`<restrictions>`](#restrictions)   - optional, lists certain restrictions
+                                         on the use of the attribute, such as
+                                         what values it can take, in which HTML
+                                         tags it can appear, and so on.
 
 #### Example
 ```xml
@@ -177,8 +178,8 @@ An element processor.
              the documentation that appears in content assist. 
 
 #### Elements
- - `documentation` - option, contains the text that appears in content assist.
-                     See [`<documentation>`](#documentation).
+ - [`<documentation>`](#documentation) - optional, contains the text that
+                                         appears in content assist.
 
 
 ### `<expression-object>`
@@ -192,8 +193,8 @@ An object added to the processing context to be used by processors.
              the documentation that appears in content assist. 
 
 #### Elements
- - `documentation` - optional, contains the text that appears in content assist.
-                     See [`<documentation>`](#documentation).
+ - [`<documentation>`](#documentation) - optional, contains the text that
+                                         appears in content assist.
 
 #### Example
 ```xml
@@ -212,8 +213,8 @@ A method in an expression object.
              the documentation that appears in content assist. 
 
 #### Elements
- - `documentation` - optional, contains the text that appears in content assist.
-                     See [`<documentation>`](#documentation).
+ - [`<documentation>`](#documentation) - optional, contains the text that
+                                         appears in content assist.
 
 #### Example
 ```xml
