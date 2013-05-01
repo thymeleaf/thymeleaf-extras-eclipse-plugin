@@ -254,6 +254,8 @@ Changelog
    adding a new attribute to the `<restrictions>` element called `attributes`,
    which lists other attributes that must or must not appear in the same tag for
    the attribute processor to be suggested.
+ - Resolved [Issue #13](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/13),
+   because we now have an update site going! :)
 
 ### 2.0.1
  - Resolved [Issue #12](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/12),
