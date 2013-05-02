@@ -1,13 +1,13 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<?compositeArtifactRepository version='1.0.0'?>
-<repository name='Thymeleaf Eclipse Plugin respository'
-	type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository'
-	version='1.0.0'>
-	<properties size='2'>
-		<property name='p2.compressed' value='true'/>
-		<property name='p2.timestamp' value='@timestamp@'/>
+<?xml version="1.0" encoding="UTF-8"?>
+<?compositeArtifactRepository version="1.0.0"?>
+<repository name="Thymeleaf Eclipse Plugin respository"
+	type="org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository"
+	version="1.0.0">
+	<properties size="2">
+		<property name="p2.compressed" value="true"/>
+		<property name="p2.timestamp" value="@timestamp@"/>
 	</properties>
-	<children size='1'>
-		<child location='@update-site@'/>
+	<children size="1">
+		<child location="@update-site@"/>
 	</children>
 </repository>
