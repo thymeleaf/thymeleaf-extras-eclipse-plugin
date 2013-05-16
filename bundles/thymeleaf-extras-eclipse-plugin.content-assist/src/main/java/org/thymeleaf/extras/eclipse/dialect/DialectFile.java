@@ -19,6 +19,7 @@ package org.thymeleaf.extras.eclipse.dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
+import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -38,13 +39,16 @@ public class DialectFile {
 			return item1.getName().compareTo(item2.getName());
 		}
 	});
+	private ArrayList<AttributeProcessor> attributeprocessors;
+	private ArrayList<ElementProcessor> elementprocessors;
+	private ArrayList<ExpressionObjectMethod> expressionobjectmethods;
 
 	/**
 	 * Constructor, associate this class with a dialect's processed items.
 	 * 
 	 * @param dialectitems
 	 */
-	public DialectFile(List<DialectItem> dialectitems) {
+	DialectFile(List<DialectItem> dialectitems) {
 
 		this.dialectitems.addAll(dialectitems);
 	}
@@ -54,19 +58,13 @@ public class DialectFile {
 	 * 
 	 * @return Attribute processors.
 	 */
-	public List<AttributeProcessor> getAttributeProcessors() {
+	List<AttributeProcessor> getAttributeProcessors() {
 
-		return getDialectItemsByType(AttributeProcessor.class);
-	}
-
-	/**
-	 * Get all the element processors in this dialect.
-	 * 
-	 * @return Element processors.
-	 */
-	public List<ElementProcessor> getElementProcessors() {
-
-		return getDialectItemsByType(ElementProcessor.class);
+		if (attributeprocessors == null) {
+			attributeprocessors = getDialectItemsByType(AttributeProcessor.class);
+			attributeprocessors.trimToSize();
+		}
+		return attributeprocessors;
 	}
 
 	/**
@@ -77,7 +75,7 @@ public class DialectFile {
 	 * @return List of all dialect items of the given type.
 	 */
 	@SuppressWarnings("unchecked")
-	private <T> List<T> getDialectItemsByType(Class<T> type) {
+	private <T> ArrayList<T> getDialectItemsByType(Class<T> type) {
 
 		ArrayList<T> items = new ArrayList<T>();
 		for (DialectItem dialectitem: dialectitems) {
@@ -86,5 +84,33 @@ public class DialectFile {
 			}
 		}
 		return items;
+	}
+
+	/**
+	 * Get all the element processors in this dialect.
+	 * 
+	 * @return Element processors.
+	 */
+	List<ElementProcessor> getElementProcessors() {
+
+		if (elementprocessors == null) {
+			elementprocessors = getDialectItemsByType(ElementProcessor.class);
+			elementprocessors.trimToSize();
+		}
+		return elementprocessors;
+	}
+
+	/**
+	 * Get all the expression object methods in this dialect.
+	 * 
+	 * @return Expression object methods.
+	 */
+	List<ExpressionObjectMethod> getExpressionObjectMethods() {
+
+		if (expressionobjectmethods == null) {
+			expressionobjectmethods = getDialectItemsByType(ExpressionObjectMethod.class);
+			expressionobjectmethods.trimToSize();
+		}
+		return expressionobjectmethods;
 	}
 }

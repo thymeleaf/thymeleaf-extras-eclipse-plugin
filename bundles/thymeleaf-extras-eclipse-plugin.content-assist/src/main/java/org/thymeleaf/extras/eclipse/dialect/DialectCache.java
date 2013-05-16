@@ -16,20 +16,12 @@
 
 package org.thymeleaf.extras.eclipse.dialect;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavadocContentAccess;
-import org.thymeleaf.extras.eclipse.dialect.BundledDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
@@ -38,22 +30,13 @@ import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObject;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
-import static org.eclipse.core.resources.IResourceChangeEvent.*;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.TreeSet;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import javax.xml.namespace.QName;
 
@@ -249,7 +232,7 @@ public class DialectCache {
 							expressionobjectmethod.setName(expressionobject.getName() + "." + methodname);
 						}
 
-						expressionobjectmethods.add(expressionobjectmethod);
+						generatedmethods.add(expressionobjectmethod);
 					}
 				}
 			}
@@ -276,10 +259,8 @@ public class DialectCache {
 
 		loadDialectsFromProject(project);
 
-		List<AttributeProcessor> attributeprocessors = dialecttree.getAttributeProcessorsForProject(project);
 		ArrayList<AttributeProcessor> matchedprocessors = new ArrayList<AttributeProcessor>();
-
-		for (AttributeProcessor processor: attributeprocessors) {
+		for (AttributeProcessor processor: dialecttree.getAttributeProcessorsForProject(project)) {
 			Dialect dialect = processor.getDialect();
 			if (dialectInNamespace(dialect, namespaces) &&
 				processorMatchesPattern(processor, pattern)) {
@@ -304,10 +285,8 @@ public class DialectCache {
 
 		loadDialectsFromProject(project);
 
-		List<ElementProcessor> elementprocessors = dialecttree.getElementProcessorsForProject(project);
 		ArrayList<ElementProcessor> matchedprocessors = new ArrayList<ElementProcessor>();
-
-		for (ElementProcessor processor: elementprocessors) {
+		for (ElementProcessor processor: dialecttree.getElementProcessorsForProject(project)) {
 			Dialect dialect = processor.getDialect();
 			if (dialectInNamespace(dialect, namespaces) &&
 				processorMatchesPattern(processor, pattern)) {
@@ -332,9 +311,8 @@ public class DialectCache {
 
 		loadDialectsFromProject(project);
 
-		for (ExpressionObjectMethod expressionobject: expressionobjectmethods) {
-			if (dialectInProject(expressionobject.getDialect(), project) &&
-				dialectInNamespace(expressionobject.getDialect(), namespaces) &&
+		for (ExpressionObjectMethod expressionobject: dialecttree.getExpressionObjectMethodsForProject(project)) {
+			if (dialectInNamespace(expressionobject.getDialect(), namespaces) &&
 				expressionObjectMethodMatchesName(expressionobject, methodname)) {
 				return expressionobject;
 			}
@@ -358,10 +336,9 @@ public class DialectCache {
 		loadDialectsFromProject(project);
 
 		ArrayList<ExpressionObjectMethod> matchedexpressionobjects = new ArrayList<ExpressionObjectMethod>();
-		for (ExpressionObjectMethod expressionobjectmethod: expressionobjectmethods) {
+		for (ExpressionObjectMethod expressionobjectmethod: dialecttree.getExpressionObjectMethodsForProject(project)) {
 			Dialect dialect = expressionobjectmethod.getDialect();
-			if (dialectInProject(dialect, project) &&
-				dialectInNamespace(dialect, namespaces) &&
+			if (dialectInNamespace(dialect, namespaces) &&
 				expressionObjectMethodMatchesPattern(expressionobjectmethod, pattern)) {
 				matchedexpressionobjects.add(expressionobjectmethod);
 			}
@@ -383,10 +360,12 @@ public class DialectCache {
 
 		loadDialectsFromProject(project);
 
+		ArrayList<Processor> processors = new ArrayList<Processor>();
+		processors.addAll(dialecttree.getAttributeProcessorsForProject(project));
+		processors.addAll(dialecttree.getElementProcessorsForProject(project));
+
 		for (Processor processor: processors) {
-			Dialect dialect = processor.getDialect();
-			if (dialectInProject(dialect, project) &&
-				dialectInNamespace(processor.getDialect(), namespaces) &&
+			if (dialectInNamespace(processor.getDialect(), namespaces) &&
 				processorMatchesName(processor, processorname)) {
 				return processor;
 			}

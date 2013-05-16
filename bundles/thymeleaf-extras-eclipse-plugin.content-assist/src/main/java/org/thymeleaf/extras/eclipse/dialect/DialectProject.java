@@ -18,7 +18,9 @@ package org.thymeleaf.extras.eclipse.dialect;
 
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
+import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
+import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -33,25 +35,47 @@ import java.util.TreeMap;
  */
 public class DialectProject {
 
-	final TreeMap<Dialect,DialectFile> dialectfiles = new TreeMap<Dialect,DialectFile>(new Comparator<Dialect>() {
+	private final TreeMap<Dialect,DialectFile> dialectfiles = new TreeMap<Dialect,DialectFile>(new Comparator<Dialect>() {
 		@Override
 		public int compare(Dialect dialect1, Dialect dialect2) {
 			return dialect1.getPrefix().compareTo(dialect2.getPrefix());
 		}
 	});
+	private ArrayList<AttributeProcessor> attributeprocessors;
+	private ArrayList<ElementProcessor> elementprocessors;
+	private ArrayList<ExpressionObjectMethod> expressionobjectmethods;
+
+	/**
+	 * Adds a dialect to this project.
+	 * 
+	 * @param dialect
+	 * @param dialectitems A list of the items in the dialect, but already
+	 * 					   processed to include all the information they need
+	 * 					   for content assist queries.
+	 */
+	void addDialect(Dialect dialect, List<DialectItem> dialectitems) {
+
+		dialectfiles.put(dialect, new DialectFile(dialectitems));
+		attributeprocessors     = null;
+		elementprocessors       = null;
+		expressionobjectmethods = null;
+	}
 
 	/**
 	 * Return all of the attribute processors in this project.
 	 * 
 	 * @return List of this project's attribute processors.
 	 */
-	public List<AttributeProcessor> getAttributeProcessors() {
+	List<AttributeProcessor> getAttributeProcessors() {
 
-		ArrayList<AttributeProcessor> processors = new ArrayList<AttributeProcessor>();
-		for (DialectFile dialectfile: dialectfiles.values()) {
-			processors.addAll(dialectfile.getAttributeProcessors());
+		if (attributeprocessors == null) {
+			attributeprocessors = new ArrayList<AttributeProcessor>();
+			for (DialectFile dialectfile: dialectfiles.values()) {
+				attributeprocessors.addAll(dialectfile.getAttributeProcessors());
+			}
+			attributeprocessors.trimToSize();
 		}
-		return processors;
+		return attributeprocessors;
 	}
 
 	/**
@@ -59,12 +83,32 @@ public class DialectProject {
 	 * 
 	 * @return List of this project's element processors.
 	 */
-	public List<ElementProcessor> getElementProcessors() {
+	List<ElementProcessor> getElementProcessors() {
 
-		ArrayList<ElementProcessor> processors = new ArrayList<ElementProcessor>();
-		for (DialectFile dialectfile: dialectfiles.values()) {
-			processors.addAll(dialectfile.getElementProcessors());
+		if (elementprocessors == null) {
+			elementprocessors = new ArrayList<ElementProcessor>();
+			for (DialectFile dialectfile: dialectfiles.values()) {
+				elementprocessors.addAll(dialectfile.getElementProcessors());
+			}
+			elementprocessors.trimToSize();
 		}
-		return processors;
+		return elementprocessors;
+	}
+
+	/**
+	 * Return all of the expression object methods in this project.
+	 * 
+	 * @return List of this project's expression object methods.
+	 */
+	List<ExpressionObjectMethod> getExpressionObjectMethods() {
+
+		if (expressionobjectmethods == null) {
+			expressionobjectmethods = new ArrayList<ExpressionObjectMethod>();
+			for (DialectFile dialectfile: dialectfiles.values()) {
+				expressionobjectmethods.addAll(dialectfile.getExpressionObjectMethods());
+			}
+			expressionobjectmethods.trimToSize();
+		}
+		return expressionobjectmethods;
 	}
 }

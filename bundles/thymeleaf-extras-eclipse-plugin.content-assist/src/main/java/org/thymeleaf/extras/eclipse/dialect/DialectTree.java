@@ -21,6 +21,7 @@ import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
+import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 
 import java.util.HashMap;
 import java.util.List;
@@ -71,7 +72,7 @@ public class DialectTree {
 		if (!containsProject(project)) {
 			dialectprojects.put(project, new DialectProject());
 		}
-		dialectprojects.get(project).dialectfiles.put(dialect, new DialectFile(dialectitems));
+		dialectprojects.get(project).addDialect(dialect, dialectitems);
 	}
 
 	/**
@@ -113,5 +114,16 @@ public class DialectTree {
 	public List<ElementProcessor> getElementProcessorsForProject(IJavaProject project) {
 
 		return dialectprojects.get(project).getElementProcessors();
+	}
+
+	/**
+	 * Retrieve all expression object methods for the given project.
+	 * 
+	 * @param project
+	 * @return List of all expression object methods for the given project.
+	 */
+	public List<ExpressionObjectMethod> getExpressionObjectMethodsForProject(IJavaProject project) {
+
+		return dialectprojects.get(project).getExpressionObjectMethods();
 	}
 }
