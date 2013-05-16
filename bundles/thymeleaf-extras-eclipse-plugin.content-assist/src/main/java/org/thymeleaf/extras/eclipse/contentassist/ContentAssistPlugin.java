@@ -32,6 +32,7 @@ import org.eclipse.wst.html.ui.internal.HTMLUIPlugin;
 import org.eclipse.wst.html.ui.internal.preferences.HTMLUIPreferenceNames;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.osgi.framework.BundleContext;
+import org.thymeleaf.extras.eclipse.dialect.DialectCache;
 
 /**
  * Plugin activator class for the Thymeleaf content assist module.

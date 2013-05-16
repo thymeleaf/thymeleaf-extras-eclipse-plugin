@@ -16,14 +16,55 @@
 
 package org.thymeleaf.extras.eclipse.dialect;
 
-import java.util.TreeSet;
+import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
+import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
+import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
- * Representation of a project that contains dialect information.
+ * Representation of a project that contains one or more files which in turn
+ * contain dialect information.
  * 
  * @author Emanuel Rabina
  */
 public class DialectProject {
 
-	private TreeSet<DialectFile> files = new TreeSet<DialectFile>();
+	final TreeMap<Dialect,DialectFile> dialectfiles = new TreeMap<Dialect,DialectFile>(new Comparator<Dialect>() {
+		@Override
+		public int compare(Dialect dialect1, Dialect dialect2) {
+			return dialect1.getPrefix().compareTo(dialect2.getPrefix());
+		}
+	});
+
+	/**
+	 * Return all of the attribute processors in this project.
+	 * 
+	 * @return List of this project's attribute processors.
+	 */
+	public List<AttributeProcessor> getAttributeProcessors() {
+
+		ArrayList<AttributeProcessor> processors = new ArrayList<AttributeProcessor>();
+		for (DialectFile dialectfile: dialectfiles.values()) {
+			processors.addAll(dialectfile.getAttributeProcessors());
+		}
+		return processors;
+	}
+
+	/**
+	 * Return all of the element processors in this project.
+	 * 
+	 * @return List of this project's element processors.
+	 */
+	public List<ElementProcessor> getElementProcessors() {
+
+		ArrayList<ElementProcessor> processors = new ArrayList<ElementProcessor>();
+		for (DialectFile dialectfile: dialectfiles.values()) {
+			processors.addAll(dialectfile.getElementProcessors());
+		}
+		return processors;
+	}
 }
