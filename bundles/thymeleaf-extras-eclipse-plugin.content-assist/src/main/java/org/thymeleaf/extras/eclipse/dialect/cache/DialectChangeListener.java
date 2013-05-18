@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.dialect;
+package org.thymeleaf.extras.eclipse.dialect.cache;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -47,29 +47,13 @@ public class DialectChangeListener implements IResourceChangeListener {
 	private final ExecutorService resourcechangeexecutor = Executors.newSingleThreadExecutor();
 
 	/**
-	 * Stops the resource change executor.
-	 */
-	public void close() {
-
-		resourcechangeexecutor.shutdown();
-		try {
-			if (resourcechangeexecutor.awaitTermination(5, TimeUnit.SECONDS)) {
-				resourcechangeexecutor.shutdownNow();
-			}
-		}
-		catch (InterruptedException ex) {
-			// Do nothing
-		}
-	}
-
-	/**
 	 * When notified of a resource change, redirect the work to the change
 	 * executor thread so as to not block the event change thread.
 	 */
 	@Override
 	public void resourceChanged(final IResourceChangeEvent event) {
 
-		resourcechangeexecutor.execute(new Runnable() {
+/*		resourcechangeexecutor.execute(new Runnable() {
 			@Override
 			public void run() {
 
@@ -93,5 +77,21 @@ public class DialectChangeListener implements IResourceChangeListener {
 				}
 			}
 		});
+*/	}
+
+	/**
+	 * Stops the resource change executor.
+	 */
+	void shutdown() {
+
+		resourcechangeexecutor.shutdown();
+		try {
+			if (resourcechangeexecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+				resourcechangeexecutor.shutdownNow();
+			}
+		}
+		catch (InterruptedException ex) {
+			// Do nothing
+		}
 	}
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.dialect;
+package org.thymeleaf.extras.eclipse.dialect.cache;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
@@ -22,6 +22,9 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavadocContentAccess;
+import org.thymeleaf.extras.eclipse.dialect.BundledDialectLocator;
+import org.thymeleaf.extras.eclipse.dialect.ProjectDependencyDialectLocator;
+import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
@@ -52,43 +55,6 @@ public class DialectCache {
 
 	// Tree structure of all dialects in the user's workspace
 	private static final DialectTree dialecttree = new DialectTree();
-
-	// List of bundled dialects
-/*	private static final ArrayList<Dialect> bundleddialects = new ArrayList<Dialect>();
-
-	// Mapping of projects that contain certain dialects
-	private static final HashMap<IJavaProject,List<Dialect>> projectdialects =
-			new HashMap<IJavaProject,List<Dialect>>();
-
-	// Collection of processors in alphabetical order
-	private static final TreeSet<Processor> processors = new TreeSet<Processor>(new Comparator<Processor>() {
-		@Override
-		public int compare(Processor p1, Processor p2) {
-			Dialect d1 = p1.getDialect();
-			Dialect d2 = p2.getDialect();
-			return d1 == d2 ?
-					p1.getName().compareTo(p2.getName()) :
-					p1.getFullName().compareTo(p2.getFullName());
-		}
-	});
-
-	// Collection of expression object methods in alphabetical order
-	private static final TreeSet<ExpressionObjectMethod> expressionobjectmethods =
-			new TreeSet<ExpressionObjectMethod>(new Comparator<ExpressionObjectMethod>() {
-			@Override
-			public int compare(ExpressionObjectMethod m1, ExpressionObjectMethod m2) {
-				return m1.getName().compareTo(m2.getName());
-			}
-	});
-*/
-	/**
-	 * Shutdown method of the cache, cleans up any processes that need
-	 * cleaning-up.
-	 */
-	public static void close() {
-
-		dialecttree.close();
-	}
 
 	/**
 	 * Checks if the dialect is in the list of given namespaces.
@@ -467,5 +433,14 @@ public class DialectCache {
 	private static boolean processorMatchesPattern(Processor processor, String pattern) {
 
 		return pattern != null && processor.getFullName().startsWith(pattern);
+	}
+
+	/**
+	 * Shutdown method of the cache, cleans up any processes that need
+	 * cleaning-up.
+	 */
+	public static void shutdown() {
+
+		dialecttree.shutdown();
 	}
 }

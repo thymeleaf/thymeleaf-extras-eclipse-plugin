@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.dialect;
+package org.thymeleaf.extras.eclipse.dialect.cache;
 
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
@@ -23,9 +23,8 @@ import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Representation of a project that contains one or more files which in turn
@@ -35,12 +34,7 @@ import java.util.TreeMap;
  */
 public class DialectProject {
 
-	private final TreeMap<Dialect,DialectFile> dialectfiles = new TreeMap<Dialect,DialectFile>(new Comparator<Dialect>() {
-		@Override
-		public int compare(Dialect dialect1, Dialect dialect2) {
-			return dialect1.getPrefix().compareTo(dialect2.getPrefix());
-		}
-	});
+	private final HashMap<Dialect,DialectFile> dialectfiles = new HashMap<Dialect,DialectFile>();
 	private ArrayList<AttributeProcessor> attributeprocessors;
 	private ArrayList<ElementProcessor> elementprocessors;
 	private ArrayList<ExpressionObjectMethod> expressionobjectmethods;

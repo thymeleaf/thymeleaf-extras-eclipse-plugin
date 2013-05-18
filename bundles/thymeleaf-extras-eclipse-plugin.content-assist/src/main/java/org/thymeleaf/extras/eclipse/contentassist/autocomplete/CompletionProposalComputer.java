@@ -31,7 +31,7 @@ import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode;
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext;
 import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer;
-import org.thymeleaf.extras.eclipse.dialect.DialectCache;
+import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeRestrictions;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;

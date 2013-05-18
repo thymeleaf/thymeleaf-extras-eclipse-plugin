@@ -29,7 +29,7 @@ import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils;
 import org.eclipse.wst.sse.ui.internal.derived.HTMLTextPresenter;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode;
 import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer;
-import org.thymeleaf.extras.eclipse.dialect.DialectCache;
+import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
