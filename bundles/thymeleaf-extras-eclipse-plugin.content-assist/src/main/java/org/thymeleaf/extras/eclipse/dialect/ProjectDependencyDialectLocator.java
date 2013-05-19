@@ -31,9 +31,7 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -57,7 +55,7 @@ public class ProjectDependencyDialectLocator implements DialectLocator<InputStre
 
 	private final IJavaProject project;
 	private final XPathExpression namespaceexpression;
-	private final HashSet<IPath> dialectfilepaths = new HashSet<IPath>();
+	private final ArrayList<IPath> dialectfilepaths = new ArrayList<IPath>();
 
 	/**
 	 * Constructor, sets which project will be scanned for Thymeleaf dialect
@@ -80,11 +78,12 @@ public class ProjectDependencyDialectLocator implements DialectLocator<InputStre
 
 	/**
 	 * Return a list of the dialect file paths that were encountered during a
-	 * run of {@link #locateDialects}.
+	 * run of {@link #locateDialects}.  The order of the paths matches the order
+	 * of the dialects returned by <tt>locateDialects()</tt>.
 	 * 
 	 * @return List of dialect file paths.
 	 */
-	public Set<IPath> getDialectFilePaths() {
+	public List<IPath> getDialectFilePaths() {
 
 		return dialectfilepaths;
 	}

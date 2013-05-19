@@ -38,7 +38,8 @@ public class DialectFile {
 	private ArrayList<ExpressionObjectMethod> expressionobjectmethods;
 
 	/**
-	 * Constructor, associate this class with a dialect's processed items.
+	 * Package-only constructor, associate this class with a dialect's processed
+	 * items.
 	 * 
 	 * @param dialectitems
 	 */

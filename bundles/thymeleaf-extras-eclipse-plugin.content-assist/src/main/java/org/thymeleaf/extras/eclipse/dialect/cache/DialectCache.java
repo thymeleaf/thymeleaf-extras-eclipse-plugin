@@ -16,29 +16,20 @@
 
 package org.thymeleaf.extras.eclipse.dialect.cache;
 
-import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.ui.JavadocContentAccess;
 import org.thymeleaf.extras.eclipse.dialect.BundledDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.ProjectDependencyDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
-import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
-import org.thymeleaf.extras.eclipse.dialect.xml.Documentation;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
-import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObject;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -51,10 +42,14 @@ import javax.xml.namespace.QName;
  */
 public class DialectCache {
 
-	private static final XmlDialectLoader xmldialectloader = new XmlDialectLoader();
+	private static XmlDialectLoader xmldialectloader = new XmlDialectLoader();
+	private static DialectItemProcessor dialectitemprocessor = new DialectItemProcessor();
 
 	// Tree structure of all dialects in the user's workspace
-	private static final DialectTree dialecttree = new DialectTree();
+	private static DialectTree dialecttree;
+
+	// Resource listener for changes to dialect projects and files
+	private static DialectChangeListener dialectchangelistener;
 
 	/**
 	 * Checks if the dialect is in the list of given namespaces.
@@ -107,107 +102,6 @@ public class DialectCache {
 	private static boolean expressionObjectMethodMatchesPattern(ExpressionObjectMethod method, String pattern) {
 
 		return pattern != null && method.getFullName().startsWith(pattern);
-	}
-
-	/**
-	 * Creates a documentation element from the Javadocs of a processor class.
-	 * 
-	 * @param processor
-	 * @param project
-	 * @return Documentation element with the processor's Javadoc content, or
-	 * 		   <tt>null</tt> if the processor had no Javadocs on it.
-	 */
-	private static Documentation generateDocumentation(Processor processor, IJavaProject project) {
-
-		String processorclassname = processor.getClazz();
-
-		try {
-			IType type = project.findType(processorclassname, new NullProgressMonitor());
-			if (type != null) {
-				Reader reader = JavadocContentAccess.getHTMLContentReader(type, false, false);
-				if (reader != null) {
-					try {
-						StringBuilder javadoc = new StringBuilder();
-						int nextchar = reader.read();
-						while (nextchar != -1) {
-							javadoc.append((char)nextchar);
-							nextchar = reader.read();
-						}
-						Documentation documentation = new Documentation();
-						documentation.setValue(javadoc.toString());
-						return documentation;
-					}
-					finally {
-						reader.close();
-					}
-				}
-			}
-		}
-		catch (JavaModelException ex) {
-			logError("Unable to access " + processorclassname + " in the project", ex);
-		}
-		catch (IOException ex) {
-			logError("Unable to read javadocs from " + processorclassname, ex);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Creates expression object method suggestions from an expression object
-	 * reference.
-	 * 
-	 * @param dialect		   Parent dialect.
-	 * @param expressionobject The exression object reference.
-	 * @return Set of expression object method suggestions based on the visible
-	 * 		   methods of the expression object.
-	 */
-	private static HashSet<ExpressionObjectMethod> generateExpressionObjectMethods(Dialect dialect,
-		ExpressionObject expressionobject) {
-
-		HashSet<ExpressionObjectMethod> generatedmethods = new HashSet<ExpressionObjectMethod>();
-
-		String classname = expressionobject.getClazz();
-		IJavaProject project = findCurrentJavaProject();
-		try {
-			IType type = project.findType(classname);
-			if (type != null) {
-				for (IMethod method: type.getMethods()) {
-					if (!method.isConstructor()) {
-
-						ExpressionObjectMethod expressionobjectmethod = new ExpressionObjectMethod();
-						expressionobjectmethod.setDialect(dialect);
-
-						// For Java bean methods, convert the suggestion to a property
-						String methodname = method.getElementName();
-						int propertypoint =
-								methodname.startsWith("get") || methodname.startsWith("set") ? 3 :
-								methodname.startsWith("is") ? 2 :
-								-1;
-
-						if (propertypoint != -1 && methodname.length() > propertypoint &&
-							Character.isUpperCase(methodname.charAt(propertypoint))) {
-
-							StringBuilder propertyname = new StringBuilder(methodname.substring(propertypoint));
-							propertyname.insert(0, Character.toLowerCase(propertyname.charAt(0)));
-							propertyname.deleteCharAt(1);
-							expressionobjectmethod.setName(expressionobject.getName() + "." + propertyname);
-							expressionobjectmethod.setJavaBeanProperty(true);
-						}
-						else {
-							expressionobjectmethod.setName(expressionobject.getName() + "." + methodname);
-						}
-
-						generatedmethods.add(expressionobjectmethod);
-					}
-				}
-			}
-		}
-		catch (JavaModelException ex) {
-			logError("Unable to locate expression object reference: " + classname, ex);
-		}
-
-		return generatedmethods;
 	}
 
 	/**
@@ -345,45 +239,17 @@ public class DialectCache {
 	 */
 	public static void initialize() {
 
-		logInfo("Loading bundled dialect files");
+		dialecttree = new DialectTree();
 
+		logInfo("Loading bundled dialect files");
 		List<Dialect> dialects = xmldialectloader.loadDialects(new BundledDialectLocator());
 		for (Dialect dialect: dialects) {
-			dialecttree.addBundledDialect(dialect, loadDialectItems(dialect, findCurrentJavaProject()));
-		}
-	}
-
-	/**
-	 * Create the content-assist-ready dialect items from those listed in the
-	 * given file definition.
-	 * 
-	 * @param dialect Dialect file being loaded.
-	 * @param project Project the dialect was found in.
-	 * @return List of updated dialect items 
-	 */
-	private static ArrayList<DialectItem> loadDialectItems(Dialect dialect, IJavaProject project) {
-
-		ArrayList<DialectItem> dialectitems = new ArrayList<DialectItem>();
-
-		for (DialectItem dialectitem: dialect.getDialectItems()) {
-			if (dialectitem instanceof Processor) {
-				Processor processor = (Processor)dialectitem;
-
-				// Generate and save javadocs if no documentation present
-				if (!dialectitem.isSetDocumentation() && dialectitem.isSetClazz()) {
-					dialectitem.setDocumentation(generateDocumentation(processor, project));
-				}
-				dialectitems.add(processor);
-			}
-			else if (dialectitem instanceof ExpressionObject) {
-				dialectitems.addAll(generateExpressionObjectMethods(dialect, (ExpressionObject)dialectitem));
-			}
-			else {
-				dialectitems.add(dialectitem);
-			}
+			dialecttree.addBundledDialect(dialect, dialectitemprocessor.processDialectItems(
+					dialect, findCurrentJavaProject()));
 		}
 
-		return dialectitems;
+		dialectchangelistener = new DialectChangeListener(xmldialectloader, dialectitemprocessor, dialecttree);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(dialectchangelistener);
 	}
 
 	/**
@@ -397,8 +263,15 @@ public class DialectCache {
 		if (!dialecttree.containsProject(project)) {
 			ProjectDependencyDialectLocator projectdialectlocator = new ProjectDependencyDialectLocator(project);
 			List<Dialect> dialects = xmldialectloader.loadDialects(projectdialectlocator);
-			for (Dialect dialect: dialects) {
-				dialecttree.addProjectDialect(project, dialect, loadDialectItems(dialect, project));
+			List<IPath> dialectfilepaths = projectdialectlocator.getDialectFilePaths();
+
+			for (int i = 0; i < dialects.size(); i++) {
+				Dialect dialect = dialects.get(i);
+				IPath dialectfilepath = dialectfilepaths.get(i);
+
+				dialecttree.addProjectDialect(project, dialectfilepath,
+						dialectitemprocessor.processDialectItems(dialect, project));
+				dialectchangelistener.trackDialectFileForChanges(dialectfilepath);
 			}
 		}
 	}
@@ -441,6 +314,7 @@ public class DialectCache {
 	 */
 	public static void shutdown() {
 
-		dialecttree.shutdown();
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(dialectchangelistener);
+		dialectchangelistener.shutdown();
 	}
 }

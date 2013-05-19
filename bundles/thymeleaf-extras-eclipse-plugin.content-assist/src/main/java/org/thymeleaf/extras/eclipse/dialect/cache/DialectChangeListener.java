@@ -23,12 +23,15 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.thymeleaf.extras.eclipse.dialect.SingleFileDialectLocator;
+import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
+import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
 import static org.eclipse.core.resources.IResourceChangeEvent.POST_CHANGE;
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.logInfo;
+import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -41,10 +44,29 @@ import java.util.concurrent.TimeUnit;
  */
 public class DialectChangeListener implements IResourceChangeListener {
 
-	// Collection of dialect files that will be watched for updates to keep the cache up-to-date
-	private final CopyOnWriteArraySet<IPath> dialectfilepaths = new CopyOnWriteArraySet<IPath>();
-
 	private final ExecutorService resourcechangeexecutor = Executors.newSingleThreadExecutor();
+
+	// Collection of dialect files that will be watched for updates to keep the cache up-to-date
+	private final CopyOnWriteArrayList<IPath> dialectfilepaths = new CopyOnWriteArrayList<IPath>();
+
+	private final XmlDialectLoader xmldialectloader;
+	private final DialectItemProcessor dialectitemprocessor;
+	private final DialectTree dialecttree;
+
+	/**
+	 * Package-only constructor, watch over the given dialect tree.
+	 * 
+	 * @param xmldialectloader
+	 * @param dialectitemprocessor
+	 * @param dialecttree
+	 */
+	DialectChangeListener(XmlDialectLoader xmldialectloader, DialectItemProcessor dialectitemprocessor,
+		DialectTree dialecttree) {
+
+		this.xmldialectloader     = xmldialectloader;
+		this.dialectitemprocessor = dialectitemprocessor;
+		this.dialecttree          = dialecttree;
+	}
 
 	/**
 	 * When notified of a resource change, redirect the work to the change
@@ -53,31 +75,30 @@ public class DialectChangeListener implements IResourceChangeListener {
 	@Override
 	public void resourceChanged(final IResourceChangeEvent event) {
 
-/*		resourcechangeexecutor.execute(new Runnable() {
+		resourcechangeexecutor.execute(new Runnable() {
 			@Override
 			public void run() {
 
 				if (event.getType() == POST_CHANGE) {
 					IResourceDelta delta = event.getDelta();
-					for (final IPath dialectfilepath: dialectfilepaths) {
+					for (IPath dialectfilepath: dialectfilepaths) {
 						IResourceDelta dialectfiledelta = delta.findMember(dialectfilepath);
 						if (dialectfiledelta != null) {
 							logInfo("Dialect file " + dialectfilepath.lastSegment() + " changed, reloading dialect");
+							IProject dialectfileproject = dialectfiledelta.getResource().getProject();
+							IJavaProject javaproject = JavaCore.create(dialectfileproject);
 
-							List<Dialect> updateddialects = xmldialectloader.loadDialects(
+							List<Dialect> updatedialect = xmldialectloader.loadDialects(
 									new SingleFileDialectLocator(dialectfilepath));
-							for (Dialect updateddialect: updateddialects) {
-								IProject dialectfileproject = dialectfiledelta.getResource().getProject();
-								IJavaProject javaproject = JavaCore.create(dialectfileproject);
-								removeDialectItems(updateddialect);
-								loadDialectItems(updateddialect, javaproject);
-							}
+							List<DialectItem> updateddialectitems = dialectitemprocessor.processDialectItems(
+									updatedialect.get(0), javaproject);
+							dialecttree.updateDialect(dialectfilepath, updateddialectitems);
 						}
 					}
 				}
 			}
 		});
-*/	}
+	}
 
 	/**
 	 * Stops the resource change executor.
@@ -93,5 +114,15 @@ public class DialectChangeListener implements IResourceChangeListener {
 		catch (InterruptedException ex) {
 			// Do nothing
 		}
+	}
+
+	/**
+	 * Track a dialect file for changes.
+	 * 
+	 * @param dialectfilepath
+	 */
+	void trackDialectFileForChanges(IPath dialectfilepath) {
+
+		dialectfilepaths.add(dialectfilepath);
 	}
 }

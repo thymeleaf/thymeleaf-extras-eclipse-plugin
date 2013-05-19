@@ -16,8 +16,8 @@
 
 package org.thymeleaf.extras.eclipse.dialect.cache;
 
+import org.eclipse.core.runtime.IPath;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
-import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
@@ -34,22 +34,29 @@ import java.util.List;
  */
 public class DialectProject {
 
-	private final HashMap<Dialect,DialectFile> dialectfiles = new HashMap<Dialect,DialectFile>();
+	private final HashMap<IPath,DialectFile> dialectfiles = new HashMap<IPath,DialectFile>();
 	private ArrayList<AttributeProcessor> attributeprocessors;
 	private ArrayList<ElementProcessor> elementprocessors;
 	private ArrayList<ExpressionObjectMethod> expressionobjectmethods;
 
 	/**
-	 * Adds a dialect to this project.
+	 * Package-only constructor.
+	 */
+	DialectProject() {
+	}
+
+	/**
+	 * Adds a dialect to this project.  If the path already exists for a dialect
+	 * in this project, then this method will ovewrite that dialect.
 	 * 
-	 * @param dialect
+	 * @param dialectpath  The resource path to the dialect.
 	 * @param dialectitems A list of the items in the dialect, but already
 	 * 					   processed to include all the information they need
 	 * 					   for content assist queries.
 	 */
-	void addDialect(Dialect dialect, List<DialectItem> dialectitems) {
+	void addDialect(IPath dialectpath, List<DialectItem> dialectitems) {
 
-		dialectfiles.put(dialect, new DialectFile(dialectitems));
+		dialectfiles.put(dialectpath, new DialectFile(dialectitems));
 		attributeprocessors     = null;
 		elementprocessors       = null;
 		expressionobjectmethods = null;
@@ -104,5 +111,18 @@ public class DialectProject {
 			expressionobjectmethods.trimToSize();
 		}
 		return expressionobjectmethods;
+	}
+
+	/**
+	 * Return whether or not this project makes use of a dialect with the given
+	 * resource path.
+	 * 
+	 * @param dialectfilepath
+	 * @return <tt>true</tt> if a dialect in this project originates from the
+	 * 		   given path.
+	 */
+	boolean hasDialect(IPath dialectfilepath) {
+
+		return dialectfiles.keySet().contains(dialectfilepath);
 	}
 }

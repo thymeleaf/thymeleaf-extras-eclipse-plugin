@@ -16,6 +16,7 @@
 
 package org.thymeleaf.extras.eclipse.dialect.cache;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
@@ -28,6 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Representation of all of the projects which contain dialect files found in
@@ -51,8 +53,11 @@ public class DialectTree {
 	private HashMap<IJavaProject,ArrayList<ExpressionObjectMethod>> projectexpressionobjectmethods =
 			new HashMap<IJavaProject,ArrayList<ExpressionObjectMethod>>();
 
-	// Resource listener for changes to dialect projects and files
-	private DialectChangeListener dialectchangelistener = new DialectChangeListener();
+	/**
+	 * Package-only constructor.
+	 */
+	DialectTree() {
+	}
 
 	/**
 	 * Add a bundled dialect to the tree, which will be available across all
@@ -74,17 +79,17 @@ public class DialectTree {
 	 * instead.
 	 * 
 	 * @param project
-	 * @param dialect
+	 * @param dialectpath  The resource path to the dialect.
 	 * @param dialectitems A list of the items in the dialect, but already
 	 * 					   processed to include all the information they need
 	 * 					   for content assist queries.
 	 */
-	void addProjectDialect(IJavaProject project, Dialect dialect, List<DialectItem> dialectitems) {
+	void addProjectDialect(IJavaProject project, IPath dialectpath, List<DialectItem> dialectitems) {
 
 		if (!containsProject(project)) {
 			dialectprojects.put(project, new DialectProject());
 		}
-		dialectprojects.get(project).addDialect(dialect, dialectitems);
+		dialectprojects.get(project).addDialect(dialectpath, dialectitems);
 	}
 
 	/**
@@ -162,18 +167,33 @@ public class DialectTree {
 	}
 
 	/**
-	 * Clean up the workspace change listener.
+	 * Update the dialect file that was mapped to the given path, with the new
+	 * processed dialect items.
+	 * 
+	 * @param dialectfilepath
+	 * @param dialectitems
 	 */
-	void shutdown() {
+	void updateDialect(IPath dialectfilepath, List<DialectItem> dialectitems) {
 
-		dialectchangelistener.shutdown();
+		for (Map.Entry<IJavaProject,DialectProject> entryset: dialectprojects.entrySet()) {
+			IJavaProject javaproject = entryset.getKey();
+			DialectProject dialectproject = entryset.getValue();
+
+			if (dialectproject.hasDialect(dialectfilepath)) {
+				dialectproject.addDialect(dialectfilepath, dialectitems);
+				projectattributeprocessors.remove(javaproject);
+				projectelementprocessors.remove(javaproject);
+				projectexpressionobjectmethods.remove(javaproject);
+			}
+		}
 	}
+
 
 	/**
 	 * Comparator for dialect items.  Dialect items are sorted in alphabetical
 	 * order, prefix first, then the processor name.
 	 */
-	private static class DialectItemComparator implements Comparator<DialectItem> {
+	private class DialectItemComparator implements Comparator<DialectItem> {
 
 		/**
 		 * {@inheritDoc}
