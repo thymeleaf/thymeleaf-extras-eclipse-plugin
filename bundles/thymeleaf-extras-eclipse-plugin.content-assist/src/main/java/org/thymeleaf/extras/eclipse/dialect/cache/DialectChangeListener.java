@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -27,11 +28,11 @@ import org.thymeleaf.extras.eclipse.dialect.SingleFileDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
-import static org.eclipse.core.resources.IResourceChangeEvent.POST_CHANGE;
+import static org.eclipse.core.resources.IResourceChangeEvent.*;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +48,8 @@ public class DialectChangeListener implements IResourceChangeListener {
 	private final ExecutorService resourcechangeexecutor = Executors.newSingleThreadExecutor();
 
 	// Collection of dialect files that will be watched for updates to keep the cache up-to-date
-	private final CopyOnWriteArrayList<IPath> dialectfilepaths = new CopyOnWriteArrayList<IPath>();
+	private final ConcurrentHashMap<IPath,IProject> dialectfilepaths =
+			new ConcurrentHashMap<IPath,IProject>();
 
 	private final XmlDialectLoader xmldialectloader;
 	private final DialectItemProcessor dialectitemprocessor;
@@ -79,12 +81,16 @@ public class DialectChangeListener implements IResourceChangeListener {
 			@Override
 			public void run() {
 
-				if (event.getType() == POST_CHANGE) {
+				switch (event.getType()) {
+
+				// If a dialect file has changed, update the dialect items associated with it
+				case POST_CHANGE:
 					IResourceDelta delta = event.getDelta();
-					for (IPath dialectfilepath: dialectfilepaths) {
+					for (IPath dialectfilepath: dialectfilepaths.keySet()) {
 						IResourceDelta dialectfiledelta = delta.findMember(dialectfilepath);
 						if (dialectfiledelta != null) {
-							logInfo("Dialect file " + dialectfilepath.lastSegment() + " changed, reloading dialect");
+							logInfo("Dialect file " + dialectfilepath.lastSegment() +
+									" changed, reloading dialect");
 							IProject dialectfileproject = dialectfiledelta.getResource().getProject();
 							IJavaProject javaproject = JavaCore.create(dialectfileproject);
 
@@ -95,6 +101,23 @@ public class DialectChangeListener implements IResourceChangeListener {
 							dialecttree.updateDialect(dialectfilepath, updateddialectitems);
 						}
 					}
+					break;
+
+				// If a project containing a dialect is changing, remove the dialect
+				// from the dialect tree.
+				case PRE_CLOSE:
+				case PRE_DELETE:
+					IProject project = (IProject)event.getResource();
+					for (IPath dialectfilepath: dialectfilepaths.keySet()) {
+						IProject dialectproject = dialectfilepaths.get(dialectfilepath);
+						if (project.equals(dialectproject)) {
+							logInfo("Project containing dialect file " + dialectfilepath.lastSegment() +
+									" has been closed/deleted, removing dialect.");
+							dialecttree.updateDialect(dialectfilepath, null);
+							dialectfilepaths.remove(dialectfilepath);
+						}
+					}
+					break;
 				}
 			}
 		});
@@ -123,6 +146,7 @@ public class DialectChangeListener implements IResourceChangeListener {
 	 */
 	void trackDialectFileForChanges(IPath dialectfilepath) {
 
-		dialectfilepaths.add(dialectfilepath);
+		dialectfilepaths.put(dialectfilepath, ResourcesPlugin.getWorkspace().getRoot()
+				.findMember(dialectfilepath).getProject());
 	}
 }

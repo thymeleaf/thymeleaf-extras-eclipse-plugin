@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class DialectProject {
 
-	private final HashMap<IPath,DialectFile> dialectfiles = new HashMap<IPath,DialectFile>();
+	private final HashMap<IPath,DialectFile> dialectfilepaths = new HashMap<IPath,DialectFile>();
 	private ArrayList<AttributeProcessor> attributeprocessors;
 	private ArrayList<ElementProcessor> elementprocessors;
 	private ArrayList<ExpressionObjectMethod> expressionobjectmethods;
@@ -49,14 +49,14 @@ public class DialectProject {
 	 * Adds a dialect to this project.  If the path already exists for a dialect
 	 * in this project, then this method will ovewrite that dialect.
 	 * 
-	 * @param dialectpath  The resource path to the dialect.
-	 * @param dialectitems A list of the items in the dialect, but already
-	 * 					   processed to include all the information they need
-	 * 					   for content assist queries.
+	 * @param dialectfilepath  The resource path to the dialect.
+	 * @param dialectitems	   A list of the items in the dialect, but already
+	 * 						   processed to include all the information they
+	 * 						   need for content assist queries.
 	 */
-	void addDialect(IPath dialectpath, List<DialectItem> dialectitems) {
+	void addDialect(IPath dialectfilepath, List<DialectItem> dialectitems) {
 
-		dialectfiles.put(dialectpath, new DialectFile(dialectitems));
+		dialectfilepaths.put(dialectfilepath, new DialectFile(dialectitems));
 		attributeprocessors     = null;
 		elementprocessors       = null;
 		expressionobjectmethods = null;
@@ -71,7 +71,7 @@ public class DialectProject {
 
 		if (attributeprocessors == null) {
 			attributeprocessors = new ArrayList<AttributeProcessor>();
-			for (DialectFile dialectfile: dialectfiles.values()) {
+			for (DialectFile dialectfile: dialectfilepaths.values()) {
 				attributeprocessors.addAll(dialectfile.getAttributeProcessors());
 			}
 			attributeprocessors.trimToSize();
@@ -88,7 +88,7 @@ public class DialectProject {
 
 		if (elementprocessors == null) {
 			elementprocessors = new ArrayList<ElementProcessor>();
-			for (DialectFile dialectfile: dialectfiles.values()) {
+			for (DialectFile dialectfile: dialectfilepaths.values()) {
 				elementprocessors.addAll(dialectfile.getElementProcessors());
 			}
 			elementprocessors.trimToSize();
@@ -105,7 +105,7 @@ public class DialectProject {
 
 		if (expressionobjectmethods == null) {
 			expressionobjectmethods = new ArrayList<ExpressionObjectMethod>();
-			for (DialectFile dialectfile: dialectfiles.values()) {
+			for (DialectFile dialectfile: dialectfilepaths.values()) {
 				expressionobjectmethods.addAll(dialectfile.getExpressionObjectMethods());
 			}
 			expressionobjectmethods.trimToSize();
@@ -123,6 +123,19 @@ public class DialectProject {
 	 */
 	boolean hasDialect(IPath dialectfilepath) {
 
-		return dialectfiles.keySet().contains(dialectfilepath);
+		return dialectfilepaths.keySet().contains(dialectfilepath);
+	}
+
+	/**
+	 * Removes a dialect from this project.
+	 * 
+	 * @param dialectfilepath The resource path to the dialect.
+	 */
+	void removeDialect(IPath dialectfilepath) {
+
+		dialectfilepaths.remove(dialectfilepath);
+		attributeprocessors     = null;
+		elementprocessors       = null;
+		expressionobjectmethods = null;
 	}
 }

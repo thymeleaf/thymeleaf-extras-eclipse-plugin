@@ -180,7 +180,12 @@ public class DialectTree {
 			DialectProject dialectproject = entryset.getValue();
 
 			if (dialectproject.hasDialect(dialectfilepath)) {
-				dialectproject.addDialect(dialectfilepath, dialectitems);
+				if (dialectitems != null) {
+					dialectproject.addDialect(dialectfilepath, dialectitems);
+				}
+				else {
+					dialectproject.removeDialect(dialectfilepath);
+				}
 				projectattributeprocessors.remove(javaproject);
 				projectelementprocessors.remove(javaproject);
 				projectexpressionobjectmethods.remove(javaproject);

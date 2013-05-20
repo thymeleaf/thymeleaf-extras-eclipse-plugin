@@ -27,6 +27,7 @@ import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
+import static org.eclipse.core.resources.IResourceChangeEvent.*;
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 import java.util.ArrayList;
@@ -249,7 +250,8 @@ public class DialectCache {
 		}
 
 		dialectchangelistener = new DialectChangeListener(xmldialectloader, dialectitemprocessor, dialecttree);
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(dialectchangelistener);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(dialectchangelistener,
+				POST_CHANGE | PRE_CLOSE | PRE_DELETE);
 	}
 
 	/**
