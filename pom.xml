@@ -48,6 +48,7 @@
 		<module>bundles/thymeleaf-extras-eclipse-plugin.content-assist</module>
 		<module>bundles/thymeleaf-extras-eclipse-plugin.dialect</module>
 		<module>bundles/thymeleaf-extras-eclipse-plugin.dialect-files</module>
+		<module>bundles/thymeleaf-extras-eclipse-plugin.nature</module>
 		<module>features/thymeleaf-extras-eclipse-plugin.content-assist.feature</module>
 		<module>repository/thymeleaf-extras-eclipse-plugin.repository</module>
 		<module>repository/thymeleaf-extras-eclipse-plugin.repository-composite</module>

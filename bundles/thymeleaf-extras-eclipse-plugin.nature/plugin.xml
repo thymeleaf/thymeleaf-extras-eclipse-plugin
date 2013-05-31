@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="ThymeleafNature"
+         point="org.eclipse.core.resources.natures">
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+      <runtime>
+         <run
+               class="org.thymeleaf.extras.eclipse.nature.ThymeleafNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.thymeleaf.extras.eclipse.menus.AddThymeleafNature"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.thymeleaf.extras.eclipse.nature.AddThymeleafNatureAction"
+               icon="icons/Thymeleaf.png"
+               id="org.thymeleaf.extras.eclipse.menus.action.AddThymelefNature"
+               label="Add Thymeleaf Nature"
+               menubarPath="org.eclipse.ui.projectConfigure/additions">
+         </action>
+         <visibility>
+            <and>
+               <objectState
+                     name="nature"
+                     value="org.eclipse.jdt.core.javanature">
+               </objectState>
+               <not>
+                  <objectState
+                        name="nature"
+                        value="org.thymeleaf.extras.eclipse.nature.ThymeleafNature">
+                  </objectState>
+               </not>
+            </and>
+         </visibility>
+      </objectContribution>
+   </extension>
+
+</plugin>
