@@ -22,11 +22,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 
 /**
- * Adds a Thymeleaf nature to selected projects.
+ * Removes the Thymeleaf nature from selected projects.
  * 
  * @author Emanuel Rabina
  */
-public class AddThymeleafNatureAction extends AbstractThymeleafNatureAction {
+public class RemoveThymeleafNatureAction extends AbstractThymeleafNatureAction {
 
 	/**
 	 * {@inheritDoc}
@@ -34,14 +34,20 @@ public class AddThymeleafNatureAction extends AbstractThymeleafNatureAction {
 	@Override
 	public void run(IAction action) {
 
-		// Add the Thymeleaf nature to all selected projects
+		// Remove the Thymeleaf nature from all selected projects
 		for (IProject project: selectedprojects) {
 			try {
 				IProjectDescription description = project.getDescription();
 				String[] natures = description.getNatureIds();
-				String[] newnatures = new String[natures.length + 1];
-				System.arraycopy(natures, 0, newnatures, 0, natures.length);
-				newnatures[natures.length] = ThymeleafNature.THYMELEAF_NATURE_ID;
+				String[] newnatures = new String[natures.length - 1];
+				int thymeleafnatureindex;
+				for (thymeleafnatureindex = 0; thymeleafnatureindex < natures.length; thymeleafnatureindex++) {
+					if (natures[thymeleafnatureindex].equals(ThymeleafNature.THYMELEAF_NATURE_ID)) {
+						break;
+					}
+				}
+				System.arraycopy(natures, 0, newnatures, 0, thymeleafnatureindex);
+				System.arraycopy(natures, thymeleafnatureindex + 1, newnatures, thymeleafnatureindex, newnatures.length - thymeleafnatureindex);
 				description.setNatureIds(newnatures);
 				project.setDescription(description, null);
 			}
