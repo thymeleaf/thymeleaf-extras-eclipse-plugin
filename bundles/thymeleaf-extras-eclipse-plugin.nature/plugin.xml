@@ -41,6 +41,42 @@
             </and>
          </visibility>
       </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="org.thymeleaf.extras.eclipse.menus.ThymeleafMenuGroup"
+            objectClass="org.eclipse.core.resources.IProject">
+         <menu
+               icon="icons/Thymeleaf.png"
+               id="org.thymeleaf.extras.eclipse.menus.ThymeleafMenu"
+               label="Thymeleaf">
+            <separator
+                  name="menugroup">
+            </separator>
+         </menu>
+         <visibility>
+            <and>
+               <objectState
+                     name="nature"
+                     value="org.thymeleaf.extras.eclipse.nature.ThymeleafNature">
+               </objectState>
+               <objectState
+                     name="open"
+                     value="true">
+               </objectState>
+            </and>
+         </visibility>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="org.thymeleaf.extras.eclipse.menus.RemoveThymeleafNature"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.thymeleaf.extras.eclipse.nature.RemoveThymeleafNatureAction"
+               id="org.thymeleaf.extras.eclipse.menus.action.RemoveThymeleafNature"
+               label="Remove Thymeleaf Nature"
+               menubarPath="org.thymeleaf.extras.eclipse.menus.ThymeleafMenu/menugroup">
+         </action>
+      </objectContribution>
    </extension>
 
 </plugin>
