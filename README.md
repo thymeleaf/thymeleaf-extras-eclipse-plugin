@@ -28,31 +28,52 @@ site URL, or download a ZIP archive of the plugin from SourceForge:
  - ZIP file downloads: [https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/](https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/)
 
 
-Usage
------
+Features
+--------
 
-Content assist features are available for dialects whose namespaces (with the
-matching prefix) are defined in your HTML files, and if that dialect has
-supplied some help files in their JARs.  Help files for Thymeleaf's standard and
-Spring standard dialects, as well as the Thymeleaf Extras modules (Spring
-Security 3 and Tiles 2), come bundled with this plugin, so all you have to do to
-get content assist support is to include the Thymeleaf namespace and prefix in
-your HTML file like so:
+### Content Assist
+
+Content assist features are only available for dialects which have supplied
+special help files in their JARs.  This plugin comes bundled with help files for
+The Thymeleaf Standard and Spring Standard dialects (`th` prefix), the Spring
+Security dialect (`sec`), and the Tiles dialect (`tiles`), so you don't need to
+worry about those ones.
+
+(Other dialects however are up to the discretion of the developer.  If you're
+developing a Thymeleaf dialect and would like to take advantage of content
+assist for your own dialect, read the section on
+[adding content assist for your dialect](#adding-content-assist-for-your-dialect).
+
+Once those help files are available, you can make content assist available in
+your HTML files through 1 of 2 ways:
+
+1. Declaring the dialect namespace and prefix in your HTML files
+
+This is the easiest method and you may have already done this to keep the XML
+validator happy:
 
 ```html
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 ```
 
-You should now start getting content assistance for all of the processors and
-expression objects in Thymeleaf's standard dialect (as well as the Spring
-dialect if you've included it in your project).  This includes suggestions as
-you type and autocompletion of what you've entered so far if it matches only one
+2. Applying the Thymeleaf project nature to your project
+
+This method will make content assist available to _all_ of the HTML files in
+your project, and is ideal for when you've organized your code to have plenty of
+reusable HTML fragments without a common root element.
+
+To add the Thymeleaf nature to your project: right-click a project >> Configure
+>> Add Thymeleaf Nature.  This will also add a Thymeleaf menu item to your
+project's right-click menu, which right now only has the option to remove the
+Thymeleaf nature from the project.
+
+Using either methdod, you should now start getting content assist for any
+dialect whose namespace is explicitly declared in your HTML files (method 1), or
+for every dialect in your project's classpath.  This applies to suggestions as
+you type, autocompletion of what you've entered so far if it matches only one
 result (both of these can be invoked manually using CTRL+SPACE), and help text
 when hovering the cursor over a Thymeleaf processor.
-
-If you're developing a Thymeleaf dialect and would like to take advantage of
-content assist for your own dialect, read the next section.
 
 
 Adding content assist for your dialect
@@ -83,7 +104,7 @@ These are just short-comings of the current dialect scanning method, which
 itself is built upon Eclipse's own lookup mechanisms.
 
 For an example of a dialect bundled with an XML file, see the [Thymeleaf Layout Dialect](https://github.com/ultraq/thymeleaf-layout-dialect)
-and its [Layout-Dialect.xml file](https://github.com/ultraq/thymeleaf-layout-dialect/blob/master/Resources/nz/net/ultraq/web/thymeleaf/Layout-Dialect.xml).
+and its [LayoutDialect.xml file](https://github.com/ultraq/thymeleaf-layout-dialect/blob/master/Java/nz/net/ultraq/thymeleaf/LayoutDialect.xml).
 
 An explanation of the XML schema:
 
@@ -248,6 +269,9 @@ Changelog
  - Added support for a wider range of workspace refresh types, so if the
    dialects that your project is using change, the plugin is now better equipped
    to reflect those changes in the content assist.
+ - Resolved [Issue #20](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/20)
+   through the use of a Thymeleaf Nature that can be added to your projects.
+   See the [Usage](#usage) section for more details.
 
 ### 2.0.2
  - Fixed [Issue #15](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/15),

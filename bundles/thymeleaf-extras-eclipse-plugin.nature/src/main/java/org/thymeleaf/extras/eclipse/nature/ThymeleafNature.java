@@ -62,4 +62,21 @@ public class ThymeleafNature implements IProjectNature {
 
 		this.project = project;
 	}
+
+	/**
+	 * Check if the Thymeleaf nature has been applied to the given project.
+	 * 
+	 * @param project
+	 * @return <tt>true</tt> if the project has the Thymeleaf nature.
+	 */
+	public static boolean thymeleafNatureEnabled(IProject project) {
+
+		try {
+			return project.hasNature(THYMELEAF_NATURE_ID);
+		}
+		catch (CoreException ex) {
+			// Do nothing
+		}
+		return false;
+	}
 }
