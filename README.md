@@ -47,7 +47,7 @@ assist for your own dialect, read the section on
 Once those help files are available, you can make content assist available in
 your HTML files through 1 of 2 ways:
 
-1. Declaring the dialect namespace and prefix in your HTML files
+#### 1. Declaring the dialect namespace and prefix in your HTML files
 
 This is the easiest method and you may have already done this to keep the XML
 validator happy:
@@ -57,23 +57,23 @@ validator happy:
 <html xmlns:th="http://www.thymeleaf.org">
 ```
 
-2. Applying the Thymeleaf project nature to your project
+#### 2. Applying the Thymeleaf project nature to your project
 
 This method will make content assist available to _all_ of the HTML files in
 your project, and is ideal for when you've organized your code to have plenty of
 reusable HTML fragments without a common root element.
 
-To add the Thymeleaf nature to your project: right-click a project >> Configure
->> Add Thymeleaf Nature.  This will also add a Thymeleaf menu item to your
+To add the Thymeleaf nature to your project: right-click a project >> Configure >>
+Add Thymeleaf Nature.  This will also add a Thymeleaf menu item to your
 project's right-click menu, which right now only has the option to remove the
 Thymeleaf nature from the project.
 
-Using either methdod, you should now start getting content assist for any
-dialect whose namespace is explicitly declared in your HTML files (method 1), or
-for every dialect in your project's classpath.  This applies to suggestions as
-you type, autocompletion of what you've entered so far if it matches only one
-result (both of these can be invoked manually using CTRL+SPACE), and help text
-when hovering the cursor over a Thymeleaf processor.
+Using either method, you should now start getting content assist for any dialect
+whose namespace is explicitly declared in your HTML files (method 1), or for
+every dialect in your project's classpath.  This applies to suggestions as you
+type, autocompletion of what you've entered so far if it matches only one result
+(both of these can be invoked manually using CTRL+SPACE), and help text when
+hovering the cursor over a Thymeleaf processor.
 
 
 Adding content assist for your dialect
