@@ -14,69 +14,86 @@
       </runtime>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="org.thymeleaf.extras.eclipse.menus.AddThymeleafNature"
-            objectClass="org.eclipse.core.resources.IProject">
-         <action
-               class="org.thymeleaf.extras.eclipse.nature.AddThymeleafNatureAction"
-               icon="icons/Thymeleaf.png"
-               id="org.thymeleaf.extras.eclipse.menus.action.AddThymelefNature"
-               label="Add Thymeleaf Nature"
-               menubarPath="org.eclipse.ui.projectConfigure/additions">
-         </action>
-         <visibility>
-            <and>
-               <objectState
-                     name="nature"
-                     value="org.eclipse.jdt.core.javanature">
-               </objectState>
-               <not>
-                  <objectState
-                        name="nature"
-                        value="org.thymeleaf.extras.eclipse.nature.ThymeleafNature">
-                  </objectState>
-               </not>
-            </and>
-         </visibility>
-      </objectContribution>
-      <objectContribution
-            adaptable="true"
-            id="org.thymeleaf.extras.eclipse.menus.ThymeleafMenuGroup"
-            objectClass="org.eclipse.core.resources.IProject">
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
          <menu
                icon="icons/Thymeleaf.png"
-               id="org.thymeleaf.extras.eclipse.menus.ThymeleafMenu"
+               id="org.thymeleaf.extras.eclipse.menus.ThymeleafMenuGroup"
                label="Thymeleaf">
-            <separator
-                  name="menugroup">
-            </separator>
+            <visibleWhen>
+               <iterate>
+                  <adapt type="org.eclipse.core.resources.IProject">
+                     <test
+                           property="org.eclipse.core.resources.open"
+                           value="true">
+                     </test>
+                  </adapt>
+               </iterate>
+            </visibleWhen>
+            <command
+                  commandId="org.thymeleaf.extras.eclipse.menus.AddThymeleafNature"
+                  label="Add Thymeleaf Nature"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.thymeleaf.extras.eclipse.menus.RemoveThymeleafNature"
+                  label="Remove Thymeleaf Nature"
+                  style="push">
+            </command>
          </menu>
-         <visibility>
-            <and>
-               <objectState
-                     name="nature"
-                     value="org.thymeleaf.extras.eclipse.nature.ThymeleafNature">
-               </objectState>
-               <objectState
-                     name="open"
-                     value="true">
-               </objectState>
-            </and>
-         </visibility>
-      </objectContribution>
-      <objectContribution
-            adaptable="true"
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.thymeleaf.extras.eclipse.menus.actions"
+            id="org.thymeleaf.extras.eclipse.menus.AddThymeleafNature"
+            name="Add Thymeleaf Nature">
+      </command>
+      <command
+            categoryId="org.thymeleaf.extras.eclipse.menus.actions"
             id="org.thymeleaf.extras.eclipse.menus.RemoveThymeleafNature"
-            objectClass="org.eclipse.core.resources.IProject">
-         <action
-               class="org.thymeleaf.extras.eclipse.nature.RemoveThymeleafNatureAction"
-               id="org.thymeleaf.extras.eclipse.menus.action.RemoveThymeleafNature"
-               label="Remove Thymeleaf Nature"
-               menubarPath="org.thymeleaf.extras.eclipse.menus.ThymeleafMenu/menugroup">
-         </action>
-      </objectContribution>
+            name="Remove Thymeleaf Nature">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            commandId="org.thymeleaf.extras.eclipse.menus.AddThymeleafNature"
+            class="org.thymeleaf.extras.eclipse.nature.AddThymeleafNatureAction">
+         <activeWhen>
+            <with variable="selection">
+               <iterate ifEmpty="false" operator="and">
+                  <adapt type="org.eclipse.core.resources.IProject">
+                     <not>
+                        <test
+                              property="org.eclipse.core.resources.projectNature"
+                              value="org.thymeleaf.extras.eclipse.nature.ThymeleafNature">
+                        </test>
+                     </not>
+                  </adapt>
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            commandId="org.thymeleaf.extras.eclipse.menus.RemoveThymeleafNature"
+            class="org.thymeleaf.extras.eclipse.nature.RemoveThymeleafNatureAction">
+         <activeWhen>
+            <with variable="selection">
+               <iterate ifEmpty="false">
+                  <adapt type="org.eclipse.core.resources.IProject">
+                     <test
+                           property="org.eclipse.core.resources.projectNature"
+                           value="org.thymeleaf.extras.eclipse.nature.ThymeleafNature">
+                     </test>
+                  </adapt>
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
    </extension>
 
 </plugin>

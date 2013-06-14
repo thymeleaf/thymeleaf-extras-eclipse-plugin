@@ -16,26 +16,37 @@
 
 package org.thymeleaf.extras.eclipse.nature;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IAction;
+import org.eclipse.jdt.core.IJavaProject;
+
+import java.util.List;
 
 /**
  * Adds a Thymeleaf nature to selected projects.
  * 
  * @author Emanuel Rabina
  */
-public class AddThymeleafNatureAction extends AbstractThymeleafNatureAction {
+public class AddThymeleafNatureAction extends AbstractHandler {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void run(IAction action) {
+	@SuppressWarnings("unchecked")
+	public Object execute(ExecutionEvent event) throws ExecutionException {
+
+		IEvaluationContext context = (IEvaluationContext)event.getApplicationContext();
+		List<IJavaProject> selectedprojects = (List<IJavaProject>)context.getDefaultVariable();
 
 		// Add the Thymeleaf nature to all selected projects
-		for (IProject project: selectedprojects) {
+		for (IJavaProject javaproject: selectedprojects) {
+			IProject project = javaproject.getProject();
 			try {
 				IProjectDescription description = project.getDescription();
 				String[] natures = description.getNatureIds();
@@ -49,5 +60,7 @@ public class AddThymeleafNatureAction extends AbstractThymeleafNatureAction {
 				// Do nothing
 			}
 		}
+
+		return null;
 	}
 }

@@ -70,10 +70,10 @@ Thymeleaf nature from the project.
 
 Using either method, you should now start getting content assist for any dialect
 whose namespace is explicitly declared in your HTML files (method 1), or for
-every dialect in your project's classpath.  This applies to suggestions as you
-type, autocompletion of what you've entered so far if it matches only one result
-(both of these can be invoked manually using CTRL+SPACE), and help text when
-hovering the cursor over a Thymeleaf processor.
+every dialect in your project's classpath (method 2).  This applies to
+suggestions as you type, autocompletion of what you've entered so far if it
+matches only one result (both of these can be invoked manually using CTRL+SPACE),
+and help text when hovering the cursor over a Thymeleaf processor.
 
 
 Adding content assist for your dialect
