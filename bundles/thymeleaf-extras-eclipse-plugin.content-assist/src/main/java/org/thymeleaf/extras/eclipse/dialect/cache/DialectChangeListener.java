@@ -20,7 +20,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -143,10 +142,10 @@ public class DialectChangeListener implements IResourceChangeListener {
 	 * Track a dialect file for changes.
 	 * 
 	 * @param dialectfilepath
+	 * @param project
 	 */
-	void trackDialectFileForChanges(IPath dialectfilepath) {
+	void trackDialectFileForChanges(IPath dialectfilepath, IJavaProject project) {
 
-		dialectfilepaths.put(dialectfilepath, ResourcesPlugin.getWorkspace().getRoot()
-				.findMember(dialectfilepath).getProject());
+		dialectfilepaths.put(dialectfilepath, project.getProject());
 	}
 }

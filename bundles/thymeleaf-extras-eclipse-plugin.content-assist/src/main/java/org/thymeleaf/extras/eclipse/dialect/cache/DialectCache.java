@@ -24,6 +24,7 @@ import org.thymeleaf.extras.eclipse.dialect.ProjectDependencyDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
+import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
@@ -268,13 +269,18 @@ public class DialectCache {
 			List<Dialect> dialects = xmldialectloader.loadDialects(projectdialectlocator);
 			List<IPath> dialectfilepaths = projectdialectlocator.getDialectFilePaths();
 
-			for (int i = 0; i < dialects.size(); i++) {
-				Dialect dialect = dialects.get(i);
-				IPath dialectfilepath = dialectfilepaths.get(i);
+			if (dialects.size() > 0) {
+				for (int i = 0; i < dialects.size(); i++) {
+					Dialect dialect = dialects.get(i);
+					IPath dialectfilepath = dialectfilepaths.get(i);
 
-				dialecttree.addProjectDialect(project, dialectfilepath,
-						dialectitemprocessor.processDialectItems(dialect, project));
-				dialectchangelistener.trackDialectFileForChanges(dialectfilepath);
+					dialecttree.addProjectDialect(project, dialectfilepath,
+							dialectitemprocessor.processDialectItems(dialect, project));
+					dialectchangelistener.trackDialectFileForChanges(dialectfilepath, project);
+				}
+			}
+			else {
+				dialecttree.addProjectDialect(project, null, new ArrayList<DialectItem>());
 			}
 		}
 	}
