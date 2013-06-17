@@ -16,7 +16,9 @@
 
 package org.thymeleaf.extras.eclipse.nature;
 
+import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 
@@ -27,7 +29,8 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class ThymeleafNature implements IProjectNature {
 
-	static final String THYMELEAF_NATURE_ID = "org.thymeleaf.extras.eclipse.nature.ThymeleafNature";
+	static final String THYMELEAF_NATURE_ID  = "org.thymeleaf.extras.eclipse.nature.ThymeleafNature";
+	static final String THYMELEAF_BUILDER_ID = "org.thymeleaf.extras.eclipse.nature.ThymeleafBuilder";
 
 	private IProject project;
 
@@ -36,6 +39,17 @@ public class ThymeleafNature implements IProjectNature {
 	 */
 	@Override
 	public void configure() throws CoreException {
+
+		// Add the Thymeleaf builder
+		IProjectDescription description = project.getDescription();
+		ICommand[] commands = description.getBuildSpec();
+		ICommand[] newcommands = new ICommand[commands.length + 1];
+		System.arraycopy(commands, 0, newcommands, 0, commands.length);
+		ICommand command = description.newCommand();
+		command.setBuilderName(THYMELEAF_BUILDER_ID);
+		newcommands[commands.length] = command;
+		description.setBuildSpec(newcommands);
+		project.setDescription(description, null);
 	}
 
 	/**
@@ -43,6 +57,21 @@ public class ThymeleafNature implements IProjectNature {
 	 */
 	@Override
 	public void deconfigure() throws CoreException {
+
+		// Remove the Thymeleaf builder
+		IProjectDescription description = project.getDescription();
+		ICommand[] commands = description.getBuildSpec();
+		ICommand[] newcommands = new ICommand[commands.length - 1];
+		int thymeleafbuilderindex;
+		for (thymeleafbuilderindex = 0; thymeleafbuilderindex < commands.length; thymeleafbuilderindex++) {
+			if (commands[thymeleafbuilderindex].getBuilderName().equals(THYMELEAF_BUILDER_ID)) {
+				break;
+			}
+		}
+		System.arraycopy(commands, 0, newcommands, 0, thymeleafbuilderindex);
+		System.arraycopy(commands, thymeleafbuilderindex + 1, newcommands, thymeleafbuilderindex, newcommands.length - thymeleafbuilderindex);
+		description.setBuildSpec(newcommands);
+		project.setDescription(description, null);
 	}
 
 	/**

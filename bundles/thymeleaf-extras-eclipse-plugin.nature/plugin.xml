@@ -12,6 +12,9 @@
                class="org.thymeleaf.extras.eclipse.nature.ThymeleafNature">
          </run>
       </runtime>
+      <builder
+            id="org.thymeleaf.extras.eclipse.nature.ThymeleafBuilder">
+      </builder>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -94,6 +97,16 @@
             </with>
          </activeWhen>
       </handler>
+   </extension>
+   <extension
+         id="ThymeleafBuilder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="org.thymeleaf.extras.eclipse.builder.ThymeleafBuilder">
+         </run>
+      </builder>
    </extension>
 
 </plugin>
