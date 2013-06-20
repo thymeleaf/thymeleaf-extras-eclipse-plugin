@@ -36,9 +36,11 @@ public class ThymeleafBuilder extends IncrementalProjectBuilder {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor)
+	protected IProject[] build(int kind, Map<String,String> args, IProgressMonitor monitor)
 		throws CoreException {
 
+		// Traverse the resource delta, finding html files with namespace warning
+		// markers related to known Thymeleaf dialect prefixes
 		return null;
 	}
 }
