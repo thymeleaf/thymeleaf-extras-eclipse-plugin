@@ -170,7 +170,7 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 		}
 
 		// Initialize the dialect cache
-		DialectCache.initialize();
+		DialectCache.initialize(findCurrentJavaProject());
 	}
 
 	/**

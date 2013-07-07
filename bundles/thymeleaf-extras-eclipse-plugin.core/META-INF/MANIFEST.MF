@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Thymeleaf Core
+Bundle-SymbolicName: org.thymeleaf.extras.eclipse.core;singleton:=true
+Bundle-Version: 2.0.3.qualifier
+Bundle-Vendor: Thymeleaf Project
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.core.expressions;bundle-version="3.4.300",
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.eclipse.jdt.core;bundle-version="3.7.3",
+ org.eclipse.jdt.ui;bundle-version="3.7.2",
+ org.eclipse.ui;bundle-version="3.7.0",
+ org.eclipse.wst.xml.core;bundle-version="1.1.602"
+Bundle-ActivationPolicy: lazy
+Export-Package: org.thymeleaf.extras.eclipse.dialect,
+ org.thymeleaf.extras.eclipse.dialect.cache,
+ org.thymeleaf.extras.eclipse.dialect.xml
+Bundle-ClassPath: .,
+ libs/activation-1.1.1.jar,
+ libs/jaxb-api-2.2.6.jar,
+ libs/jaxb-impl-2.2.6.jar,
+ libs/jaxb-utilities-1.2.4.jar,
+ libs/jsr173_api-1.0.jar
+Bundle-Activator: org.thymeleaf.extras.eclipse.CorePlugin
