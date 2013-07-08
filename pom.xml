@@ -47,7 +47,6 @@
 	<modules>
 		<module>bundles/thymeleaf-extras-eclipse-plugin.content-assist</module>
 		<module>bundles/thymeleaf-extras-eclipse-plugin.core</module>
-		<module>bundles/thymeleaf-extras-eclipse-plugin.dialects</module>
 		<module>features/thymeleaf-extras-eclipse-plugin.content-assist.feature</module>
 		<module>repository/thymeleaf-extras-eclipse-plugin.repository</module>
 		<module>repository/thymeleaf-extras-eclipse-plugin.repository-composite</module>
@@ -68,8 +67,8 @@
 	</prerequisites>
 	<repositories>
 		<repository>
-			<id>juno</id>
-			<url>http://download.eclipse.org/releases/juno</url>
+			<id>kepler</id>
+			<url>http://download.eclipse.org/releases/kepler</url>
 			<layout>p2</layout>
 		</repository>
 	</repositories>
@@ -81,7 +80,7 @@
 	</pluginRepositories>
 
 	<properties>
-		<tycho.version>0.17.0</tycho.version>
+		<tycho.version>0.18.0</tycho.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<thymeleaf.plugin-name>thymeleaf-extras-eclipse-plugin</thymeleaf.plugin-name>

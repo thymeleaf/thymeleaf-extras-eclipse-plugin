@@ -29,14 +29,8 @@
       <import plugin="org.eclipse.wst.sse.ui" version="1.3.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.wst.xml.core" version="1.1.602" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.ui" version="3.7.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.300" match="greaterOrEqual"/>
    </requires>
-
-   <plugin
-         id="org.thymeleaf.extras.eclipse.dialect"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.thymeleaf.extras.eclipse.contentassist"
@@ -46,14 +40,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.thymeleaf.extras.eclipse.dialect.files"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.thymeleaf.extras.eclipse.nature"
+         id="org.thymeleaf.extras.eclipse.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
