@@ -29,8 +29,8 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class ThymeleafNature implements IProjectNature {
 
-	static final String THYMELEAF_NATURE_ID  = "org.thymeleaf.extras.eclipse.nature.ThymeleafNature";
-	static final String THYMELEAF_BUILDER_ID = "org.thymeleaf.extras.eclipse.nature.ThymeleafBuilder";
+	static final String THYMELEAF_NATURE_ID  = "org.thymeleaf.extras.eclipse.core.ThymeleafNature";
+	static final String THYMELEAF_BUILDER_ID = "org.thymeleaf.extras.eclipse.core.ThymeleafBuilder";
 
 	private IProject project;
 

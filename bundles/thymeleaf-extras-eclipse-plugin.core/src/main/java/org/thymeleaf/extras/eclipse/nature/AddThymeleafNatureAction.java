@@ -18,7 +18,6 @@ package org.thymeleaf.extras.eclipse.nature;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -39,7 +38,7 @@ public class AddThymeleafNatureAction extends AbstractHandler {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+	public Object execute(ExecutionEvent event) {
 
 		IEvaluationContext context = (IEvaluationContext)event.getApplicationContext();
 		List<IJavaProject> selectedprojects = (List<IJavaProject>)context.getDefaultVariable();
