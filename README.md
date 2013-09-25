@@ -65,7 +65,7 @@ reusable HTML fragments without a common root element.
 
 To add the Thymeleaf nature to your project: right-click a project >> Configure >>
 Add Thymeleaf Nature.  This will also add a Thymeleaf menu item to your
-project's right-click menu, which right now only has the option to remove the
+project's right-click menu, which currently only has the option to remove the
 Thymeleaf nature from the project.
 
 Using either method, you should now start getting content assist for any dialect
@@ -269,27 +269,22 @@ Changelog
  - Added support for a wider range of workspace refresh types, so if the
    dialects that your project is using change, the plugin is now better equipped
    to reflect those changes in the content assist.
- - Resolved [Issue #20](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/20)
-   through the use of a Thymeleaf Nature that can be added to your projects.
-   See the [Usage](#usage) section for more details.
+ - A Thymeleaf Nature that can be added to your projects.  See the [Features](#features)
+   section for more details ([#20](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/20))
 
 ### 2.0.2
- - Fixed [Issue #15](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/15),
-   where dialect files in dependent projects weren't being picked up, either
-   through Eclipse or dependency-management containers (Maven, Gradle).
+ - Dialect files in dependent projects weren't being picked up, either
+   through Eclipse or dependency-management containers (Maven, Gradle) ([#15](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/15))
  - Added a basic refresh mechanism which tracks changes in scanned dialect files
    and reflects those changes in the plugin.  This is an ongoing work, which can
-   be tracked against [Issue #21](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/21).
- - Resolved [Issue #17](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/17),
-   adding a new attribute to the `<restrictions>` element called `attributes`,
+   be tracked against [#21](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/21).
+ - Added a new attribute to the `<restrictions>` element called `attributes`,
    which lists other attributes that must or must not appear in the same tag for
-   the attribute processor to be suggested.
- - Resolved [Issue #13](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/13),
-   because we now have an update site going! :)
+   the attribute processor to be suggested ([#17](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/17))
+ - We now have an update site! :) ([#13](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/13))
 
 ### 2.0.1
- - Resolved [Issue #12](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/12),
-   so that `th:inline` is part of the suggested attribute processors list.
+ - `th:inline` is now part of the suggested attribute processors list ([#12](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/12))
  - Added support for the upcoming Thymeleaf-Spring3 `#themes.code(...)`
    expression object and method, which is the Thymeleaf equivalent of the Spring
    `<spring:theme code=''/>` JSP tag.
@@ -304,15 +299,13 @@ Changelog
    cannot appear on) were not being proposed at all.
 
 ### 0.4.0
- - Resolved [Issue #8](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/8),
-   adding support for the Spring standard dialect.
+ - Added support for the Spring standard dialect ([#8](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/8))
  - Added the ability to use a processor class' Javadoc content as the help
    content that would appear with the content assist.
  - Added autocomplete/suggestion support for attribute processors with a limited
    value set (eg: `th:inline` can accept only `text`, `javascript`, or `dart`).
- - Resolved [Issue #10](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/10),
-   so attribute processors already in use in the same element will not be
-   suggested in content assist.
+ - Made it so attribute processors already in use in the same element will not
+   be suggested in content assist ([#10](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/10))
 
 ### 0.3.0
  - Moved to become a Thymeleaf Extras project.
