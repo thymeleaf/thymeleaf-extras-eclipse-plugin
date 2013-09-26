@@ -17,6 +17,7 @@
 package org.thymeleaf.extras.eclipse.builder;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -41,6 +42,17 @@ public class ThymeleafBuilder extends IncrementalProjectBuilder {
 
 		// Traverse the resource delta, finding html files with namespace warning
 		// markers related to known Thymeleaf dialect prefixes
+		IProject project = getProject();
+		IResourceDelta delta = getDelta(project);
+
+
 		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void clean(IProgressMonitor monitor) throws CoreException {
 	}
 }

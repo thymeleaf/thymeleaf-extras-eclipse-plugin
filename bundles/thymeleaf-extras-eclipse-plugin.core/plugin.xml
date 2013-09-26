@@ -3,9 +3,9 @@
 <plugin>
    <extension
          id="org.thymeleaf.extras.eclipse.core.ThymeleafBuilder"
+         name="Thymeleaf Validation Builder"
          point="org.eclipse.core.resources.builders">
-      <builder
-            hasNature="true">
+      <builder>
          <run
                class="org.thymeleaf.extras.eclipse.builder.ThymeleafBuilder">
          </run>
@@ -13,6 +13,7 @@
    </extension>
    <extension
          id="ThymeleafNature"
+         name="Thymeleaf Nature"
          point="org.eclipse.core.resources.natures">
       <requires-nature
             id="org.eclipse.jdt.core.javanature">
@@ -23,7 +24,7 @@
          </run>
       </runtime>
       <builder
-            id="org.thymeleaf.extras.eclipse.builder.ThymeleafBuilder">
+            id="org.thymeleaf.extras.eclipse.core.ThymeleafBuilder">
       </builder>
    </extension>
    <extension
