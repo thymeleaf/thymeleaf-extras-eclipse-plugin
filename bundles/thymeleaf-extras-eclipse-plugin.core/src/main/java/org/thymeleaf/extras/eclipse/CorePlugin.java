@@ -19,6 +19,7 @@ package org.thymeleaf.extras.eclipse;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
+import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache;
 
 /**
  * Plugin activator class for the Thymeleaf core module.
@@ -80,5 +81,6 @@ public class CorePlugin extends Plugin {
 
 		plugin = null;
 		super.stop(context);
+		DialectCache.shutdown();
 	}
 }

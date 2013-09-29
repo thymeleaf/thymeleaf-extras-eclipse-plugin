@@ -108,6 +108,27 @@ public class DialectCache {
 	}
 
 	/**
+	 * Retrieve the attribute processor in the given project, with the full
+	 * matching name.
+	 * 
+	 * @param project		The current project.
+	 * @param processorname	Full name of the attribute processor.
+	 * @return Attribute processor with the given name, or <tt>null</tt> if no
+	 * 		   processor could be found.
+	 */
+	public static Processor getAttributeProcessor(IJavaProject project, String processorname) {
+
+		loadDialectsFromProject(project);
+
+		for (AttributeProcessor processor: dialecttree.getAttributeProcessorsForProject(project)) {
+			if (processor.getFullName().equals(processorname)) {
+				return processor;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Retrieve all attribute processors for the given project, whose names
 	 * match the starting pattern.
 	 * 
@@ -237,33 +258,16 @@ public class DialectCache {
 	}
 
 	/**
-	 * Initialize the cache with the Thymeleaf dialects bundled with this
-	 * plugin.
-	 * 
-	 * @param project
-	 */
-	public static void initialize(IJavaProject project) {
-
-		dialecttree = new DialectTree();
-
-		logInfo("Loading bundled dialect files");
-		List<Dialect> dialects = xmldialectloader.loadDialects(new BundledDialectLocator());
-		for (Dialect dialect: dialects) {
-			dialecttree.addBundledDialect(dialect, processDialectItems(dialect, project));
-		}
-
-		dialectchangelistener = new DialectChangeListener(xmldialectloader, dialecttree);
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(dialectchangelistener,
-				POST_CHANGE | PRE_CLOSE | PRE_DELETE);
-	}
-
-	/**
 	 * Gather all dialect information from the given project, if we haven't got
 	 * information on that project in the first place.
 	 * 
 	 * @param project Project to scan for dialect information.
 	 */
 	private static void loadDialectsFromProject(IJavaProject project) {
+
+		if (dialecttree == null) {
+			startup(project);
+		}
 
 		if (!dialecttree.containsProject(project)) {
 			ProjectDependencyDialectLocator projectdialectlocator = new ProjectDependencyDialectLocator(project);
@@ -325,6 +329,27 @@ public class DialectCache {
 
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(dialectchangelistener);
 		dialectchangelistener.shutdown();
+	}
+
+	/**
+	 * Initialize the cache with the Thymeleaf dialects bundled with this
+	 * plugin.
+	 * 
+	 * @param project
+	 */
+	public static void startup(IJavaProject project) {
+
+		dialecttree = new DialectTree();
+
+		logInfo("Loading bundled dialect files");
+		List<Dialect> dialects = xmldialectloader.loadDialects(new BundledDialectLocator());
+		for (Dialect dialect: dialects) {
+			dialecttree.addBundledDialect(dialect, processDialectItems(dialect, project));
+		}
+
+		dialectchangelistener = new DialectChangeListener(xmldialectloader, dialecttree);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(dialectchangelistener,
+				POST_CHANGE | PRE_CLOSE | PRE_DELETE);
 	}
 
 	/**

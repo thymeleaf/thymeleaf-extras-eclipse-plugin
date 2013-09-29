@@ -32,7 +32,6 @@ import org.eclipse.wst.html.ui.internal.HTMLUIPlugin;
 import org.eclipse.wst.html.ui.internal.preferences.HTMLUIPreferenceNames;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.osgi.framework.BundleContext;
-import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache;
 
 /**
  * Plugin activator class for the Thymeleaf content assist module.
@@ -168,9 +167,6 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 				}
 			});
 		}
-
-		// Initialize the dialect cache
-		DialectCache.initialize(findCurrentJavaProject());
 	}
 
 	/**
@@ -179,7 +175,6 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 
-		DialectCache.shutdown();
 		plugin = null;
 		super.stop(context);
 	}
