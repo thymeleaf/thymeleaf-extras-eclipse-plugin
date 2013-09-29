@@ -71,6 +71,11 @@
             id="org.thymeleaf.extras.eclipse.menus.RemoveThymeleafNature"
             name="Remove Thymeleaf Nature">
       </command>
+      <category
+            description="Thymeleaf main menu category"
+            id="org.thymeleaf.extras.eclipse.menus.actions"
+            name="Thymeleaf">
+      </category>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">

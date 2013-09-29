@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?compositeMetadataRepository version="1.0.0"?>
-<repository name="Thymeleaf Eclipse Plugin respository"
+<repository name="Thymeleaf Eclipse Plugin repository"
 	type="org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository"
 	version="1.0.0">
 	<properties size="2">
