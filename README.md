@@ -7,7 +7,7 @@ standard dialect processors and expression utility objects, using the Eclipse
 Web Tools Platform HTML source editor.
 
  - Current version: 2.0.3
- - Released: ?? ??? 2013
+ - Released: 30 September 2013
 
 
 Minimum Requirements
