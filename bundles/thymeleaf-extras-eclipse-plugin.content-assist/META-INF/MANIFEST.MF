@@ -18,6 +18,20 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.101",
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Thymeleaf Project
-Export-Package: org.thymeleaf.extras.eclipse.contentassist,
- org.thymeleaf.extras.eclipse.contentassist.autocomplete,
- org.thymeleaf.extras.eclipse.contentassist.hover
+Export-Package: org.thymeleaf.extras.eclipse.contentassist;
+  uses:="org.eclipse.jface.resource,
+   org.eclipse.jdt.core,
+   org.eclipse.core.resources,
+   org.eclipse.ui.plugin,
+   org.osgi.framework,
+   org.eclipse.core.runtime.preferences,
+   org.w3c.dom",
+ org.thymeleaf.extras.eclipse.contentassist.autocomplete;
+  uses:="org.eclipse.wst.sse.ui.contentassist,
+   org.eclipse.jface.text,
+   org.eclipse.core.runtime,
+   org.thymeleaf.extras.eclipse.dialect.xml,
+   org.eclipse.swt.graphics,
+   org.thymeleaf.extras.eclipse.contentassist,
+   org.eclipse.jface.text.contentassist",
+ org.thymeleaf.extras.eclipse.contentassist.hover;uses:="org.eclipse.jface.text,org.thymeleaf.extras.eclipse.contentassist"

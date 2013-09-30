@@ -50,6 +50,7 @@ public class DialectCache {
 
 	// Tree structure of all dialects in the user's workspace
 	private static DialectTree dialecttree;
+	private static boolean loadedbundleddialects = false;
 
 	// Resource listener for changes to dialect projects and files
 	private static DialectChangeListener dialectchangelistener;
@@ -265,8 +266,13 @@ public class DialectCache {
 	 */
 	private static void loadDialectsFromProject(IJavaProject project) {
 
-		if (dialecttree == null) {
-			startup(project);
+		if (!loadedbundleddialects) {
+			logInfo("Loading bundled dialect files");
+			List<Dialect> dialects = xmldialectloader.loadDialects(new BundledDialectLocator());
+			for (Dialect dialect: dialects) {
+				dialecttree.addBundledDialect(dialect, processDialectItems(dialect, project));
+			}
+			loadedbundleddialects = true;
 		}
 
 		if (!dialecttree.containsProject(project)) {
@@ -332,21 +338,11 @@ public class DialectCache {
 	}
 
 	/**
-	 * Initialize the cache with the Thymeleaf dialects bundled with this
-	 * plugin.
-	 * 
-	 * @param project
+	 * Initialize the cache.
 	 */
-	public static void startup(IJavaProject project) {
+	public static void startup() {
 
 		dialecttree = new DialectTree();
-
-		logInfo("Loading bundled dialect files");
-		List<Dialect> dialects = xmldialectloader.loadDialects(new BundledDialectLocator());
-		for (Dialect dialect: dialects) {
-			dialecttree.addBundledDialect(dialect, processDialectItems(dialect, project));
-		}
-
 		dialectchangelistener = new DialectChangeListener(xmldialectloader, dialecttree);
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(dialectchangelistener,
 				POST_CHANGE | PRE_CLOSE | PRE_DELETE);

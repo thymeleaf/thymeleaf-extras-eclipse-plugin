@@ -62,8 +62,8 @@ public class DialectChangeListener implements IResourceChangeListener {
 	 */
 	DialectChangeListener(XmlDialectLoader xmldialectloader, DialectTree dialecttree) {
 
-		this.xmldialectloader     = xmldialectloader;
-		this.dialecttree          = dialecttree;
+		this.xmldialectloader = xmldialectloader;
+		this.dialecttree      = dialecttree;
 	}
 
 	/**

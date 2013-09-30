@@ -71,6 +71,7 @@ public class CorePlugin extends Plugin {
 
 		super.start(context);
 		plugin = this;
+		DialectCache.startup();
 	}
 
 	/**
@@ -79,8 +80,8 @@ public class CorePlugin extends Plugin {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 
+		DialectCache.shutdown();
 		plugin = null;
 		super.stop(context);
-		DialectCache.shutdown();
 	}
 }
