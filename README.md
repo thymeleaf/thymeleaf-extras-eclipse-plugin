@@ -63,10 +63,8 @@ This method will make content assist available to _all_ of the HTML files in
 your project, and is ideal for when you've organized your code to have plenty of
 reusable HTML fragments without a common root element.
 
-To add the Thymeleaf nature to your project: right-click a project >> Configure >>
-Add Thymeleaf Nature.  This will also add a Thymeleaf menu item to your
-project's right-click menu, which currently only has the option to remove the
-Thymeleaf nature from the project.
+To add the Thymeleaf nature to your project: right-click a project >> Thymeleaf >>
+Add Thymeleaf Nature.
 
 Using either method, you should now start getting content assist for any dialect
 whose namespace is explicitly declared in your HTML files (method 1), or for
