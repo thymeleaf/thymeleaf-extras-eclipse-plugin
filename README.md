@@ -6,14 +6,15 @@ A plugin for the Eclipse IDE to add content assist features for the Thymeleaf
 standard dialect processors and expression utility objects, using the Eclipse
 Web Tools Platform HTML source editor.
 
- - Current version: 2.0.3
- - Released: 30 September 2013
+ - Current version: 2.1.0
+ - Released: ?? ??? 2013
 
 
 Minimum Requirements
 --------------------
 
  - Java 6
+ - Thymeleaf 2.1.0
  - Eclipse Indigo SR2 (3.7.2) w/ Web Tools Platform 3.3.2 (ie: the Java EE
    Developer bundle)
 
@@ -262,6 +263,9 @@ Notes to help generate some documentation about a processor.
 
 Changelog
 ---------
+
+### 2.1.0
+ - Support for Thymeleaf 2.1.0's new features!
 
 ### 2.0.3
  - Added support for a wider range of workspace refresh types, so if the
