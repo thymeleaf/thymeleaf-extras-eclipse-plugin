@@ -19,7 +19,6 @@ package org.thymeleaf.extras.eclipse.dialect.cache;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
-import org.thymeleaf.extras.eclipse.dialect.BundledDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.ProjectDependencyDialectLocator;
 import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
@@ -30,7 +29,6 @@ import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
 import org.thymeleaf.extras.eclipse.nature.ThymeleafNature;
 import static org.eclipse.core.resources.IResourceChangeEvent.*;
-import static org.thymeleaf.extras.eclipse.CorePlugin.*;
 import static org.thymeleaf.extras.eclipse.dialect.cache.DialectItemProcessor.*;
 
 import java.util.ArrayList;
@@ -50,7 +48,6 @@ public class DialectCache {
 
 	// Tree structure of all dialects in the user's workspace
 	private static DialectTree dialecttree;
-	private static boolean loadedbundleddialects = false;
 
 	// Resource listener for changes to dialect projects and files
 	private static DialectChangeListener dialectchangelistener;
@@ -265,15 +262,6 @@ public class DialectCache {
 	 * @param project Project to scan for dialect information.
 	 */
 	private static void loadDialectsFromProject(IJavaProject project) {
-
-		if (!loadedbundleddialects) {
-			logInfo("Loading bundled dialect files");
-			List<Dialect> dialects = xmldialectloader.loadDialects(new BundledDialectLocator());
-			for (Dialect dialect: dialects) {
-				dialecttree.addBundledDialect(dialect, processDialectItems(dialect, project));
-			}
-			loadedbundleddialects = true;
-		}
 
 		if (!dialecttree.containsProject(project)) {
 			ProjectDependencyDialectLocator projectdialectlocator = new ProjectDependencyDialectLocator(project);

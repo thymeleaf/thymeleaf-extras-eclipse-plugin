@@ -41,9 +41,8 @@ import java.util.Map;
  */
 public class DialectTree {
 
-	private HashMap<Dialect,DialectFile> bundleddialects = new HashMap<Dialect,DialectFile>();
-
 	private HashMap<IJavaProject,DialectProject> dialectprojects = new HashMap<IJavaProject,DialectProject>();
+
 	// Saved project dialect item lists
 	private HashMap<IJavaProject,ArrayList<AttributeProcessor>> projectattributeprocessors =
 			new HashMap<IJavaProject,ArrayList<AttributeProcessor>>();
@@ -57,20 +56,6 @@ public class DialectTree {
 	 * Package-only constructor.
 	 */
 	DialectTree() {
-	}
-
-	/**
-	 * Add a bundled dialect to the tree, which will be available across all
-	 * dialect item requests.
-	 * 
-	 * @param dialect
-	 * @param dialectitems A list of the items in the dialect, but already
-	 * 					   processed to include all the information they need
-	 * 					   for content assist queries.
-	 */
-	void addBundledDialect(Dialect dialect, List<DialectItem> dialectitems) {
-
-		bundleddialects.put(dialect, new DialectFile(dialectitems));
 	}
 
 	/**
@@ -114,9 +99,6 @@ public class DialectTree {
 		if (!projectattributeprocessors.containsKey(project)) {
 			ArrayList<AttributeProcessor> attributeprocessors = new ArrayList<AttributeProcessor>(
 					dialectprojects.get(project).getAttributeProcessors());
-			for (DialectFile bundleddialect: bundleddialects.values()) {
-				attributeprocessors.addAll(bundleddialect.getAttributeProcessors());
-			}
 			Collections.sort(attributeprocessors, new DialectItemComparator());
 			attributeprocessors.trimToSize();
 			projectattributeprocessors.put(project, attributeprocessors);
@@ -135,9 +117,6 @@ public class DialectTree {
 		if (!projectelementprocessors.containsKey(project)) {
 			ArrayList<ElementProcessor> elementprocessors = new ArrayList<ElementProcessor>(
 					dialectprojects.get(project).getElementProcessors());
-			for (DialectFile bundleddialect: bundleddialects.values()) {
-				elementprocessors.addAll(bundleddialect.getElementProcessors());
-			}
 			Collections.sort(elementprocessors, new DialectItemComparator());
 			elementprocessors.trimToSize();
 			projectelementprocessors.put(project, elementprocessors);
@@ -156,9 +135,6 @@ public class DialectTree {
 		if (!projectexpressionobjectmethods.containsKey(project)) {
 			ArrayList<ExpressionObjectMethod> expressionobjectmethods = new ArrayList<ExpressionObjectMethod>(
 					dialectprojects.get(project).getExpressionObjectMethods());
-			for (DialectFile bundleddialect: bundleddialects.values()) {
-				expressionobjectmethods.addAll(bundleddialect.getExpressionObjectMethods());
-			}
 			Collections.sort(expressionobjectmethods, new DialectItemComparator());
 			expressionobjectmethods.trimToSize();
 			projectexpressionobjectmethods.put(project, expressionobjectmethods);
