@@ -129,10 +129,10 @@ public abstract class AbstractCompletionProposal implements ICompletionProposal,
 			// Generate 'see also' text
 			if (documentation.isSetSeeAlso()) {
 				doctext.append("<br/><dl><dt>See also:</dt><dd>");
-				List<Object> seealsolist = documentation.getSeeAlso();
+				List<String> seealsolist = documentation.getSeeAlso();
 				for (int i = 0; i < seealsolist.size(); i++) {
-					String seealso = ((DialectItem)seealsolist.get(i)).getName();
-					if (!seealso.contains(".")) {
+					String seealso = seealsolist.get(i);
+					if (!seealso.contains(".") && !seealso.contains(":")) {
 						doctext.append(dialectitem.getDialect().getPrefix() + ":");
 					}
 					doctext.append(i < seealsolist.size() - 1 ? seealso + ", " : seealso);

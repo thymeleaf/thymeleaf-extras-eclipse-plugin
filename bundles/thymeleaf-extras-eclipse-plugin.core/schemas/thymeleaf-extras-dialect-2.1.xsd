@@ -144,7 +144,7 @@
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
-		<xsd:attribute name="name" type="xsd:ID" use="required"/>
+		<xsd:attribute name="name" type="xsd:string" use="required"/>
 		<xsd:attribute name="class" type="xsd:string">
 			<xsd:annotation>
 				<xsd:appinfo>
@@ -359,16 +359,19 @@
 		</xsd:annotation>
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:string">
-				<xsd:attribute name="see-also" type="xsd:IDREFS">
+				<xsd:attribute name="see-also">
 					<xsd:annotation>
 						<xsd:documentation>
-							List of tags related to this one, suggesting where else
+							List of items related to this one, suggesting where else
 							the user can go to get more information or understanding.
 						</xsd:documentation>
 						<xsd:appinfo>
 							<jxb:property generateIsSetMethod="true"/>
 						</xsd:appinfo>
 					</xsd:annotation>
+					<xsd:simpleType>
+						<xsd:list itemType="xsd:string"/>
+					</xsd:simpleType>
 				</xsd:attribute>
 				<xsd:attribute name="reference" type="xsd:string">
 					<xsd:annotation>
