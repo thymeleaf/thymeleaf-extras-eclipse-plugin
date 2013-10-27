@@ -1,4 +1,12 @@
+
+# Build directories
 /.gradle
-/.settings
-/target
+target
+
+# Binaries
+libs
+
+# Eclipse stuff
+.settings
+.classpath
 .project
