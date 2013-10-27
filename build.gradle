@@ -1,0 +1,39 @@
+/*
+ * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Gradle build script to perform a variety of support tasks for the Thymeleaf
+ * Extras Eclipse Plugin project.
+ * 
+ * @author Emanuel Rabina
+ */
+
+apply from: 'https://raw.github.com/ultraq/gradle-support/master/jaxb.gradle'
+
+repositories {
+	mavenCentral()
+}
+
+xjc {
+	schemaDir = 'bundles/thymeleaf-extras-eclipse-plugin.core/schemas'
+	outputDir = 'bundles/thymeleaf-extras-eclipse-plugin.core/src/main/java'
+	classes = [
+		'**/dialect/xml/*.java'
+	]
+	args = [
+		'-Xinject-code'
+	]
+}
