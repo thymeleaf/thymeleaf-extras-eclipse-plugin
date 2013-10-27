@@ -23,13 +23,47 @@
 
 apply from: 'https://raw.github.com/ultraq/gradle-support/master/jaxb.gradle'
 
+project.ext.corePluginDir = 'bundles/thymeleaf-extras-eclipse-plugin.core'
+
 repositories {
 	mavenCentral()
 }
 
+/**
+ * Create the depdendency graphs for each of the plugins.  This is used for the
+ * 'downloadDependencies' task so it can copy all necessary JARs into each
+ * project, saving us having to store those JARs in source control (like we used
+ * to, since this is an OSGi environment, not a Maven one). 
+ */
+configurations {
+	core
+}
+dependencies {
+	core (
+		'nz.net.ultraq.jaxb:jaxb-utilities:1.2.6'
+	)
+}
+
+/**
+ * Download the dependencies for each plugin and place them into their
+ * respective libs directories. 
+ */
+task downloadDependencies(
+	description: 'Download Maven dependencies into the libs directory for each plugin') {
+
+	copy {
+		from configurations.core
+		into "${project.corePluginDir}/libs"
+	}
+}
+
+/**
+ * Configure the XJC task to generate Java classes from the dialect help schema
+ * in the core plugin.
+ */
 xjc {
-	schemaDir = 'bundles/thymeleaf-extras-eclipse-plugin.core/schemas'
-	outputDir = 'bundles/thymeleaf-extras-eclipse-plugin.core/src/main/java'
+	schemaDir = "${project.corePluginDir}/schemas"
+	outputDir = "${project.corePluginDir}/src/main/java"
 	classes = [
 		'**/dialect/xml/*.java'
 	]

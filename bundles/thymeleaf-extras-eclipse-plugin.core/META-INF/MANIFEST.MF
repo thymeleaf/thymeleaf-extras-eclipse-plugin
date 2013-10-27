@@ -25,9 +25,11 @@ Export-Package: org.thymeleaf.extras.eclipse;uses:="org.eclipse.core.runtime,org
  org.thymeleaf.extras.eclipse.dialect.xml,
  org.thymeleaf.extras.eclipse.nature;uses:="org.eclipse.core.resources,org.eclipse.core.commands"
 Bundle-ClassPath: .,
- libs/activation-1.1.1.jar,
- libs/jaxb-api-2.2.6.jar,
- libs/jaxb-impl-2.2.6.jar,
- libs/jaxb-utilities-1.2.4.jar,
+ libs/FastInfoset-1.2.12.jar,
+ libs/istack-commons-runtime-2.16.jar,
+ libs/jaxb-api-2.2.7.jar,
+ libs/jaxb-core-2.2.7.jar,
+ libs/jaxb-impl-2.2.7.jar,
+ libs/jaxb-utilities-1.2.6.jar,
  libs/jsr173_api-1.0.jar
 Bundle-Activator: org.thymeleaf.extras.eclipse.CorePlugin
