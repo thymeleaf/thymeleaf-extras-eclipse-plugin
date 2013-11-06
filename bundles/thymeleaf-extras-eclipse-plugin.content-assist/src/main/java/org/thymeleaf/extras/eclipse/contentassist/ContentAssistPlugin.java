@@ -26,11 +26,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.wst.html.ui.internal.HTMLUIPlugin;
 import org.eclipse.wst.html.ui.internal.preferences.HTMLUIPreferenceNames;
-import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -60,8 +60,8 @@ public class ContentAssistPlugin extends AbstractUIPlugin {
 	 */
 	public static IJavaProject findCurrentJavaProject() {
 
-		StructuredTextEditor editor = (StructuredTextEditor)getDefault().getWorkbench()
-				.getWorkbenchWindows()[0].getActivePage().getActiveEditor();
+		IEditorPart editor = getDefault().getWorkbench().getWorkbenchWindows()[0]
+				.getActivePage().getActiveEditor();
 		IFile file = ((IFileEditorInput)editor.getEditorInput()).getFile();
 		IProject project = file.getProject();
 		if (isJavaProject(project)) {
