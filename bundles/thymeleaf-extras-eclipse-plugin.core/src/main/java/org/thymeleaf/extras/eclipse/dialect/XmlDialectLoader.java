@@ -21,7 +21,9 @@ import nz.net.ultraq.jaxb.XMLReader;
 
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
+import static org.thymeleaf.extras.eclipse.CorePlugin.*;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +56,15 @@ public class XmlDialectLoader implements DialectLoader<InputStream> {
 				dialects.add(dialect);
 			}
 			catch (XMLException ex) {
-				// Do nothing
+				logError("Error reading the dialect file", ex);
+			}
+			finally {
+				try {
+					dialectfilestream.close();
+				}
+				catch (IOException ex) {
+					logError("Unable to close dialect file input stream", ex);
+				}
 			}
 		}
 

@@ -40,7 +40,8 @@ configurations {
 }
 dependencies {
 	core (
-		'nz.net.ultraq.jaxb:jaxb-utilities:1.2.6'
+		'nz.net.ultraq.jaxb:jaxb-utilities:1.2.6',
+		'org.attoparser:attoparser:1.2'
 	)
 }
 
