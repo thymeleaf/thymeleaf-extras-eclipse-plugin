@@ -21,8 +21,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.thymeleaf.extras.eclipse.scanner.ResourceLocator;
+
 import static org.thymeleaf.extras.eclipse.CorePlugin.*;
 
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class ProjectTemplateLocator implements ResourceLocator<IFile> {
 	private static final String HTML_FILE_EXTENSION = ".html";
 
 	private final IJavaProject project;
+	private final ArrayList<IPath> templatefilepaths = new ArrayList<IPath>();
 
 	/**
 	 * Constructor, sets the project to scan for templates.
@@ -54,6 +57,18 @@ public class ProjectTemplateLocator implements ResourceLocator<IFile> {
 	public ProjectTemplateLocator(IJavaProject project) {
 
 		this.project = project;
+	}
+
+	/**
+	 * Returns a list of paths to each of the templates located after a run of
+	 * {@link #locateResources}.  The order of the list of paths matches the
+	 * list of templates they point to.
+	 * 
+	 * @return List of paths to each of the templates found.
+	 */
+	public List<IPath> getTemplateFilePaths() {
+
+		return templatefilepaths;
 	}
 
 	/**
@@ -77,7 +92,10 @@ public class ProjectTemplateLocator implements ResourceLocator<IFile> {
 			// Collect all file results
 			for (Future<List<IFile>> scannertask: scannertasks) {
 				try {
-					templatestreams.addAll(scannertask.get());
+					for (IFile file: scannertask.get()) {
+						templatestreams.add(file);
+						templatefilepaths.add(file.getFullPath());
+					}
 				}
 				catch (ExecutionException ex) {
 					logError("Unable to execute scanning task", ex);

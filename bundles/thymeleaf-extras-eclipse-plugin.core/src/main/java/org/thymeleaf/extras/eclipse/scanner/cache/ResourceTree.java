@@ -21,6 +21,7 @@ import org.eclipse.jdt.core.IJavaProject;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Generic representation of resources in a developer's workspace, divided-up by
@@ -34,12 +35,12 @@ public class ResourceTree<T> {
 	private HashMap<IJavaProject,ResourceProject<T>> projects = new HashMap<IJavaProject,ResourceProject<T>>();
 
 	/**
-	 * Add a project and its associated resource to the tree.  If the project
+	 * Add a project and an associated resource to the tree.  If the project
 	 * exists, the resource will be added to the existing project instead.
 	 * 
 	 * @param project
 	 * @param resourcepath The path to the resource.
-	 * @param resources    List of resources to associate with the project.
+	 * @param resource     Resources to associate with the project.
 	 */
 	public void addResourceToProject(IJavaProject project, IPath resourcepath, T resource) {
 
@@ -47,6 +48,25 @@ public class ResourceTree<T> {
 			projects.put(project, new ResourceProject<T>());
 		}
 		projects.get(project).addResource(resourcepath, resource);
+	}
+
+	/**
+	 * Add a project and its associated resources to the tree.  If the project
+	 * exists, the resources will be added to the existing project instead.
+	 * 
+	 * @param project
+	 * @param resourcepath The path to the resource.
+	 * @param resources    List of resources to associate with the project.
+	 */
+	public void addResourcesToProject(IJavaProject project, IPath resourcepath, List<T> resources) {
+
+		if (!containsProject(project)) {
+			projects.put(project, new ResourceProject<T>());
+		}
+		ResourceProject<T> resourceproject = projects.get(project);
+		for (T resource: resources) {
+			resourceproject.addResource(resourcepath, resource);
+		}
 	}
 
 	/**

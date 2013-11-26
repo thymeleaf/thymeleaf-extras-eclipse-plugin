@@ -16,6 +16,7 @@
 
 package org.thymeleaf.extras.eclipse.template.cache;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.thymeleaf.extras.eclipse.scanner.cache.ResourceTree;
 import org.thymeleaf.extras.eclipse.template.ProjectTemplateLocator;
@@ -66,14 +67,18 @@ public class TemplateCache {
 		if (!fragmenttree.containsProject(project)) {
 			ProjectTemplateLocator projecttemplatelocator = new ProjectTemplateLocator(project);
 			List<Template> templates = templateloader.loadResources(projecttemplatelocator);
+			List<IPath> templatefilepaths = projecttemplatelocator.getTemplateFilePaths();
 
 			if (templates.size() > 0) {
-				for (Template template: templates) {
-					
+				for (int i = 0; i < templates.size(); i++) {
+					Template template = templates.get(i);
+					IPath templatefilepath = templatefilepaths.get(i);
+
+					fragmenttree.addResourceToProject(project, templatefilepath, template);
 				}
 			}
 			else {
-				
+				fragmenttree.addResourcesToProject(project, null, new ArrayList<Template>());
 			}
 		}
 	}
