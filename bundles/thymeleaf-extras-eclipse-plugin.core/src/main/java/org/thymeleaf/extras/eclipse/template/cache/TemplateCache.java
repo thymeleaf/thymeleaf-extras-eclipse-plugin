@@ -19,6 +19,7 @@ package org.thymeleaf.extras.eclipse.template.cache;
 import org.eclipse.jdt.core.IJavaProject;
 import org.thymeleaf.extras.eclipse.scanner.cache.ResourceTree;
 import org.thymeleaf.extras.eclipse.template.ProjectTemplateLocator;
+import org.thymeleaf.extras.eclipse.template.TemplateLoader;
 import org.thymeleaf.extras.eclipse.template.model.Fragment;
 import org.thymeleaf.extras.eclipse.template.model.Template;
 
@@ -31,6 +32,8 @@ import java.util.List;
  * @author Emanuel Rabina
  */
 public class TemplateCache {
+
+	private static TemplateLoader templateloader = new TemplateLoader();
 
 	// Tree structure of all fragments in the user's workspace
 	private static ResourceTree<Template> fragmenttree;
@@ -62,7 +65,16 @@ public class TemplateCache {
 
 		if (!fragmenttree.containsProject(project)) {
 			ProjectTemplateLocator projecttemplatelocator = new ProjectTemplateLocator(project);
-			
+			List<Template> templates = templateloader.loadResources(projecttemplatelocator);
+
+			if (templates.size() > 0) {
+				for (Template template: templates) {
+					
+				}
+			}
+			else {
+				
+			}
 		}
 	}
 

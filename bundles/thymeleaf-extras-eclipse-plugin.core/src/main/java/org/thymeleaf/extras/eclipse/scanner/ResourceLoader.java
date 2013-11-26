@@ -23,10 +23,11 @@ import java.util.List;
  * {@link ResourceLocator}.
  * 
  * @param <L> The type of locator used.
+ * @param <F> The format being returned by the locator.
  * @param <T> The type of resource being loaded.
  * @author Emanuel Rabina
  */
-public interface ResourceLoader<L extends ResourceLocator, T> {
+public interface ResourceLoader<F, L extends ResourceLocator<F>, T> {
 
 	/**
 	 * Loads all of the resources from the given locator.

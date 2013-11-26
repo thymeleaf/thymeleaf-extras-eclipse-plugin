@@ -16,6 +16,9 @@
 
 package org.thymeleaf.extras.eclipse.template.model;
 
+import org.attoparser.markup.dom.impl.Document;
+import org.attoparser.markup.dom.impl.Element;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +29,40 @@ import java.util.List;
  */
 public class Template {
 
+	private static final String FRAGMENT_ATTRIBUTE      = "th:fragment";
+	private static final String DATA_FRAGMENT_ATTRIBUTE = "data-th-fragment";
+
 	private final ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+
+	/**
+	 * Create a new template from an HTML document.
+	 * 
+	 * @param document
+	 */
+	public Template(Document document) {
+
+		// Look for fragment signatures inside the HTML document
+		findFragments(document.getFirstChildOfType(Element.class));
+	}
+
+	/**
+	 * Recursive search for any fragment signatures inside an HTML document.
+	 * 
+	 * @param element
+	 */
+	private void findFragments(Element element) {
+
+		if (element.hasAttribute(FRAGMENT_ATTRIBUTE)) {
+			fragments.add(new Fragment(element.getAttributeValue(FRAGMENT_ATTRIBUTE)));
+		}
+		else if (element.hasAttribute(DATA_FRAGMENT_ATTRIBUTE)) {
+			fragments.add(new Fragment(element.getAttributeValue(DATA_FRAGMENT_ATTRIBUTE)));
+		}
+
+		for (Element childelement: element.getChildrenOfType(Element.class)) {
+			findFragments(childelement);
+		}
+	}
 
 	/**
 	 * Return a list of fragments in this template.

@@ -21,12 +21,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.thymeleaf.extras.eclipse.scanner.ResourceLocator;
 import static org.thymeleaf.extras.eclipse.CorePlugin.*;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -42,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * 
  * @author Emanuel Rabina
  */
-public class ProjectTemplateLocator implements ResourceLocator {
+public class ProjectTemplateLocator implements ResourceLocator<IFile> {
 
 	private static final String HTML_FILE_EXTENSION = ".html";
 
@@ -62,13 +60,13 @@ public class ProjectTemplateLocator implements ResourceLocator {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<InputStream> locateResources() {
+	public List<IFile> locateResources() {
 
 		logInfo("Scanning for Thymeleaf templates in the project");
 		long start = System.currentTimeMillis();
 
 		ExecutorService executorservice = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-		final ArrayList<InputStream> templatestreams = new ArrayList<InputStream>();
+		final ArrayList<IFile> templatestreams = new ArrayList<IFile>();
 
 		try {
 			// Multi-threaded search for template files - there can be a lot of files to get through
@@ -79,9 +77,7 @@ public class ProjectTemplateLocator implements ResourceLocator {
 			// Collect all file results
 			for (Future<List<IFile>> scannertask: scannertasks) {
 				try {
-					for (IFile file: scannertask.get()) {
-						templatestreams.add(file.getContents());
-					}
+					templatestreams.addAll(scannertask.get());
 				}
 				catch (ExecutionException ex) {
 					logError("Unable to execute scanning task", ex);
@@ -90,10 +86,6 @@ public class ProjectTemplateLocator implements ResourceLocator {
 					logError("Unable to execute scanning task", ex);
 				}
 			}
-		}
-		catch (CoreException ex) {
-			// If we get here, the project cannot be read.  Return the empty list.
-			logError("Project " + project.getProject().getName() + " could not be read", ex);
 		}
 		finally {
 			executorservice.shutdown();
@@ -113,8 +105,7 @@ public class ProjectTemplateLocator implements ResourceLocator {
 
 	/**
 	 * Recursive scan of a container resource (currently only folders and
-	 * projects), searches for files to pass along to the {@link scanFile(IFile)}
-	 * method.
+	 * projects), searches for files to load.
 	 * 
 	 * @param container
 	 * @param scannertasks

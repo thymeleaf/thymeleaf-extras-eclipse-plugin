@@ -16,12 +16,16 @@
 
 package org.thymeleaf.extras.eclipse.template;
 
-import org.attoparser.AttoParseException;
-import org.attoparser.markup.dom.IDocument;
+import org.attoparser.markup.dom.INestableNode;
+import org.attoparser.markup.dom.impl.Document;
+import org.attoparser.markup.dom.impl.Element;
 import org.attoparser.markup.html.AbstractStandardNonValidatingHtmlAttoHandler;
 import org.attoparser.markup.html.HtmlParsing;
+import org.attoparser.markup.html.HtmlParsingConfiguration;
 import org.attoparser.markup.html.elements.IHtmlElement;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Map;
 
 /**
@@ -31,32 +35,37 @@ import java.util.Map;
  */
 public class DOMHtmlAttoHandler extends AbstractStandardNonValidatingHtmlAttoHandler {
 
-	private IDocument document;
+	private final String documentname;
+	private Document document;
+	private Element currentelement;
+	private Deque<INestableNode> nestednodestack = new ArrayDeque<INestableNode>();
 
 	/**
 	 * Constructor, create a handler for lenient HTML operations.
+	 * 
+	 * @param documentname
 	 */
-	public DOMHtmlAttoHandler() {
+	public DOMHtmlAttoHandler(String documentname) {
 
 		super(HtmlParsing.htmlParsingConfiguration());
+		this.documentname = documentname;
+	}
+
+	/**
+	 * Return the HTML document created from parsing an HTML file.
+	 * 
+	 * @return HTML document.
+	 */
+	public Document getDocument() {
+
+		return document;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void handleCDATASection(final char[] buffer, final int offset, final int len, 
-		final int line, final int col) throws AttoParseException {
-
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handleComment(final char[] buffer, final int offset, final int len, 
-		final int line, final int col) throws AttoParseException {
+	public void handleCDATASection(char[] buffer, int offset, int len, int line, int col) {
 
 		// Does nothing - don't care about this one right now
 	}
@@ -65,46 +74,7 @@ public class DOMHtmlAttoHandler extends AbstractStandardNonValidatingHtmlAttoHan
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void handleDocType(final String elementName, final String publicId,
-		final String systemId, final String internalSubset, final int line, final int col)
-		throws AttoParseException {
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handleHtmlCloseElement(final IHtmlElement element, final String elementName, 
-		final int line, final int col) throws AttoParseException {
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handleHtmlOpenElement(final IHtmlElement element, final String elementName, 
-		final Map<String,String> attributes, final int line, final int col) throws AttoParseException {
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handleHtmlStandaloneElement(final IHtmlElement element, final boolean minimized,
-		final String elementName, final Map<String,String> attributes, final int line, final int col)
-		throws AttoParseException {
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handleProcessingInstruction(final String target, final String content, 
-		final int line, final int col) throws AttoParseException {
+	public void handleComment(char[] buffer, int offset, int len, int line, int col) {
 
 		// Does nothing - don't care about this one right now
 	}
@@ -113,8 +83,85 @@ public class DOMHtmlAttoHandler extends AbstractStandardNonValidatingHtmlAttoHan
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void handleXmlDeclaration(final String version, final String encoding, 
-		final String standalone, final int line, final int col) throws AttoParseException {
+	public void handleDocType(String elementName, String publicId, String systemId,
+		String internalSubset, int line, int col) {
+
+		// Does nothing - don't care about this one right now
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void handleDocumentEnd(long endTimeNanos, long totalTimeNanos, int line, int col,
+		HtmlParsingConfiguration parsingConfiguration) {
+
+		document = (Document)nestednodestack.pop();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void handleDocumentStart(long startTimeNanos, int line, int col,
+		HtmlParsingConfiguration parsingConfiguration) {
+
+		nestednodestack.push(new Document(documentname));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void handleHtmlCloseElement(final IHtmlElement htmlElement, final String elementName, 
+		final int line, final int col) {
+
+		Element element = (Element)nestednodestack.pop();
+		currentelement = (Element)nestednodestack.peek();
+		currentelement.addChild(element);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void handleHtmlOpenElement(IHtmlElement htmlElement, String elementName, 
+		Map<String,String> attributes, int line, int col) {
+
+		Element element = new Element(elementName);
+		element.addAttributes(attributes);
+		nestednodestack.push(element);
+
+		currentelement = element;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void handleHtmlStandaloneElement(IHtmlElement htmlElement, boolean minimized,
+		String elementName, Map<String,String> attributes, int line, int col) {
+
+		Element element = new Element(elementName);
+		element.addAttributes(attributes);
+		currentelement.addChild(element);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void handleProcessingInstruction(String target, String content, int line, int col) {
+
+		// Does nothing - don't care about this one right now
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void handleXmlDeclaration(String version, String encoding, String standalone,
+		int line, int col) {
 
 		// Does nothing - don't care about this one right now
 	}

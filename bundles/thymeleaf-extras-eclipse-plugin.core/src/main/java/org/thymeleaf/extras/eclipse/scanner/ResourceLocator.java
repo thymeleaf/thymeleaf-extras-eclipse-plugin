@@ -16,21 +16,21 @@
 
 package org.thymeleaf.extras.eclipse.scanner;
 
-import java.io.InputStream;
 import java.util.List;
 
 /**
  * Locates certain kinds of resources to be loaded at a later time.
  * 
+ * @param <F> The type/format being returned by the locator.
  * @author Emanuel Rabina
  */
-public interface ResourceLocator {
+public interface ResourceLocator<F> {
 
 	/**
-	 * Looks for resources and returns a list of input streams over those
-	 * resources that can be accepted by a {@link ResourceLoader}.
+	 * Looks for resources and returns a list over those resources that can be
+	 * accepted by a {@link ResourceLoader}.
 	 * 
-	 * @return List of input streams over a resource type.
+	 * @return List of formats over a resource type.
 	 */
-	public List<InputStream> locateResources();
+	public List<F> locateResources();
 }
