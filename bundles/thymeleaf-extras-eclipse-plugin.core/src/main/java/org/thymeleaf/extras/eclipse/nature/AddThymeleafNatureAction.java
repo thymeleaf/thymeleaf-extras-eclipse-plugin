@@ -16,6 +16,10 @@
 
 package org.thymeleaf.extras.eclipse.nature;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.expressions.IEvaluationContext;
@@ -23,8 +27,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
-
-import java.util.List;
 
 /**
  * Adds a Thymeleaf nature to selected projects.
@@ -37,15 +39,25 @@ public class AddThymeleafNatureAction extends AbstractHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public Object execute(ExecutionEvent event) {
-
+	
 		IEvaluationContext context = (IEvaluationContext)event.getApplicationContext();
-		List<IJavaProject> selectedprojects = (List<IJavaProject>)context.getDefaultVariable();
-
+		Collection<?> selectedProjects = (Collection<?>) context.getDefaultVariable();
+		List<IProject> projects = new ArrayList<IProject>();
+		
+		// Cycle through the context variables to retrieve typed projects
+		for (Object selectedProject : selectedProjects) {
+			if (selectedProject instanceof IProject) {
+				IProject project = (IProject) selectedProject;
+				projects.add(project);
+			} else if (selectedProject instanceof IJavaProject) {
+				IJavaProject javaProject = (IJavaProject) selectedProject;
+				projects.add(javaProject.getProject());
+			}
+		}
+		
 		// Add the Thymeleaf nature to all selected projects
-		for (IJavaProject javaproject: selectedprojects) {
-			IProject project = javaproject.getProject();
+		for (IProject project : projects) {
 			try {
 				IProjectDescription description = project.getDescription();
 				String[] natures = description.getNatureIds();
