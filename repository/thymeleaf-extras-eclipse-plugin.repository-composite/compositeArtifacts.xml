@@ -7,9 +7,11 @@
 		<property name="p2.compressed" value="true"/>
 		<property name="p2.timestamp" value="@timestamp@"/>
 	</properties>
-	<children size="3">
+	<children size="5">
 		<child location="https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/2.0.2/update-site/"/>
 		<child location="https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/2.0.3/update-site/"/>
+		<child location="https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/2.0.4/update-site/"/>
+		<child location="https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/2.1.0/update-site/"/>
 		<child location="@update-site@"/>
 	</children>
 </repository>
