@@ -1,0 +1,78 @@
+
+Changelog
+=========
+
+### 2.0.4
+ - Fix for some Eclipse installations that were failing to add the Thymeleaf
+   nature, introduced in 2.0.3 ([#40](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/40),
+   [#42](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/42),
+   with a big thanks to [Thibault Duchateau](https://github.com/tduchateau) for
+   finding and providing the fix)
+
+### 2.0.3
+ - Added support for a wider range of workspace refresh types, so if the
+   dialects that your project is using change, the plugin is now better equipped
+   to reflect those changes in the content assist.
+ - A Thymeleaf Nature that can be added to your projects.  See the [Features](#features)
+   section for more details ([#20](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/20))
+
+### 2.0.2
+ - Dialect files in dependent projects weren't being picked up, either
+   through Eclipse or dependency-management containers (Maven, Gradle) ([#15](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/15))
+ - Added a basic refresh mechanism which tracks changes in scanned dialect files
+   and reflects those changes in the plugin.  This is an ongoing work, which can
+   be tracked against [#21](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/21).
+ - Added a new attribute to the `<restrictions>` element called `attributes`,
+   which lists other attributes that must or must not appear in the same tag for
+   the attribute processor to be suggested ([#17](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/17))
+ - We now have an update site! :) ([#13](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/13))
+
+### 2.0.1
+ - `th:inline` is now part of the suggested attribute processors list ([#12](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/12))
+ - Added support for the upcoming Thymeleaf-Spring3 `#themes.code(...)`
+   expression object and method, which is the Thymeleaf equivalent of the Spring
+   `<spring:theme code=''/>` JSP tag.
+ - Updated Tycho to 0.17.0, which now generates source features automatically
+   (explicit source feature sub-project deleted).
+
+### 2.0.0
+ - Moved to a 'Thymeleaf extras' branching and versioning scheme.
+ - Added a source code feature to the generated repository file so that you have
+   the option of installing the source code of this plugin.
+ - Fixed an issue where negative restrictions (ie: tags that the processor
+   cannot appear on) were not being proposed at all.
+
+### 0.4.0
+ - Added support for the Spring standard dialect ([#8](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/8))
+ - Added the ability to use a processor class' Javadoc content as the help
+   content that would appear with the content assist.
+ - Added autocomplete/suggestion support for attribute processors with a limited
+   value set (eg: `th:inline` can accept only `text`, `javascript`, or `dart`).
+ - Made it so attribute processors already in use in the same element will not
+   be suggested in content assist ([#10](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/10))
+
+### 0.3.0
+ - Moved to become a Thymeleaf Extras project.
+ - Added a dialect scanning feature, contributed by [Thibault Duchateau](https://github.com/tduchateau),
+   so that content assist can extend to dialects other than the standard
+   Thymeleaf ones bundled with the plugin.  See the [Adding content assist for
+   your dialect](#adding-content-assist-for-your-dialect) section to find out how
+   dialect developers can take advantage of this plugin.
+ - Added showing the basic help/documtation appear when hovering over a
+   processor.
+ - Added autocomplete/suggestion support for element processors.
+ - Added autocomplete/suggestion support for Thymeleaf's expression utility
+   objects.
+ - Added help files for the Thymeleaf Extras modules: Spring Security 3 and
+   Tiles 2.
+
+### 0.2.0
+ - Added Eclipse API baseline support to work towards other versions of Eclipse.
+ - Relaxed the plugin requirements so it can now work in Java 6 and Eclipse
+   3.7.2 w/ WTP 3.3.2.
+ - Fixed some spelling mistakes in the standard attribute processor suggestions,
+   which would insert misspelled processors into your code!  Whoops!
+ - Added help/documentation for many more of the standard attribute processors.
+   
+### 0.1.0
+ - Initial release
