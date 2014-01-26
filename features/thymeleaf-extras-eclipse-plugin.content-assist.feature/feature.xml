@@ -2,7 +2,7 @@
 <feature
       id="org.thymeleaf.extras.eclipse.contentassist.feature"
       label="%name"
-      version="2.0.3.qualifier"
+      version="2.1.0.qualifier"
       provider-name="Thymeleaf Project">
 
    <description url="http://www.thymeleaf.org/">
