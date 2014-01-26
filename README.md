@@ -9,6 +9,10 @@ Web Tools Platform HTML source editor.
  - Current version: 2.1.0
  - Released: 26 January 2014
 
+The 2.1.x versions of the Eclipse plugin are for Thymeleaf 2.1.  Check out the
+[2.0-master branch](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/tree/2.0-master)
+for a version that supports Thymeleaf 2.0.
+
 
 Minimum Requirements
 --------------------
