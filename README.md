@@ -1,4 +1,3 @@
-
 Thymeleaf - Eclipse Plugin module
 =================================
 
@@ -85,7 +84,7 @@ The content assist features are driven by meta data about a dialect, currently
 done using XML files.  XML files for the Thymeleaf Standard dialect comes
 bundled with this plugin, and you can see how it's structured by taking a look
 at [the XML file itself](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/2.0-master/bundles/thymeleaf-extras-eclipse-plugin.dialect-files/dialects/Standard-Dialect.xml),
-as well as taking a look at [the schema file it conforms to](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/2.0-master/bundles/thymeleaf-extras-eclipse-plugin.dialect/schemas/thymeleaf-dialect-help.xsd).
+as well as taking a look at [the schema file it conforms to](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/blob/2.0-master/bundles/thymeleaf-extras-eclipse-plugin.core/schemas/thymeleaf-dialect-help.xsd).
 
 When content assist is invoked, this plugin will look for XML files in the
 current project, or in the dependencies of the current project, whose XML
