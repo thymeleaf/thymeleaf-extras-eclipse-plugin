@@ -3,7 +3,12 @@ Changelog
 =========
 
 ### 2.1.0
- - Support for Thymeleaf 2.1's new features! (#33, #34, #35, #36, #37, #41)
+ - Support for Thymeleaf 2.1's new features! ([#33](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/33),
+   [#34](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/34),
+   [#35](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/35),
+   [#36](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/36),
+   [#37](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/37),
+   [#41](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/41))
  - Dialect metadata file is now on a public URL: http://www.thymeleaf.org/xsd/thymeleaf-extras-dialect-2.1.xsd
    This should make it easier to create conformant XML files since you can now
    just point your XML editor to the schema ([#23](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/23))
