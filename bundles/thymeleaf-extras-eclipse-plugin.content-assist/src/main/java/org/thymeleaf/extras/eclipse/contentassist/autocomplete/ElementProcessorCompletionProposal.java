@@ -31,9 +31,10 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
  * @author Emanuel Rabina
  */
 @SuppressWarnings("restriction")
-public class ElementProcessorCompletionProposal extends AbstractProcessorCompletionProposal {
+public class ElementProcessorCompletionProposal extends AbstractCompletionProposal {
 
 	private final boolean addendtag;
+	private final String fullprocessorname;
 
 	/**
 	 * Constructor, creates a completion proposal for a Thymeleaf element
@@ -47,9 +48,10 @@ public class ElementProcessorCompletionProposal extends AbstractProcessorComplet
 	public ElementProcessorCompletionProposal(ElementProcessor processor,
 		int charsentered, int cursorposition) {
 
-		super(processor, charsentered, cursorposition);
+		super(processor, processor.getFullName().substring(charsentered), cursorposition);
 		addendtag = HTMLUIPlugin.getDefault().getPreferenceStore().getBoolean(
 				HTMLUIPreferenceNames.TYPING_COMPLETE_ELEMENTS);
+		this.fullprocessorname = processor.getFullName();
 	}
 
 	/**
@@ -63,6 +65,15 @@ public class ElementProcessorCompletionProposal extends AbstractProcessorComplet
 			replacement += "</" + fullprocessorname + ">";
 		}
 		document.replace(offset, 0, replacement);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getDisplayString() {
+
+		return fullprocessorname;
 	}
 
 	/**

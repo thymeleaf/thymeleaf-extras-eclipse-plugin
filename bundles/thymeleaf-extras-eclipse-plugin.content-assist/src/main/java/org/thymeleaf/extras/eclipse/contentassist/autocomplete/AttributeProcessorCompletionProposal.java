@@ -21,6 +21,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
+
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 /**
@@ -28,21 +29,29 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
  * 
  * @author Emanuel Rabina
  */
-public class AttributeProcessorCompletionProposal extends AbstractProcessorCompletionProposal {
+public class AttributeProcessorCompletionProposal extends AbstractCompletionProposal {
+
+	private final String displaystring;
 
 	/**
 	 * Constructor, creates a completion proposal for a Thymeleaf attribute
 	 * processor.
 	 * 
-	 * @param processor		  Attribute processor being proposed.
-	 * @param charsentered	  How much of the entire proposal has already been
-	 * 						  entered by the user.
+	 * @param processor      Attribute processor being proposed.
+	 * @param charsentered   How much of the entire proposal has already been
+	 *                       entered by the user.
 	 * @param cursorposition
+	 * @param dataattr       Whether the data-* version of this processor should
+	 *                       be used for the proposal.
 	 */
 	public AttributeProcessorCompletionProposal(AttributeProcessor processor,
-		int charsentered, int cursorposition) {
+		int charsentered, int cursorposition, boolean dataattr) {
 
-		super(processor, charsentered, cursorposition);
+		super(processor,
+				!dataattr ? processor.getFullName().substring(charsentered) :
+				            processor.getFullDataName().substring(charsentered),
+				cursorposition);
+		this.displaystring = !dataattr ? processor.getFullName() : processor.getFullDataName();
 	}
 
 	/**
@@ -52,6 +61,15 @@ public class AttributeProcessorCompletionProposal extends AbstractProcessorCompl
 	protected void applyImpl(IDocument document, char trigger, int offset) throws BadLocationException {
 
 		document.replace(offset, 0, replacementstring.substring(offset - cursorposition) + "=\"\"");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getDisplayString() {
+
+		return displaystring;
 	}
 
 	/**

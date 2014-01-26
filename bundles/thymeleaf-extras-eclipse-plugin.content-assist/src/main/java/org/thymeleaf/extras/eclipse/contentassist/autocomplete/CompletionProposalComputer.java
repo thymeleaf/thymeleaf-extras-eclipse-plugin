@@ -128,57 +128,12 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 					new ArrayList<AttributeProcessorCompletionProposal>();
 			NamedNodeMap existingattributes = node.getAttributes();
 
-			for (AttributeProcessor processor: processors) {
-				AttributeProcessorCompletionProposal proposal = new AttributeProcessorCompletionProposal(
-						processor, pattern.length(), cursorposition);
+			// Go through twice so that we create data-* suggestions as well
+			createAttributeProcessorSuggestions(pattern, processors, existingattributes,
+					node, cursorposition, proposals, false);
+			createAttributeProcessorSuggestions(pattern, processors, existingattributes,
+					node, cursorposition, proposals, true);
 
-				// Only include the proposal if it isn't already in the element
-				if (existingattributes.getNamedItem(processor.getFullName()) == null) {
-					boolean restricted = false;
-
-					// If a restriction is present, make sure it is satisfied before including the proposal
-					if (processor.isSetRestrictions()) {
-						AttributeRestrictions restrictions = processor.getRestrictions();
-
-						if (restrictions.isSetTags()) {
-							List<String> tags = restrictions.getTags();
-							String elementname = node.getNodeName();
-
-							for (String tag: tags) {
-								if (tag.startsWith("-")) {
-									if (tag.substring(1).equals(elementname)) {
-										restricted = true;
-										break;
-									}
-								}
-								else if (!tag.equals(elementname)) {
-									restricted = true;
-									break;
-								}
-							}
-						}
-
-						if (restrictions.isSetAttributes()) {
-							for (String attribute: restrictions.getAttributes()) {
-								if (attribute.startsWith("-")) {
-									if (existingattributes.getNamedItem(attribute.substring(1)) != null) {
-										restricted = true;
-										break;
-									}
-								}
-								else if (existingattributes.getNamedItem(attribute) == null) {
-									restricted = true;
-									break;
-								}
-							}
-						}
-					}
-
-					if (!restricted) {
-						proposals.add(proposal);
-					}
-				}
-			}
 			return proposals;
 		}
 
@@ -289,6 +244,84 @@ public class CompletionProposalComputer extends AbstractComputer implements ICom
 		}
 
 		return Collections.EMPTY_LIST;
+	}
+
+	/**
+	 * Creates and adds attribute processor proposals for whether or not they
+	 * should use the standard or data-* version.
+	 * 
+	 * @param pattern            The input string entered by the user so far.
+	 * @param processors         List of processors that matched the pattern.
+	 * @param existingattributes
+	 * @param node
+	 * @param cursorposition
+	 * @param proposals          List of proposals to add to.
+	 * @param dataattr           Use the data-* version of the processor.
+	 */
+	private static void createAttributeProcessorSuggestions(String pattern,
+		List<AttributeProcessor> processors, NamedNodeMap existingattributes, IDOMNode node,
+		int cursorposition, ArrayList<AttributeProcessorCompletionProposal> proposals,
+		boolean dataattr) {
+
+		for (AttributeProcessor processor: processors) {
+
+			// Double check that the processor type being used this time around
+			// matches the pattern
+			if ((!dataattr && !processor.getFullName().startsWith(pattern)) ||
+				(dataattr && !processor.getFullDataName().startsWith(pattern))) {
+				continue;
+			}
+
+			AttributeProcessorCompletionProposal proposal = new AttributeProcessorCompletionProposal(
+					processor, pattern.length(), cursorposition, dataattr);
+
+			// Only include the proposal if it isn't already in the element
+			if (existingattributes.getNamedItem(proposal.getDisplayString()) == null) {
+				boolean restricted = false;
+
+				// If a restriction is present, make sure it is satisfied before including the proposal
+				if (processor.isSetRestrictions()) {
+					AttributeRestrictions restrictions = processor.getRestrictions();
+
+					if (restrictions.isSetTags()) {
+						List<String> tags = restrictions.getTags();
+						String elementname = node.getNodeName();
+
+						for (String tag: tags) {
+							if (tag.startsWith("-")) {
+								if (tag.substring(1).equals(elementname)) {
+									restricted = true;
+									break;
+								}
+							}
+							else if (!tag.equals(elementname)) {
+								restricted = true;
+								break;
+							}
+						}
+					}
+
+					if (restrictions.isSetAttributes()) {
+						for (String attribute: restrictions.getAttributes()) {
+							if (attribute.startsWith("-")) {
+								if (existingattributes.getNamedItem(attribute.substring(1)) != null) {
+									restricted = true;
+									break;
+								}
+							}
+							else if (existingattributes.getNamedItem(attribute) == null) {
+								restricted = true;
+								break;
+							}
+						}
+					}
+				}
+
+				if (!restricted) {
+					proposals.add(proposal);
+				}
+			}
+		}
 	}
 
 	/**

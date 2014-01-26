@@ -284,7 +284,8 @@ public class DialectCache {
 	}
 
 	/**
-	 * Checks if the processor name (prefix:name) matches the given name.
+	 * Checks if the processor name (prefix:name or data-prefix-name) matches
+	 * the given name.
 	 * 
 	 * @param processor
 	 * @param name
@@ -292,18 +293,15 @@ public class DialectCache {
 	 */
 	private static boolean processorMatchesName(Processor processor, String name) {
 
-		if (name == null || name.isEmpty()) {
-			return false;
-		}
-		int separatorindex = name.indexOf(':');
-		return separatorindex != -1 &&
-				processor.getDialect().getPrefix().equals(name.substring(0, separatorindex)) &&
-				processor.getName().equals(name.substring(separatorindex + 1));
+		return name != null && !name.isEmpty() &&
+				(processor.getFullName().equals(name) ||
+				(processor instanceof AttributeProcessor &&
+						((AttributeProcessor)processor).getFullDataName().equals(name)));
 	}
 
 	/**
-	 * Checks if the processor name (prefix:name) matches the given
-	 * start-of-string pattern.
+	 * Checks if the processor name (prefix:name or data-prefix-name) matches
+	 * the given start-of-string pattern.
 	 * 
 	 * @param processor
 	 * @param pattern
@@ -312,7 +310,10 @@ public class DialectCache {
 	 */
 	private static boolean processorMatchesPattern(Processor processor, String pattern) {
 
-		return pattern != null && processor.getFullName().startsWith(pattern);
+		return pattern != null &&
+				(processor.getFullName().startsWith(pattern) ||
+				(processor instanceof AttributeProcessor &&
+						((AttributeProcessor)processor).getFullDataName().startsWith(pattern)));
 	}
 
 	/**

@@ -197,6 +197,25 @@
 				help with deciding where the processor can go and what values it
 				can take.
 			</xsd:documentation>
+			<xsd:appinfo>
+				<ci:code>
+	@javax.xml.bind.annotation.XmlTransient
+	private String fulldataname;
+
+	/**
+	 * Return the full data-* name of this processor.
+	 * 
+	 * @return data-prefix-name
+	 */
+	public String getFullDataName() {
+
+		if (fulldataname == null) {
+			fulldataname = "data-" + dialect.getPrefix() + "-" + name;
+		}
+		return fulldataname;
+	}
+				</ci:code>
+			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:complexContent>
 			<xsd:extension base="Processor">
