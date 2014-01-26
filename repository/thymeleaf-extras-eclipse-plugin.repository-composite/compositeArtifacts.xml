@@ -10,6 +10,7 @@
 	<children size="3">
 		<child location="https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/2.0.2/update-site/"/>
 		<child location="https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/2.0.3/update-site/"/>
+		<child location="https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/2.0.4/update-site/"/>
 		<child location="@update-site@"/>
 	</children>
 </repository>
