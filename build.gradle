@@ -1,0 +1,73 @@
+/*
+ * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Gradle build script to perform a variety of support tasks for the Thymeleaf
+ * Extras Eclipse Plugin project.
+ * 
+ * @author Emanuel Rabina
+ */
+
+apply from: 'https://raw.github.com/ultraq/gradle-support/master/jaxb.gradle'
+
+project.ext.corePluginDir = 'bundles/thymeleaf-extras-eclipse-plugin.core'
+
+repositories {
+	mavenCentral()
+}
+
+/**
+ * Create the depdendency graphs for each of the plugins.  This is used for the
+ * 'downloadDependencies' task so it can copy all necessary JARs into each
+ * project, saving us having to store those JARs in source control (like we used
+ * to, since this is an OSGi environment, not a Maven one). 
+ */
+configurations {
+	core
+}
+dependencies {
+	core (
+		'nz.net.ultraq.jaxb:jaxb-utilities:1.2.6'
+	)
+}
+
+/**
+ * Download the dependencies for each plugin and place them into their
+ * respective libs directories. 
+ */
+task downloadDependencies(
+	description: 'Download Maven dependencies into the libs directory for each plugin') {
+
+	copy {
+		from configurations.core
+		into "${project.corePluginDir}/libs"
+	}
+}
+
+/**
+ * Configure the XJC task to generate Java classes from the dialect help schema
+ * in the core plugin.
+ */
+xjc {
+	schemaDir = "${project.corePluginDir}/schemas"
+	outputDir = "${project.corePluginDir}/src/main/java"
+	classes = [
+		'**/dialect/xml/*.java'
+	]
+	args = [
+		'-Xinject-code'
+	]
+}
