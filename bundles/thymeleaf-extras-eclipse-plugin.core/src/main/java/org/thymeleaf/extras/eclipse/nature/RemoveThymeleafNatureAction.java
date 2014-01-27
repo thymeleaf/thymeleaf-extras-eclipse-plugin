@@ -24,6 +24,8 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -37,15 +39,25 @@ public class RemoveThymeleafNatureAction extends AbstractHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public Object execute(ExecutionEvent event) {
 
-		IEvaluationContext context = (IEvaluationContext)event.getApplicationContext();
-		List<IJavaProject> selectedprojects = (List<IJavaProject>)context.getDefaultVariable();
+		IEvaluationContext context = (IEvaluationContext) event.getApplicationContext();
+		Collection<?> selectedProjects = (Collection<?>) context.getDefaultVariable();
+		List<IProject> projects = new ArrayList<IProject>();
+
+		// Cycle through the context variables to retrieve typed projects
+		for (Object selectedProject : selectedProjects) {
+			if (selectedProject instanceof IProject) {
+				IProject project = (IProject) selectedProject;
+				projects.add(project);
+			} else if (selectedProject instanceof IJavaProject) {
+				IJavaProject javaProject = (IJavaProject) selectedProject;
+				projects.add(javaProject.getProject());
+			}
+		}
 
 		// Remove the Thymeleaf nature from all selected projects
-		for (IJavaProject javaproject: selectedprojects) {
-			IProject project = javaproject.getProject();
+		for (IProject project : projects) {
 			try {
 				IProjectDescription description = project.getDescription();
 				String[] natures = description.getNatureIds();
