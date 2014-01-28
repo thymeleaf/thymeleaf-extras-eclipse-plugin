@@ -2,6 +2,11 @@
 Changelog
 =========
 
+### 2.1.1
+ - Focused so much on getting Thymeleaf Natures _added_ to a project, that we
+   forgot to test _removing_ it, which suffered from the same bugs as adding it
+   did.  Fixed. ([#45](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/45))
+
 ### 2.1.0
  - Support for Thymeleaf 2.1's new features! ([#33](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/33),
    [#34](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/34),
@@ -16,6 +21,11 @@ Changelog
    page editor, or plugins that make use of the standard HTML page editor
    ([#28](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/28),
    [#43](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/43))
+
+### 2.0.5
+ - Focused so much on getting Thymeleaf Natures _added_ to a project, that we
+   forgot to test _removing_ it, which suffered from the same bugs as adding it
+   did.  Fixed. ([#45](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/45))
 
 ### 2.0.4
  - Fix for some Eclipse installations that were failing to add the Thymeleaf

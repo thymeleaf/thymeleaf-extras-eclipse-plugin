@@ -6,8 +6,8 @@ A plugin for the Eclipse IDE to add content assist features for the Thymeleaf
 standard dialect processors and expression utility objects, using the Eclipse
 Web Tools Platform HTML source editor.
 
- - Current version: 2.1.0
- - Released: 26 January 2014
+ - Current version: 2.1.1
+ - Released: ?? ??? 2014
 
 The 2.1.x versions of the Eclipse plugin are for Thymeleaf 2.1.  Check out the
 [2.0-master branch](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/tree/2.0-master)
