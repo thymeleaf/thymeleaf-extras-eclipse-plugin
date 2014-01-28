@@ -2,6 +2,11 @@
 Changelog
 =========
 
+### 2.0.5
+ - Focused so much on getting Thymeleaf Natures _added_ to a project, that we
+   forgot to test _removing_ it, which suffered from the same bugs as adding it
+   did.  Fixed. ([#45](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/45))
+
 ### 2.0.4
  - Fix for some Eclipse installations that were failing to add the Thymeleaf
    nature, introduced in 2.0.3 ([#40](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/40),
