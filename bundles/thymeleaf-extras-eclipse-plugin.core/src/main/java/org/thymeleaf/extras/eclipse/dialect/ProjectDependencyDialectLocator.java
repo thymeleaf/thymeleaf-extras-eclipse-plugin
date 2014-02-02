@@ -25,7 +25,9 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.xml.sax.InputSource;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 import static org.thymeleaf.extras.eclipse.CorePlugin.*;
 
 import java.io.IOException;
@@ -39,10 +41,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 /**
  * Locates Thymeleaf dialect XML help files from a project's dependencies.
@@ -51,10 +52,30 @@ import javax.xml.xpath.XPathFactory;
  */
 public class ProjectDependencyDialectLocator implements DialectLocator<InputStream> {
 
+	private static final String XML_FEATURE_LOAD_DTD_GRAMMAR =
+			"http://apache.org/xml/features/nonvalidating/load-dtd-grammar";
+	private static final String XML_FEATURE_LOAD_EXTERNAL_DTD =
+			"http://apache.org/xml/features/nonvalidating/load-external-dtd";
+
 	private static final String DIALECT_EXTRAS_NAMESPACE = "http://www.thymeleaf.org/extras/dialect";
 
+	private static final SAXParserFactory parserfactory;
+	static {
+		try {
+			parserfactory = SAXParserFactory.newInstance();
+			parserfactory.setNamespaceAware(true);
+			parserfactory.setFeature(XML_FEATURE_LOAD_DTD_GRAMMAR, false);
+			parserfactory.setFeature(XML_FEATURE_LOAD_EXTERNAL_DTD, false);
+		}
+		catch (SAXException ex) {
+			throw new RuntimeException(ex);
+		}
+		catch (ParserConfigurationException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
 	private final IJavaProject project;
-	private final XPathExpression namespaceexpression;
 	private final ArrayList<IPath> dialectfilepaths = new ArrayList<IPath>();
 
 	/**
@@ -66,14 +87,6 @@ public class ProjectDependencyDialectLocator implements DialectLocator<InputStre
 	public ProjectDependencyDialectLocator(IJavaProject project) {
 
 		this.project = project;
-		try {
-			XPathFactory factory = XPathFactory.newInstance();
-			XPath xpath = factory.newXPath();
-			namespaceexpression = xpath.compile("namespace-uri(/*)");
-		}
-		catch (XPathExpressionException ex) {
-			throw new RuntimeException(ex);
-		}
 	}
 
 	/**
@@ -96,7 +109,7 @@ public class ProjectDependencyDialectLocator implements DialectLocator<InputStre
 	 * @return <tt>true</tt> if the resource is an XML file in the
 	 * 		   <tt>http://www.thymeleaf.org/extras/dialect</tt> namespace.
 	 */
-	private boolean isDialectHelpXMLFile(IStorage resource) {
+	private static boolean isDialectHelpXMLFile(IStorage resource) {
 
 		InputStream resourcestream = null;
 		try {
@@ -106,15 +119,25 @@ public class ProjectDependencyDialectLocator implements DialectLocator<InputStre
 
 				// Check if the XML file namespace is correct
 				resourcestream = resource.getContents();
-				String namespace = namespaceexpression.evaluate(new InputSource(resourcestream));
-				if (namespace.equals(DIALECT_EXTRAS_NAMESPACE)) {
+				SAXParser parser = parserfactory.newSAXParser();
+				NamespaceHandler handler = new NamespaceHandler();
+				parser.parse(resourcestream, handler);
+				if (handler.namespace != null && handler.namespace.equals(DIALECT_EXTRAS_NAMESPACE)) {
 					return true;
 				}
 			}
 			return false;
 		}
-		catch (XPathExpressionException ex) {
-			logError("Unable to execute XPath expression", ex);
+		catch (ParserConfigurationException ex) {
+			logError("Unable to read XML file", ex);
+			return false;
+		}
+		catch (IOException ex) {
+			logError("Unable to read XML file", ex);
+			return false;
+		}
+		catch (SAXException ex) {
+			logError("Unable to read XML file", ex);
 			return false;
 		}
 		catch (CoreException ex) {
@@ -206,5 +229,29 @@ public class ProjectDependencyDialectLocator implements DialectLocator<InputStre
 
 		logInfo("Scanning complete.  Execution time: " + (System.currentTimeMillis() - start) + "ms");
 		return dialectstreams;
+	}
+
+	/**
+	 * Basic SAX handler that cares only about the document namespace.
+	 */
+	private static class NamespaceHandler extends DefaultHandler {
+
+		private String namespace;
+
+		/**
+		 * Saves the document namespace, then does nothing after that.
+		 * 
+		 * @param uri
+		 * @param localName
+		 * @param qName
+		 * @param attributes
+		 */
+		@Override
+		public void startElement(String uri, String localName, String qName, Attributes attributes) {
+
+			if (namespace == null) {
+				namespace = uri;
+			}
+		}
 	}
 }
