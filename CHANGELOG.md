@@ -17,22 +17,15 @@ Changelog
  - Dialect metadata file is now on a public URL: http://www.thymeleaf.org/xsd/thymeleaf-extras-dialect-2.1.xsd
    This should make it easier to create conformant XML files since you can now
    just point your XML editor to the schema ([#23](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/23))
- - Fix for interoperability with other plugins that may hijack the standard HTML
-   page editor, or plugins that make use of the standard HTML page editor
-   ([#28](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/28),
-   [#43](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/43))
-
-### 2.0.5
- - Focused so much on getting Thymeleaf Natures _added_ to a project, that we
-   forgot to test _removing_ it, which suffered from the same bugs as adding it
-   did.  Fixed. ([#45](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/45))
-
-### 2.0.4
  - Fix for some Eclipse installations that were failing to add the Thymeleaf
    nature, introduced in 2.0.3 ([#40](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/40),
    [#42](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/42),
    with a big thanks to [Thibault Duchateau](https://github.com/tduchateau) for
    finding and providing the fix)
+ - Fix for interoperability with other plugins that may hijack the standard HTML
+   page editor, or plugins that make use of the standard HTML page editor
+   ([#28](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/28),
+   [#43](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/43))
 
 ### 2.0.3
  - Added support for a wider range of workspace refresh types, so if the
