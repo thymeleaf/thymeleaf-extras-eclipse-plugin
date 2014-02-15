@@ -72,17 +72,4 @@ public abstract class AbstractComputer {
 
 		return Character.isLetterOrDigit(c) || c == '#' || c =='.';
 	}
-
-	/**
-	 * Returns whether or not the given character is a valid processor name
-	 * character.
-	 * 
-	 * @param c
-	 * @return <tt>true</tt> if <tt>char</tt> is an alphanumeric character, or
-	 * 		   one of the following symbols: <tt>: -</tt>
-	 */
-	protected static boolean isProcessorChar(char c) {
-
-		return Character.isLetterOrDigit(c) || c == ':' || c == '-';
-	}
 }

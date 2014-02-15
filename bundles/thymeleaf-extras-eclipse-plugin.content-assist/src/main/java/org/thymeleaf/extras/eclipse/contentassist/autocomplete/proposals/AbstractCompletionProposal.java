@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.contentassist.autocomplete;
+package org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
