@@ -21,7 +21,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
-
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
 
 /**

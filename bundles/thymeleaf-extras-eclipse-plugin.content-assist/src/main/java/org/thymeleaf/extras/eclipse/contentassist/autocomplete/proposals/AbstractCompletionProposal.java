@@ -221,13 +221,13 @@ public abstract class AbstractCompletionProposal implements ICompletionProposal,
 		if (!yestags.isEmpty()) {
 			doctext.append("<dt>" + yestext + "</dt>");
 			for (String yestag: yestags) {
-				doctext.append("<dd>&lt;" + yestag + "&gt;</dd>");
+				doctext.append("<dd>" + yestag + "</dd>");
 			}
 		}
 		if (!notags.isEmpty()) {
 			doctext.append("<dt>" + notext + "</dt>");
 			for (String notag: notags) {
-				doctext.append("<dd>&lt;" + notag.substring(1) + "&gt;</dd>");
+				doctext.append("<dd>" + notag.substring(1) + "</dd>");
 			}
 		}
 

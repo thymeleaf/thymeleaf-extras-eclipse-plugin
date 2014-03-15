@@ -28,6 +28,8 @@ import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeRestrictions;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
 import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.findCurrentJavaProject;
 
 import java.util.ArrayList;
@@ -134,13 +136,7 @@ public class AttributeProcessorProposalGenerator
 
 					if (restrictions.isSetAttributes()) {
 						for (String attribute: restrictions.getAttributes()) {
-							if (attribute.startsWith("-")) {
-								if (existingattributes.getNamedItem(attribute.substring(1)) != null) {
-									restricted = true;
-									break;
-								}
-							}
-							else if (existingattributes.getNamedItem(attribute) == null) {
+							if (!matchAttributeRestriction(attribute, existingattributes)) {
 								restricted = true;
 								break;
 							}
@@ -199,5 +195,52 @@ public class AttributeProcessorProposalGenerator
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Checks if an attribute processor proposal should be made given the
+	 * attribute restriction.
+	 * 
+	 * @param restriction
+	 * @param existingattributes
+	 * @return <tt>true</tt> if an attribute processor can be proposed because
+	 *         it passed the current restriction.
+	 */
+	private static boolean matchAttributeRestriction(String restriction,
+		NamedNodeMap existingattributes) {
+
+		// Break the restriction into its parts
+		String restrictionName;
+		String restrictionValue;
+		if (restriction.contains("=")) {
+			int indexOfEq = restriction.indexOf('=');
+			restrictionName  = restriction.substring(0, indexOfEq);
+			restrictionValue = restriction.substring(indexOfEq + 1);
+		}
+		else {
+			restrictionName  = restriction;
+			restrictionValue = null;
+		}
+
+		// Flag to indicate if this is a restriction that the attribute _shouldn't_ be there
+		boolean negate = restriction.startsWith("-");
+		if (negate) {
+			restrictionName = restrictionName.substring(1);
+		}
+
+		// Check restriction against other attributes in the element
+		Node attribute = existingattributes.getNamedItem(restrictionName);
+		boolean allow = true;
+		if (attribute == null) {
+			allow = false;
+		}
+		else if (restrictionValue != null) {
+			String attributeValue = attribute.getNodeValue();
+			if (attributeValue != null && !attributeValue.equals(restrictionValue)) {
+				allow = false;
+			}
+		}
+
+		return negate ? !allow : allow;
 	}
 }
