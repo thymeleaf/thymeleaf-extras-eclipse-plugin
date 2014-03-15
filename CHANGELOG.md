@@ -8,6 +8,8 @@ Changelog
    did.  Fixed. ([#45](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/45))
  - Fixed a non-blocking error that occurs when the XML namespace checking tries
    to resolve external resources ([#47](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/47))
+ - Enhanced the attribute restriction feature so that an attribute value can
+   also be a part of the restriction ([#48](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/48))
 
 ### 2.1.0
  - Support for Thymeleaf 2.1's new features! ([#33](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/33),
