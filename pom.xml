@@ -7,7 +7,7 @@
 
 	<groupId>org.thymeleaf.extras</groupId>
 	<artifactId>thymeleaf-extras-eclipse-plugin</artifactId>
-	<version>2.1.1-SNAPSHOT</version>
+	<version>2.1.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>thymeleaf-extras-eclipse-plugin</name>

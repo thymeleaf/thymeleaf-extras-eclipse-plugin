@@ -64,7 +64,6 @@ public class InfoHoverComputer extends AbstractComputer implements ITextHover, I
 	 * {@inheritDoc}
 	 */
 	@Override
-	@SuppressWarnings("deprecation")
 	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
 
 		String hoverinfo = null;
