@@ -38,7 +38,7 @@
                id="org.thymeleaf.extras.eclipse.menus.ThymeleafMenuGroup"
                label="Thymeleaf">
             <visibleWhen>
-               <iterate>
+               <iterate ifEmpty="false">
                   <adapt type="org.eclipse.core.resources.IProject">
                      <test
                            property="org.eclipse.core.resources.open"
