@@ -2,6 +2,10 @@
 Changelog
 =========
 
+### 2.1.2
+ - Fixed this bug where the Thymeleaf menu would show up in context menus when
+   nothing was selected ([#56](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/56))
+
 ### 2.1.1
  - Focused so much on getting Thymeleaf Natures _added_ to a project, that we
    forgot to test _removing_ it, which suffered from the same bugs as adding it
