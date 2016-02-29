@@ -127,9 +127,12 @@ public class AttributeProcessorProposalGenerator
 									break;
 								}
 							}
-							else if (!tag.equals(elementname)) {
+							else {
+								if (tag.equals(elementname)) {
+									restricted = false;
+									break;
+								}
 								restricted = true;
-								break;
 							}
 						}
 					}
