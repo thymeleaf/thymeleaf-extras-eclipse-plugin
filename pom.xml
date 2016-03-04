@@ -28,7 +28,7 @@
 				<role>author</role>
 				<role>developer</role>
 			</roles>
-			<timezone>+12</timezone>
+			<timezone>Pacific/Auckland</timezone>
 		</developer>
 	</developers>
 	<contributors>
@@ -40,6 +40,17 @@
 			</roles>
 			<properties>
 				<contribution>The original dialect scanning code</contribution>
+			</properties>
+		</contributor>
+		<contributor>
+			<name>Alexandre Araújo</name>
+			<email>alexandre.little@gmail.com</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>-3</timezone>
+			<properties>
+				<contribution>https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/pull/69</contribution>
 			</properties>
 		</contributor>
 	</contributors>
