@@ -3,6 +3,10 @@ Changelog
 =========
 
 ### 2.1.2
+ - Fixed content assist not working over a list of tags in the restrictions
+   element, ([#68](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/68)),
+   with [Alexandre Araújo](https://github.com/alexandrearaujo) providing the
+   necessary fix ([#69](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/pull/69))
  - Fixed this bug where the Thymeleaf menu would show up in context menus when
    nothing was selected ([#56](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/56))
 
@@ -25,22 +29,25 @@ Changelog
  - Dialect metadata file is now on a public URL: http://www.thymeleaf.org/xsd/thymeleaf-extras-dialect-2.1.xsd
    This should make it easier to create conformant XML files since you can now
    just point your XML editor to the schema ([#23](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/23))
- - Fix for some Eclipse installations that were failing to add the Thymeleaf
-   nature, introduced in 2.0.3 ([#40](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/40),
-   [#42](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/42),
-   with a big thanks to [Thibault Duchateau](https://github.com/tduchateau) for
-   finding and providing the fix)
  - Fix for interoperability with other plugins that may hijack the standard HTML
    page editor, or plugins that make use of the standard HTML page editor
    ([#28](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/28),
    [#43](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/43))
 
+### 2.0.4
+ - Fix for some Eclipse installations that were failing to add the Thymeleaf
+   nature, introduced in 2.0.3 ([#40](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/40),
+   [#42](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/42),
+   with a big thanks to [Thibault Duchateau](https://github.com/tduchateau) for
+   finding and providing the fix)
+
 ### 2.0.3
  - Added support for a wider range of workspace refresh types, so if the
    dialects that your project is using change, the plugin is now better equipped
    to reflect those changes in the content assist.
- - A Thymeleaf Nature that can be added to your projects.  See the [Features](#features)
-   section for more details ([#20](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/20))
+ - A Thymeleaf Nature that can be added to your projects.  See the Features
+   section of the readme for more details
+   ([#20](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/20))
 
 ### 2.0.2
  - Dialect files in dependent projects weren't being picked up, either

@@ -7,7 +7,7 @@ standard dialect processors and expression utility objects, using the Eclipse
 Web Tools Platform HTML source editor.
 
  - Current version: 2.1.2
- - Released: ?? ??? 2014
+ - Released: 4 March 2016
 
 The 2.1.x versions of the Eclipse plugin are for Thymeleaf 2.1.  Check out the
 [2.0-master branch](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/tree/2.0-master)

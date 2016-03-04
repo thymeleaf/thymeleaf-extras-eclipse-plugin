@@ -21,7 +21,7 @@
  * @author Emanuel Rabina
  */
 
-apply from: 'https://raw.github.com/ultraq/gradle-support/master/jaxb.gradle'
+apply from: 'https://raw.githubusercontent.com/ultraq/gradle-support/1.2.2/jaxb.gradle'
 
 project.ext.corePluginDir = 'bundles/thymeleaf-extras-eclipse-plugin.core'
 
