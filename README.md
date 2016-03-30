@@ -30,7 +30,7 @@ In Eclipse, go to Help >> Install New Software... then either use the update
 site URL, or download a ZIP archive of the plugin from SourceForge:
 
  - Update site URL: [http://www.thymeleaf.org/eclipse-plugin-update-site/](http://www.thymeleaf.org/eclipse-plugin-update-site/)
- - ZIP file downloads: [https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/](https://sourceforge.net/projects/thymeleaf/files/thymeleaf-extras-eclipse-plugin/)
+ - ZIP file downloads: [https://bintray.com/thymeleaf/downloads/thymeleaf-extras-eclipse-plugin/](https://bintray.com/thymeleaf/downloads/thymeleaf-extras-eclipse-plugin/)
 
 
 Features
