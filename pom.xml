@@ -48,7 +48,7 @@
 			<roles>
 				<role>developer</role>
 			</roles>
-			<timezone>-3</timezone>
+			<timezone>America/Fortaleza</timezone>
 			<properties>
 				<contribution>https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/pull/69</contribution>
 			</properties>
