@@ -26,11 +26,15 @@ Minimum Requirements
 Installation
 ------------
 
-In Eclipse, go to Help >> Install New Software... then either use the update
-site URL, or download a ZIP archive of the plugin from SourceForge:
+This plugin is available on the Eclipse Marketplace.  Searching for "thymeleaf"
+in the marketplace should bring up this plugin, from which it will install the
+content assist feature.
 
- - Update site URL: [http://www.thymeleaf.org/eclipse-plugin-update-site/](http://www.thymeleaf.org/eclipse-plugin-update-site/)
- - ZIP file downloads: [https://bintray.com/thymeleaf/downloads/thymeleaf-extras-eclipse-plugin/](https://bintray.com/thymeleaf/downloads/thymeleaf-extras-eclipse-plugin/)
+Alternatively, you can install this plugin using the update site URL:
+http://www.thymeleaf.org/eclipse-plugin-update-site/
+
+Or, download a ZIP archive of the plugin from Bintray:
+https://bintray.com/thymeleaf/downloads/thymeleaf-extras-eclipse-plugin/
 
 
 Features
