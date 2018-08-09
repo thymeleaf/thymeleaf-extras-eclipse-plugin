@@ -26,9 +26,9 @@ Minimum Requirements
 Installation
 ------------
 
-This plugin is available on the Eclipse Marketplace.  Searching for "thymeleaf"
-in the marketplace should bring up this plugin, from which it will install the
-content assist feature.
+This plugin is available on the [Eclipse Marketplace](http://marketplace.eclipse.org/content/thymeleaf-plugin-eclipse).
+Searching for "thymeleaf" in the marketplace website or client from Eclipse
+will bring up this plugin for installation.
 
 Alternatively, you can install this plugin using the update site URL:
 http://www.thymeleaf.org/eclipse-plugin-update-site/
