@@ -43,15 +43,16 @@ Features
 ### Content Assist
 
 Content assist features are only available for dialects which have supplied
-special dialect metadata files in their JARs.  thymeleaf-core, thymeleaf-spring3,
-thymeleaf-extras-springsecurity3, and thymeleaf-extras-tiles2 projects already
+special dialect metadata files in their JARs.  thymeleaf, thymeleaf-spring,
+thymeleaf-extras-springsecurity, and thymeleaf-extras-tiles2 projects already
 have such files.  Other dialects, however, are up to the discretion of their
 developer(s).  If you're developing a Thymeleaf dialect and would like to take
 advantage of content assist for your own dialect, read the section on
 [adding content assist for your dialect](#adding-content-assist-for-your-dialect).
 
-Once those help files are available, you can make content assist available in
-your HTML files through 1 of 2 ways:
+Once those help files are available, and that the JAR is in the classpath of the
+project, you can make content assist available in your HTML files through 1 of 2
+ways:
 
 #### 1. Declaring the dialect namespace and prefix in your HTML files
 
