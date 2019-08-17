@@ -16,8 +16,7 @@
 
 package org.thymeleaf.extras.eclipse.dialect;
 
-import nz.net.ultraq.jaxb.XMLException;
-import nz.net.ultraq.jaxb.XMLReader;
+import nz.net.ultraq.jaxb.XmlReader;
 
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
@@ -36,7 +35,7 @@ import java.util.List;
  */
 public class XmlDialectLoader implements DialectLoader<InputStream> {
 
-	private static final XMLReader<Dialect> xmlreader = new XMLReader<Dialect>(Dialect.class);
+	private static final XmlReader<Dialect> xmlReader = new XmlReader<Dialect>(Dialect.class);
 
 	/**
 	 * {@inheritDoc}
@@ -45,17 +44,19 @@ public class XmlDialectLoader implements DialectLoader<InputStream> {
 	public List<Dialect> loadDialects(DialectLocator<InputStream> locator) {
 
 		ArrayList<Dialect> dialects = new ArrayList<Dialect>();
+
+		// TODO: Replace with something that can use try-with-resources
 		for (InputStream dialectfilestream: locator.locateDialects()) {
 
 			// Link processors and expression objects/methods with their dialect
 			try {
-				Dialect dialect = xmlreader.readXMLData(dialectfilestream);
+				Dialect dialect = xmlReader.read(dialectfilestream);
 				for (DialectItem dialectitem: dialect.getDialectItems()) {
 					dialectitem.setDialect(dialect);
 				}
 				dialects.add(dialect);
 			}
-			catch (XMLException ex) {
+			catch (Exception ex) {
 				logError("Error reading the dialect file", ex);
 			}
 			finally {

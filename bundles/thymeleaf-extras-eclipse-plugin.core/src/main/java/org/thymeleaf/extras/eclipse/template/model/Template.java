@@ -16,11 +16,11 @@
 
 package org.thymeleaf.extras.eclipse.template.model;
 
-import org.attoparser.markup.dom.impl.Document;
-import org.attoparser.markup.dom.impl.Element;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.attoparser.dom.Document;
+import org.attoparser.dom.Element;
 
 /**
  * Model of a Thymeleaf template.

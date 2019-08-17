@@ -16,8 +16,10 @@
 
 package org.thymeleaf.extras.eclipse.template;
 
-import org.attoparser.AttoParseException;
-import org.attoparser.markup.MarkupAttoParser;
+import org.attoparser.ParseException;
+import org.attoparser.config.ParseConfiguration;
+import org.attoparser.dom.DOMMarkupParser;
+import org.attoparser.dom.Document;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.thymeleaf.extras.eclipse.scanner.ResourceLoader;
@@ -37,8 +39,6 @@ import java.util.List;
  */
 public class TemplateLoader implements ResourceLoader<IFile, ProjectTemplateLocator, Template> {
 
-	private static final MarkupAttoParser parser = new MarkupAttoParser();
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -47,28 +47,14 @@ public class TemplateLoader implements ResourceLoader<IFile, ProjectTemplateLoca
 
 		ArrayList<Template> templates = new ArrayList<Template>();
 		for (IFile file: locator.locateResources()) {
-			BufferedReader reader = null;
-			try {
-				reader = new BufferedReader(new InputStreamReader(file.getContents()));
-				DOMHtmlAttoHandler handler = new DOMHtmlAttoHandler(file.getName());
-				parser.parse(reader, handler);
-				templates.add(new Template(handler.getDocument()));
+			String fileName = file.getName();
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()))) {
+				DOMMarkupParser parser = new DOMMarkupParser(ParseConfiguration.htmlConfiguration());
+				Document document = parser.parse(fileName, reader);
+				templates.add(new Template(document));
 			}
-			catch (CoreException ex) {
-				logError("File " + file.getName() + " could not be read", ex);
-			}
-			catch (AttoParseException ex) {
-				logError("Error reading the template file", ex);
-			}
-			finally {
-				try {
-					if (reader != null) {
-						reader.close();
-					}
-				}
-				catch (IOException ex) {
-					logError("Unable to close the template file input stream", ex);
-				}
+			catch (CoreException | IOException | ParseException ex) {
+				logError("An error occured while reading " + fileName, ex);
 			}
 		}
 
