@@ -56,11 +56,11 @@
 	</contributors>
 
 	<modules>
-		<module>bundles/thymeleaf-extras-eclipse-plugin.content-assist</module>
-		<module>bundles/thymeleaf-extras-eclipse-plugin.core</module>
-		<module>features/thymeleaf-extras-eclipse-plugin.content-assist.feature</module>
-		<module>repository/thymeleaf-extras-eclipse-plugin.repository</module>
-		<module>repository/thymeleaf-extras-eclipse-plugin.repository-composite</module>
+		<module>bundles/org.thymeleaf.extras.eclipse.contentassist</module>
+		<module>bundles/org.thymeleaf.extras.eclipse.core</module>
+		<module>features/org.thymeleaf.extras.eclipse.contentassist.feature</module>
+		<module>repository/org.thymeleaf.extras.eclipse.repository</module>
+		<module>repository/org.thymeleaf.extras.eclipse.repository.composite</module>
 	</modules>
 
 	<scm>
