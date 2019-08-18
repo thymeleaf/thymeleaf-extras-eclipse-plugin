@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.scanner.cache;
+package org.thymeleaf.extras.eclipse.scanner.cache
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IJavaProject;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import org.eclipse.core.runtime.IPath
+import org.eclipse.jdt.core.IJavaProject
 
 /**
  * Generic representation of resources in a developer's workspace, divided-up by
@@ -30,24 +26,24 @@ import java.util.List;
  * @param <T> The resource being mapped against a project.
  * @author Emanuel Rabina
  */
-public class ResourceTree<T> {
+class ResourceTree<T> {
 
-	private HashMap<IJavaProject,ResourceProject<T>> projects = new HashMap<IJavaProject,ResourceProject<T>>();
+	private HashMap<IJavaProject,ResourceProject<T>> projects = [:]
 
 	/**
 	 * Add a project and an associated resource to the tree.  If the project
 	 * exists, the resource will be added to the existing project instead.
 	 * 
 	 * @param project
-	 * @param resourcepath The path to the resource.
-	 * @param resource     Resources to associate with the project.
+	 * @param path     The path to the resource.
+	 * @param resource Resources to associate with the project.
 	 */
-	public void addResourceToProject(IJavaProject project, IPath resourcepath, T resource) {
+	void addResourceToProject(IJavaProject project, IPath path, T resource) {
 
 		if (!containsProject(project)) {
-			projects.put(project, new ResourceProject<T>());
+			projects[project, new ResourceProject<T>()]
 		}
-		projects.get(project).addResource(resourcepath, resource);
+		projects[project].addResource(path, resource)
 	}
 
 	/**
@@ -55,17 +51,17 @@ public class ResourceTree<T> {
 	 * exists, the resources will be added to the existing project instead.
 	 * 
 	 * @param project
-	 * @param resourcepath The path to the resource.
-	 * @param resources    List of resources to associate with the project.
+	 * @param path      The path to the resource.
+	 * @param resources List of resources to associate with the project.
 	 */
-	public void addResourcesToProject(IJavaProject project, IPath resourcepath, List<T> resources) {
+	void addResourcesToProject(IJavaProject project, IPath path, List<T> resources) {
 
 		if (!containsProject(project)) {
-			projects.put(project, new ResourceProject<T>());
+			projects[project, new ResourceProject<T>()]
 		}
-		ResourceProject<T> resourceproject = projects.get(project);
-		for (T resource: resources) {
-			resourceproject.addResource(resourcepath, resource);
+		def resourceProject = projects[project]
+		resources.each { resource ->
+			resourceProject.addResource(path, resource)
 		}
 	}
 
@@ -75,9 +71,9 @@ public class ResourceTree<T> {
 	 * @param project
 	 * @return <tt>true</tt> if the project has a matching entry in this tree.
 	 */
-	public boolean containsProject(IJavaProject project) {
+	boolean containsProject(IJavaProject project) {
 
-		return projects.containsKey(project);
+		return projects.containsKey(project)
 	}
 
 	/**
@@ -86,8 +82,8 @@ public class ResourceTree<T> {
 	 * @param project
 	 * @return List of all resources attached to the project.
 	 */
-	public Collection<T> getResourcesForProject(IJavaProject project) {
+	Collection<T> getResourcesForProject(IJavaProject project) {
 
-		return projects.get(project).getResources();
+		return projects[project].resources
 	}
 }

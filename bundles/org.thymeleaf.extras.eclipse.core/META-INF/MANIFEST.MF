@@ -31,7 +31,7 @@ Export-Package: org.thymeleaf.extras.eclipse;uses:="org.osgi.framework,org.eclip
  org.thymeleaf.extras.eclipse.template.model;uses:="org.attoparser.dom"
 Bundle-ClassPath: .,
  libs/attoparser-2.0.5.RELEASE.jar,
- libs/groovy-2.5.8.jar,
+ libs/groovy-3.0.0-beta-3.jar,
  libs/javax.activation-1.2.0.jar,
  libs/jaxb-api-2.3.0.jar,
  libs/jaxb-core-2.3.0.jar,

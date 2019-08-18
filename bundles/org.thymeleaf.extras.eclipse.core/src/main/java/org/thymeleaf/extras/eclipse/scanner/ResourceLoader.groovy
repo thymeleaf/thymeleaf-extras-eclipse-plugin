@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.scanner;
-
-import java.util.List;
+package org.thymeleaf.extras.eclipse.scanner
 
 /**
  * Loads resource information from the resources located by a
@@ -27,7 +25,7 @@ import java.util.List;
  * @param <T> The type of resource being loaded.
  * @author Emanuel Rabina
  */
-public interface ResourceLoader<F, L extends ResourceLocator<F>, T> {
+interface ResourceLoader<F, L extends ResourceLocator<F>, T> {
 
 	/**
 	 * Loads all of the resources from the given locator.
@@ -36,5 +34,5 @@ public interface ResourceLoader<F, L extends ResourceLocator<F>, T> {
 	 * @return List of resource models, built from the underlying resources
 	 *         picked out by the locator.
 	 */
-	public List<T> loadResources(L locator);
+	List<T> loadResources(L locator)
 }

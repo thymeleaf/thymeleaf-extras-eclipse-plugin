@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymelef Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,56 +14,40 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.template.model;
+package org.thymeleaf.extras.eclipse.template.model
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static org.thymeleaf.extras.eclipse.CorePlugin.*
+
+import java.util.regex.Pattern
 
 /**
  * Model of a template fragment.
  * 
  * @author Emanuel Rabina
  */
-public class Fragment {
+class Fragment {
 
-	private static final Pattern FRAGMENT_SPEC_PATTERN = Pattern.compile("(.*?)(\\(.*\\))");
+	private static final Pattern FRAGMENT_SPEC_PATTERN = ~/(.*?)(\(.*\))/
 
-	private final String name;
-	private final String[] arguments;
+	final String name
+	final String[] arguments
 
 	/**
 	 * Constructor, build a fragment from the given fragment spec string.
 	 * 
 	 * @param fragmentspec
-	 * @throws IllegalArgumentException If the fragment spec is invalid.
 	 */
-	public Fragment(String fragmentspec) {
+	Fragment(String fragmentSpec) {
 
-		Matcher matcher = FRAGMENT_SPEC_PATTERN.matcher(fragmentspec);
+		def matcher = FRAGMENT_SPEC_PATTERN.matcher(fragmentSpec)
 		if (matcher.matches()) {
-			name = matcher.group(1);
+			name = matcher.group(1)
 			if (matcher.groupCount() == 2) {
-				arguments = matcher.group(2).split(",");
-				for (int i = 0; i < arguments.length; i++) {
-					arguments[i] = arguments[i].trim();
-				}
-			}
-			else {
-				arguments = null;
+				arguments = matcher.group(2).split(',').collect { arg -> arg.trim() }
 			}
 		}
 		else {
-			throw new IllegalArgumentException("Fragment spec doesn't conform to fragment signature pattern");
+			logInfo("Fragment spec \"${fragmentSpec}\" doesn\'t conform to fragment signature pattern")
 		}
-	}
-
-	/**
-	 * Return the name of the fragment.
-	 * 
-	 * @return Fragment name.
-	 */
-	public String getName() {
-
-		return name;
 	}
 }

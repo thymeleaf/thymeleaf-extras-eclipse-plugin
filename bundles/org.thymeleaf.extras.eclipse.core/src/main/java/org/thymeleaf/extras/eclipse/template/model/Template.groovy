@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,63 +14,57 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.template.model;
+package org.thymeleaf.extras.eclipse.template.model
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.attoparser.dom.Document;
-import org.attoparser.dom.Element;
+import org.attoparser.dom.Document
+import org.attoparser.dom.Element
 
 /**
  * Model of a Thymeleaf template.
  * 
  * @author Emanuel Rabina
  */
-public class Template {
+class Template {
 
-	private static final String FRAGMENT_ATTRIBUTE      = "th:fragment";
-	private static final String DATA_FRAGMENT_ATTRIBUTE = "data-th-fragment";
+	private static final String FRAGMENT_ATTRIBUTE      = "th:fragment"
+	private static final String DATA_FRAGMENT_ATTRIBUTE = "data-th-fragment"
 
-	private final ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+	final String filePath
+	final List<Fragment> fragments
 
 	/**
 	 * Create a new template from an HTML document.
 	 * 
+	 * @param filePath
 	 * @param document
 	 */
-	public Template(Document document) {
+	Template(String filePath, Document document) {
 
-		// Look for fragment signatures inside the HTML document
-		findFragments(document.getFirstChildOfType(Element.class));
+		this.filePath = filePath
+		fragments = findFragments(document.getFirstChildOfType(Element))
 	}
 
 	/**
-	 * Recursive search for any fragment signatures inside an HTML document.
+	 * Recursive search for any fragment signatures inside an element.
 	 * 
 	 * @param element
+	 * @return List of fragments in the current element.
 	 */
-	private void findFragments(Element element) {
+	private List<Fragment> findFragments(Element element) {
+
+		def fragments = []
 
 		if (element.hasAttribute(FRAGMENT_ATTRIBUTE)) {
-			fragments.add(new Fragment(element.getAttributeValue(FRAGMENT_ATTRIBUTE)));
+			fragments.add(new Fragment(element.getAttributeValue(FRAGMENT_ATTRIBUTE)))
 		}
 		else if (element.hasAttribute(DATA_FRAGMENT_ATTRIBUTE)) {
-			fragments.add(new Fragment(element.getAttributeValue(DATA_FRAGMENT_ATTRIBUTE)));
+			fragments.add(new Fragment(element.getAttributeValue(DATA_FRAGMENT_ATTRIBUTE)))
 		}
 
-		for (Element childelement: element.getChildrenOfType(Element.class)) {
-			findFragments(childelement);
+		element.getChildrenOfType(Element).each { childElement ->
+			fragments.addAll(findFragments(childElement))
 		}
-	}
 
-	/**
-	 * Return a list of fragments in this template.
-	 * 
-	 * @return Fragment list.
-	 */
-	public List<Fragment> getFragments() {
-
-		return fragments;
+		return fragments
 	}
 }

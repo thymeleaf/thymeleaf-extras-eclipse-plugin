@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.scanner.cache;
+package org.thymeleaf.extras.eclipse.scanner.cache
 
-import org.eclipse.core.runtime.IPath;
-
-import java.util.Collection;
-import java.util.HashMap;
+import org.eclipse.core.runtime.IPath
 
 /**
  * Representation of a project that contains one or more files which contain
@@ -28,20 +25,20 @@ import java.util.HashMap;
  * @param <T> The resource being mapped against a project.
  * @author Emanuel Rabina
  */
-public class ResourceProject<T> {
+class ResourceProject<T> {
 
-	private final HashMap<IPath,T> files = new HashMap<IPath,T>();
+	private final HashMap<IPath,T> files = new HashMap<IPath,T>()
 
 	/**
 	 * Adds a resource to this project.  If the path already exists for the
 	 * resource, then this method will ovewrite that resource.
 	 * 
-	 * @param resourcepath The resource path.
-	 * @param resource     The resource at the given path.
+	 * @param path     The resource path.
+	 * @param resource The resource at the given path.
 	 */
-	public void addResource(IPath resourcepath, T resource) {
+	void addResource(IPath path, T resource) {
 
-		files.put(resourcepath, resource);
+		files.put(path, resource)
 	}
 
 	/**
@@ -49,30 +46,30 @@ public class ResourceProject<T> {
 	 * 
 	 * @return All resources in this project.
 	 */
-	public Collection<T> getResources() {
+	Collection<T> getResources() {
 
-		return files.values();
+		return files.values()
 	}
 
 	/**
 	 * Return whether or not this project has a resource at the given path.
 	 * 
-	 * @param resourcepath
+	 * @param path
 	 * @return <tt>true</tt> if a resource in this project originates from the
 	 * 		   given path.
 	 */
-	public boolean hasResource(IPath resourcepath) {
+	boolean hasResource(IPath path) {
 
-		return files.containsKey(resourcepath);
+		return files.containsKey(path)
 	}
 
 	/**
 	 * Removes a resource from this project.
 	 * 
-	 * @param resourcepath The path to the resource.
+	 * @param path The path to the resource.
 	 */
-	public void removeResource(IPath resourcepath) {
+	void removeResource(IPath path) {
 
-		files.remove(resourcepath);
+		files.remove(path)
 	}
 }

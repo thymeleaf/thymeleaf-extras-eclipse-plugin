@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,69 +14,57 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.dialect;
+package org.thymeleaf.extras.eclipse.dialect
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IJarEntryResource;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-import static org.thymeleaf.extras.eclipse.CorePlugin.*;
+import org.eclipse.core.resources.IFile
+import org.eclipse.core.resources.IStorage
+import org.eclipse.core.runtime.CoreException
+import org.eclipse.core.runtime.IPath
+import org.eclipse.jdt.core.IJarEntryResource
+import org.eclipse.jdt.core.IJavaElement
+import org.eclipse.jdt.core.IJavaProject
+import org.eclipse.jdt.core.IPackageFragment
+import org.eclipse.jdt.core.IPackageFragmentRoot
+import org.xml.sax.Attributes
+import org.xml.sax.SAXException
+import org.xml.sax.helpers.DefaultHandler
+import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
+import javax.xml.parsers.ParserConfigurationException
+import javax.xml.parsers.SAXParser
+import javax.xml.parsers.SAXParserFactory
 
 /**
  * Locates Thymeleaf dialect XML help files from a project's dependencies.
  * 
  * @author Emanuel Rabina
  */
-public class ProjectDependencyDialectLocator implements DialectLocator<InputStream> {
+class ProjectDependencyDialectLocator implements DialectLocator<InputStream> {
 
 	private static final String XML_FEATURE_LOAD_DTD_GRAMMAR =
-			"http://apache.org/xml/features/nonvalidating/load-dtd-grammar";
+			"http://apache.org/xml/features/nonvalidating/load-dtd-grammar"
 	private static final String XML_FEATURE_LOAD_EXTERNAL_DTD =
-			"http://apache.org/xml/features/nonvalidating/load-external-dtd";
+			"http://apache.org/xml/features/nonvalidating/load-external-dtd"
 
-	private static final String DIALECT_EXTRAS_NAMESPACE = "http://www.thymeleaf.org/extras/dialect";
+	private static final String DIALECT_EXTRAS_NAMESPACE = "http://www.thymeleaf.org/extras/dialect"
 
-	private static final SAXParserFactory parserfactory;
+	private static final SAXParser saxParser
 	static {
-		try {
-			parserfactory = SAXParserFactory.newInstance();
-			parserfactory.setNamespaceAware(true);
-			parserfactory.setFeature(XML_FEATURE_LOAD_DTD_GRAMMAR, false);
-			parserfactory.setFeature(XML_FEATURE_LOAD_EXTERNAL_DTD, false);
-		}
-		catch (SAXException ex) {
-			throw new RuntimeException(ex);
-		}
-		catch (ParserConfigurationException ex) {
-			throw new RuntimeException(ex);
-		}
+		def parserFactory = SAXParserFactory.newInstance()
+		parserFactory.setNamespaceAware(true)
+		parserFactory.setFeature(XML_FEATURE_LOAD_DTD_GRAMMAR, false)
+		parserFactory.setFeature(XML_FEATURE_LOAD_EXTERNAL_DTD, false)
+		saxParser = parserFactory.newSAXParser()
 	}
 
-	private final IJavaProject project;
-	private final ArrayList<IPath> dialectfilepaths = new ArrayList<IPath>();
+	final IJavaProject project
+	final ArrayList<IPath> dialectFilePaths = new ArrayList<IPath>()
 
 	/**
 	 * Constructor, sets which project will be scanned for Thymeleaf dialect
@@ -84,21 +72,9 @@ public class ProjectDependencyDialectLocator implements DialectLocator<InputStre
 	 * 
 	 * @param project
 	 */
-	public ProjectDependencyDialectLocator(IJavaProject project) {
+	ProjectDependencyDialectLocator(IJavaProject project) {
 
-		this.project = project;
-	}
-
-	/**
-	 * Return a list of the dialect file paths that were encountered during a
-	 * run of {@link #locateDialects}.  The order of the paths matches the order
-	 * of the dialects returned by <tt>locateDialects()</tt>.
-	 * 
-	 * @return List of dialect file paths.
-	 */
-	public List<IPath> getDialectFilePaths() {
-
-		return dialectfilepaths;
+		this.project = project
 	}
 
 	/**
@@ -109,126 +85,92 @@ public class ProjectDependencyDialectLocator implements DialectLocator<InputStre
 	 * @return <tt>true</tt> if the resource is an XML file in the
 	 * 		   <tt>http://www.thymeleaf.org/extras/dialect</tt> namespace.
 	 */
-	private static boolean isDialectHelpXMLFile(IStorage resource) {
+	private static boolean isDialectHelpXmlFile(IStorage resource) {
 
-		InputStream resourcestream = null;
 		try {
-			// Check it's an XML file
-			if (((resource instanceof IJarEntryResource && ((IJarEntryResource)resource).isFile()) ||
-				resource instanceof IFile) && resource.getName().endsWith(".xml")) {
-
-				// Check if the XML file namespace is correct
-				resourcestream = resource.getContents();
-				SAXParser parser = parserfactory.newSAXParser();
-				NamespaceHandler handler = new NamespaceHandler();
-				parser.parse(resourcestream, handler);
-				if (handler.namespace != null && handler.namespace.equals(DIALECT_EXTRAS_NAMESPACE)) {
-					return true;
-				}
-			}
-			return false;
-		}
-		catch (ParserConfigurationException ex) {
-			logError("Unable to read XML file", ex);
-			return false;
-		}
-		catch (IOException ex) {
-			logError("Unable to read XML file", ex);
-			return false;
-		}
-		catch (SAXException ex) {
-			logError("Unable to read XML file", ex);
-			return false;
-		}
-		catch (CoreException ex) {
-			logError("Unable to open an input stream over resource", ex);
-			return false;
-		}
-		finally {
-			if (resourcestream != null) {
-				try {
-					resourcestream.close();
-				}
-				catch (IOException ex) {
-					throw new RuntimeException(ex);
+			if (((resource instanceof IJarEntryResource && resource.isFile()) ||
+				resource instanceof IFile) && resource.name.endsWith('.xml')) {
+				resource.contents.withStream { resourceStream ->
+					def handler = new NamespaceHandler()
+					saxParser.parse(resourceStream, handler)
+					return handler.namespace == DIALECT_EXTRAS_NAMESPACE
 				}
 			}
 		}
+		catch (Exception ex) {
+			logError("Unable to read XML file", ex)
+		}
+		return false
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<InputStream> locateDialects() {
+	List<InputStream> locateDialects() {
 
-		logInfo("Scanning for dialect help files on project dependencies");
-		long start = System.currentTimeMillis();
+		logInfo('Scanning for dialect help files on project dependencies')
+		long start = System.currentTimeMillis()
 
-		ExecutorService executorservice = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-		final ArrayList<InputStream> dialectstreams = new ArrayList<InputStream>();
+		ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+		final ArrayList<InputStream> dialectStreams = new ArrayList<InputStream>()
 
 		try {
 			// Multi-threaded search for dialect files - there are a lot of package
 			// fragments to get through, and the I/O namespace check is a blocker.
-			ArrayList<Future<IStorage>> scannertasks = new ArrayList<Future<IStorage>>();
+			ArrayList<Future<IStorage>> scannerTasks = new ArrayList<Future<IStorage>>()
 
-			for (IPackageFragmentRoot packagefragmentroot: project.getAllPackageFragmentRoots()) {
-				for (IJavaElement child: packagefragmentroot.getChildren()) {
-					final IPackageFragment packagefragment = (IPackageFragment)child;
+			for (IPackageFragmentRoot packageFragmentRoot: project.getAllPackageFragmentRoots()) {
+				for (IJavaElement child: packageFragmentRoot.getChildren()) {
+					final IPackageFragment packageFragment = (IPackageFragment)child
 
-					scannertasks.add(executorservice.submit(new Callable<IStorage>() {
+					scannerTasks.add(executorService.submit(new Callable<IStorage>() {
 						@Override
-						public IStorage call() throws Exception {
+						IStorage call() throws Exception {
 
-							for (Object resource: packagefragment.getNonJavaResources()) {
-								IStorage fileorjarentry = (IStorage)resource;
-								if (isDialectHelpXMLFile(fileorjarentry)) {
-									logInfo("Help file found: " + fileorjarentry.getName());
-									dialectfilepaths.add(fileorjarentry.getFullPath());
-									return fileorjarentry;
+							for (Object resource: packageFragment.getNonJavaResources()) {
+								IStorage fileOrJarEntry = (IStorage)resource
+								if (isDialectHelpXmlFile(fileOrJarEntry)) {
+									logInfo("Help file found: ${fileOrJarEntry.name}")
+									dialectFilePaths.add(fileOrJarEntry.fullPath)
+									return fileOrJarEntry
 								}
 							}
-							return null;
+							return null
 						}
-					}));
+					}))
 				}
 			}
 
 			// Collate scanner results
-			for (Future<IStorage> scannertask: scannertasks) {
+			for (Future<IStorage> scannertask: scannerTasks) {
 				try {
-					IStorage fileorjarentry = scannertask.get();
+					IStorage fileorjarentry = scannertask.get()
 					if (fileorjarentry != null) {
-						dialectstreams.add(fileorjarentry.getContents());
+						dialectStreams.add(fileorjarentry.getContents())
 					}
 				}
 				catch (ExecutionException ex) {
-					logError("Unable to execute scanning task", ex);
+					logError("Unable to execute scanning task", ex)
 				}
 				catch (InterruptedException ex) {
-					logError("Unable to execute scanning task", ex);
+					logError("Unable to execute scanning task", ex)
 				}
 			}
 		}
 		catch (CoreException ex) {
 			// If we get here, the project cannot be read.  Return the empty list.
-			logError("Project " + project.getProject().getName() + " could not be read", ex);
+			logError("Project ${project.project.name} could not be read", ex)
 		}
 		finally {
-			executorservice.shutdown();
-			try {
-				if (!executorservice.awaitTermination(5, TimeUnit.SECONDS)) {
-					executorservice.shutdownNow();
-				}
-			}
-			catch (InterruptedException ex) {
-				throw new RuntimeException(ex);
+			executorService.shutdown()
+			if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+				executorService.shutdownNow()
 			}
 		}
 
-		logInfo("Scanning complete.  Execution time: " + (System.currentTimeMillis() - start) + "ms");
-		return dialectstreams;
+		logInfo("Scanning complete.  Execution time: ${System.currentTimeMillis() - start}ms")
+		return dialectStreams
 	}
 
 	/**
@@ -236,7 +178,7 @@ public class ProjectDependencyDialectLocator implements DialectLocator<InputStre
 	 */
 	private static class NamespaceHandler extends DefaultHandler {
 
-		private String namespace;
+		private String namespace
 
 		/**
 		 * Saves the document namespace, then does nothing after that.
@@ -247,10 +189,10 @@ public class ProjectDependencyDialectLocator implements DialectLocator<InputStre
 		 * @param attributes
 		 */
 		@Override
-		public void startElement(String uri, String localName, String qName, Attributes attributes) {
+		void startElement(String uri, String localName, String qName, Attributes attributes) {
 
 			if (namespace == null) {
-				namespace = uri;
+				namespace = uri
 			}
 		}
 	}

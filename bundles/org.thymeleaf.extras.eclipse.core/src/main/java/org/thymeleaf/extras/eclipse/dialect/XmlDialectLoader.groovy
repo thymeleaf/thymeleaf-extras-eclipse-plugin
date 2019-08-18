@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.dialect;
+package org.thymeleaf.extras.eclipse.dialect
 
-import nz.net.ultraq.jaxb.XmlReader;
+import nz.net.ultraq.jaxb.XmlReader
 
-import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
-import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
-import static org.thymeleaf.extras.eclipse.CorePlugin.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
+import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
+import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
 /**
  * Loads dialect help/documentation XML files from those returned by a
@@ -33,42 +28,35 @@ import java.util.List;
  * 
  * @author Emanuel Rabina
  */
-public class XmlDialectLoader implements DialectLoader<InputStream> {
+class XmlDialectLoader implements DialectLoader<InputStream> {
 
-	private static final XmlReader<Dialect> xmlReader = new XmlReader<Dialect>(Dialect.class);
+	private static final XmlReader<Dialect> xmlReader = new XmlReader<Dialect>(Dialect)
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Dialect> loadDialects(DialectLocator<InputStream> locator) {
+	List<Dialect> loadDialects(DialectLocator<InputStream> locator) {
 
-		ArrayList<Dialect> dialects = new ArrayList<Dialect>();
+		def dialects = new ArrayList<Dialect>()
 
-		// TODO: Replace with something that can use try-with-resources
-		for (InputStream dialectfilestream: locator.locateDialects()) {
-
-			// Link processors and expression objects/methods with their dialect
-			try {
-				Dialect dialect = xmlReader.read(dialectfilestream);
-				for (DialectItem dialectitem: dialect.getDialectItems()) {
-					dialectitem.setDialect(dialect);
-				}
-				dialects.add(dialect);
-			}
-			catch (Exception ex) {
-				logError("Error reading the dialect file", ex);
-			}
-			finally {
+		locator.locateDialects().each { dialectFileStream ->
+			dialectFileStream.withStream { stream ->
+	
+				// Link processors and expression objects/methods with their dialect
 				try {
-					dialectfilestream.close();
+					def dialect = xmlReader.read(stream)
+					dialect.dialectItems.each { dialectItem ->
+						dialectItem.setDialect(dialect)
+					}
+					dialects.add(dialect)
 				}
-				catch (IOException ex) {
-					logError("Unable to close dialect file input stream", ex);
+				catch (Exception ex) {
+					logError('Error reading the dialect file', ex)
 				}
 			}
 		}
 
-		return dialects;
+		return dialects
 	}
 }

@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,30 +14,27 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.template.cache;
+package org.thymeleaf.extras.eclipse.template.cache
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IJavaProject;
-import org.thymeleaf.extras.eclipse.scanner.cache.ResourceTree;
-import org.thymeleaf.extras.eclipse.template.ProjectTemplateLocator;
-import org.thymeleaf.extras.eclipse.template.TemplateLoader;
-import org.thymeleaf.extras.eclipse.template.model.Fragment;
-import org.thymeleaf.extras.eclipse.template.model.Template;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.core.runtime.IPath
+import org.eclipse.jdt.core.IJavaProject
+import org.thymeleaf.extras.eclipse.scanner.cache.ResourceTree
+import org.thymeleaf.extras.eclipse.template.ProjectTemplateLocator
+import org.thymeleaf.extras.eclipse.template.TemplateLoader
+import org.thymeleaf.extras.eclipse.template.model.Fragment
+import org.thymeleaf.extras.eclipse.template.model.Template
 
 /**
  * A basic in-memory store of all known template fragments per project.
  * 
  * @author Emanuel Rabina
  */
-public class TemplateCache {
+class TemplateCache {
 
-	private static TemplateLoader templateloader = new TemplateLoader();
+	private TemplateLoader templateLoader = new TemplateLoader()
 
 	// Tree structure of all fragments in the user's workspace
-	private static ResourceTree<Template> fragmenttree;
+	private ResourceTree<Template> fragmentTree = new ResourceTree<Template>()
 
 	/**
 	 * Return all of the fragments in the given project.
@@ -45,55 +42,24 @@ public class TemplateCache {
 	 * @param project The current project.
 	 * @return List of fragments in the project.
 	 */
-	public static List<Fragment> getFragments(IJavaProject project) {
+	List<Fragment> getFragments(IJavaProject project) {
 
-		loadTemplatesFromProject(project);
-
-		ArrayList<Fragment> fragments = new ArrayList<Fragment>();
-		for (Template template: fragmenttree.getResourcesForProject(project)) {
-			fragments.addAll(template.getFragments());
-		}
-		return fragments;
-	}
-
-	/**
-	 * Gather all the template information from the given project, if we haven't
-	 * got information on that project in the first place.
-	 * 
-	 * @param project
-	 */
-	private static void loadTemplatesFromProject(IJavaProject project) {
-
-		if (!fragmenttree.containsProject(project)) {
-			ProjectTemplateLocator projecttemplatelocator = new ProjectTemplateLocator(project);
-			List<Template> templates = templateloader.loadResources(projecttemplatelocator);
-			List<IPath> templatefilepaths = projecttemplatelocator.getTemplateFilePaths();
-
+		// Build and cache a fragment library for the given project
+		if (!fragmentTree.containsProject(project)) {
+			def projectTemplateLocator = new ProjectTemplateLocator(project)
+			def templates = templateLoader.loadResources(projectTemplateLocator)
 			if (templates.size() > 0) {
-				for (int i = 0; i < templates.size(); i++) {
-					Template template = templates.get(i);
-					IPath templatefilepath = templatefilepaths.get(i);
-
-					fragmenttree.addResourceToProject(project, templatefilepath, template);
+				templates.each { template ->
+					fragmentTree.addResourceToProject(project, template.filePath, template)
 				}
 			}
 			else {
-				fragmenttree.addResourcesToProject(project, null, new ArrayList<Template>());
+				fragmentTree.addResourcesToProject(project, null, [])
 			}
 		}
-	}
 
-	/**
-	 * Clear the cache and perform any other cleanup.
-	 */
-	public static void shutdown() {
-	}
-
-	/**
-	 * Initialize the cache.
-	 */
-	public static void startup() {
-
-		fragmenttree = new ResourceTree<Template>();
+		return fragmentTree.getResourcesForProject(project).inject([]) { fragments, template ->
+			return fragments.addAll(template.fragments)
+		}
 	}
 }

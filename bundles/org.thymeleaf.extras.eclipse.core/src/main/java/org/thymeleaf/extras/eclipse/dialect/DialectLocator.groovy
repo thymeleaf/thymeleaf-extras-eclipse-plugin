@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.dialect;
-
-import java.util.List;
+package org.thymeleaf.extras.eclipse.dialect
 
 /**
  * Locates Thymeleaf dialect information to be loaded at some later time.
@@ -24,7 +22,7 @@ import java.util.List;
  * @param <T> Type of the dialect information.
  * @author Emanuel Rabina
  */
-public interface DialectLocator<T> {
+interface DialectLocator<T> {
 
 	/**
 	 * Looks for dialects and returns them as some type of list to be consumed
@@ -32,5 +30,5 @@ public interface DialectLocator<T> {
 	 * 
 	 * @return List of input streams over the dialect help XML files.
 	 */
-	public List<T> locateDialects();
+	List<T> locateDialects()
 }

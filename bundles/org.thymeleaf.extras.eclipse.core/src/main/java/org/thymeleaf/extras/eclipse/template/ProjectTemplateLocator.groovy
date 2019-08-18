@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.template;
+package org.thymeleaf.extras.eclipse.template
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IJavaProject;
-import org.thymeleaf.extras.eclipse.scanner.ResourceLocator;
+import org.eclipse.core.resources.IContainer
+import org.eclipse.core.resources.IFile
+import org.eclipse.core.resources.IFolder
+import org.eclipse.core.resources.IProject
+import org.eclipse.core.resources.IResource
+import org.eclipse.core.runtime.IPath
+import org.eclipse.jdt.core.IJavaProject
+import org.thymeleaf.extras.eclipse.scanner.ResourceLocator
+import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
-import static org.thymeleaf.extras.eclipse.CorePlugin.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 
 /**
  * Locates Thymeleaf templates in the current project.  Basically, all HTML
@@ -42,121 +39,110 @@ import java.util.concurrent.TimeUnit;
  * 
  * @author Emanuel Rabina
  */
-public class ProjectTemplateLocator implements ResourceLocator<IFile> {
+class ProjectTemplateLocator implements ResourceLocator<IFile> {
 
-	private static final String HTML_FILE_EXTENSION = ".html";
+	private static final String HTML_FILE_EXTENSION = ".html"
 
-	private final IJavaProject project;
-	private final ArrayList<IPath> templatefilepaths = new ArrayList<IPath>();
+	private final IJavaProject project
 
 	/**
 	 * Constructor, sets the project to scan for templates.
 	 * 
 	 * @param project
 	 */
-	public ProjectTemplateLocator(IJavaProject project) {
+	ProjectTemplateLocator(IJavaProject project) {
 
-		this.project = project;
-	}
-
-	/**
-	 * Returns a list of paths to each of the templates located after a run of
-	 * {@link #locateResources}.  The order of the list of paths matches the
-	 * list of templates they point to.
-	 * 
-	 * @return List of paths to each of the templates found.
-	 */
-	public List<IPath> getTemplateFilePaths() {
-
-		return templatefilepaths;
+		this.project = project
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<IFile> locateResources() {
+	List<IFile> locateResources() {
 
-		logInfo("Scanning for Thymeleaf templates in the project");
-		long start = System.currentTimeMillis();
+		logInfo("Scanning for Thymeleaf templates in the project")
+		long start = System.currentTimeMillis()
 
-		ExecutorService executorservice = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-		final ArrayList<IFile> templatestreams = new ArrayList<IFile>();
+		ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+		final ArrayList<IFile> templateStreams = new ArrayList<IFile>()
 
 		try {
 			// Multi-threaded search for template files - there can be a lot of files to get through
-			ArrayList<Future<List<IFile>>> scannertasks = new ArrayList<Future<List<IFile>>>();
+			ArrayList<Future<List<IFile>>> scannerTasks = new ArrayList<Future<List<IFile>>>()
 
-			scanContainer(project.getProject(), scannertasks, executorservice);
+			scanContainer(project.project, scannerTasks, executorService)
 
 			// Collect all file results
-			for (Future<List<IFile>> scannertask: scannertasks) {
+			for (Future<List<IFile>> scannerTask: scannerTasks) {
 				try {
-					for (IFile file: scannertask.get()) {
-						templatestreams.add(file);
-						templatefilepaths.add(file.getFullPath());
+					for (IFile file: scannerTask.get()) {
+						templateStreams.add(file)
 					}
 				}
 				catch (ExecutionException ex) {
-					logError("Unable to execute scanning task", ex);
+					logError("Unable to execute scanning task", ex)
 				}
 				catch (InterruptedException ex) {
-					logError("Unable to execute scanning task", ex);
+					logError("Unable to execute scanning task", ex)
 				}
 			}
 		}
 		finally {
-			executorservice.shutdown();
+			executorService.shutdown()
 			try {
-				if (!executorservice.awaitTermination(5, TimeUnit.SECONDS)) {
-					executorservice.shutdownNow();
+				if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+					executorService.shutdownNow()
 				}
 			}
-			catch (InterruptedException ex) {
-				throw new RuntimeException(ex);
+			catch (Exception ex) {
+				logError('An error occured while attempting to shut down the project locator executor service', ex)
 			}
 		}
 
-		logInfo("Scanning complete.  Execution time: " + (System.currentTimeMillis() - start) + "ms");
-		return templatestreams;
+		logInfo("Scanning complete.  Execution time: ${System.currentTimeMillis() - start} ms")
+		return templateStreams
 	}
 
 	/**
 	 * Recursive scan of a container resource (currently only folders and
 	 * projects), searches for files to load.
 	 * 
+	 * TODO: Make this method contain all of the multi-threaded execution so
+	 *       that we don't have to share the executor service across methods in
+	 *       this class.
+	 * 
 	 * @param container
-	 * @param scannertasks
-	 * @param executorservice
+	 * @param executorService
 	 */
 	private static void scanContainer(final IContainer container,
-		final ArrayList<Future<List<IFile>>> scannertasks, final ExecutorService executorservice) {
+		final ArrayList<Future<List<IFile>>> scannerTasks, final ExecutorService executorService) {
 
 		// Projects and folders
 		if (container instanceof IProject || container instanceof IFolder) {
-			scannertasks.add(executorservice.submit(new Callable<List<IFile>>() {
+			scannerTasks.add(executorService.submit(new Callable<List<IFile>>() {
 				@Override
 				public List<IFile> call() throws Exception {
 
-					ArrayList<IFile> files = new ArrayList<IFile>();
+					ArrayList<IFile> files = new ArrayList<IFile>()
 					for (IResource resource: container.members()) {
 
 						// Recurse folder scanning
 						if (resource instanceof IContainer) {
-							scanContainer((IContainer)resource, scannertasks, executorservice);
+							scanContainer((IContainer)resource, scannerTasks, executorService)
 						}
 
 						// Accept files
 						else if (resource instanceof IFile) {
-							IFile file = (IFile)resource;
+							IFile file = (IFile)resource
 							if (file.getName().endsWith(HTML_FILE_EXTENSION)) {
-								files.add(file);
+								files.add(file)
 							}
 						}
 					}
-					return files;
+					return files
 				}
-			}));
+			}))
 		}
 	}
 }

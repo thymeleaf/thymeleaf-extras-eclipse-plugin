@@ -38,3 +38,5 @@ Export-Package: org.thymeleaf.extras.eclipse.contentassist;
    org.thymeleaf.extras.eclipse.dialect.xml,
    org.eclipse.jface.text",
  org.thymeleaf.extras.eclipse.contentassist.hover;uses:="org.thymeleaf.extras.eclipse.contentassist,org.eclipse.jface.text"
+Bundle-ClassPath: .,
+ libs/groovy-3.0.0-beta-3.jar

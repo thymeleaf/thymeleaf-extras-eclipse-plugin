@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.dialect.cache;
+package org.thymeleaf.extras.eclipse.dialect.cache
 
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IJavaProject;
-import org.thymeleaf.extras.eclipse.dialect.ProjectDependencyDialectLocator;
-import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader;
-import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
-import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
-import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
-import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
-import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
-import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
-import org.thymeleaf.extras.eclipse.nature.ThymeleafNature;
-import static org.eclipse.core.resources.IResourceChangeEvent.*;
-import static org.thymeleaf.extras.eclipse.dialect.cache.DialectItemProcessor.*;
+import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.core.runtime.IPath
+import org.eclipse.jdt.core.IJavaProject
+import org.thymeleaf.extras.eclipse.dialect.ProjectDependencyDialectLocator
+import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader
+import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
+import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
+import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
+import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor
+import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
+import org.thymeleaf.extras.eclipse.dialect.xml.Processor
+import org.thymeleaf.extras.eclipse.nature.ThymeleafNature
+import static org.eclipse.core.resources.IResourceChangeEvent.*
+import static org.thymeleaf.extras.eclipse.dialect.cache.DialectItemProcessor.*
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.namespace.QName;
+import javax.xml.namespace.QName
 
 /**
  * A basic in-memory store of all known Thymeleaf dialects and their processors
@@ -42,15 +39,15 @@ import javax.xml.namespace.QName;
  * 
  * @author Emanuel Rabina
  */
-public class DialectCache {
+class DialectCache {
 
-	private static XmlDialectLoader xmldialectloader = new XmlDialectLoader();
+	private static XmlDialectLoader xmlDialectLoader = new XmlDialectLoader()
 
 	// Tree structure of all dialects in the user's workspace
-	private static DialectTree dialecttree;
+	private static DialectTree dialectTree
 
 	// Resource listener for changes to dialect projects and files
-	private static DialectChangeListener dialectchangelistener;
+	private static DialectChangeListener dialectChangeListener
 
 	/**
 	 * Checks if the dialect is in the list of given namespaces.
@@ -63,17 +60,10 @@ public class DialectCache {
 	 */
 	private static boolean dialectInNamespace(Dialect dialect, List<QName> namespaces) {
 
-		for (QName namespace: namespaces) {
-			if (dialect.getPrefix().equals(namespace.getPrefix())) {
-				if (!dialect.isNamespaceStrict()) {
-					return true;
-				}
-				else if (dialect.getNamespaceUri().equals(namespace.getNamespaceURI())) {
-					return true;
-				}
-			}
+		return namespaces.any { namespace ->
+			return dialect.prefix === namespace.prefix && 
+				(!dialect.namespaceStrict || dialect.namespaceUri == namespace.namespaceURI)
 		}
-		return false;
 	}
 
 	/**
@@ -85,10 +75,7 @@ public class DialectCache {
 	 */
 	private static boolean expressionObjectMethodMatchesName(ExpressionObjectMethod method, String name) {
 
-		if (name == null || name.isEmpty()) {
-			return false;
-		}
-		return name.equals(method.getFullName());
+		return name == method.fullName
 	}
 
 	/**
@@ -102,80 +89,65 @@ public class DialectCache {
 	 */
 	private static boolean expressionObjectMethodMatchesPattern(ExpressionObjectMethod method, String pattern) {
 
-		return pattern != null && method.getFullName().startsWith(pattern);
+		return pattern && method.fullName.startsWith(pattern)
 	}
 
 	/**
 	 * Retrieve the attribute processor in the given project, with the full
 	 * matching name.
 	 * 
-	 * @param project		The current project.
-	 * @param processorname	Full name of the attribute processor.
+	 * @param project		    The current project.
+	 * @param processorName	Full name of the attribute processor.
 	 * @return Attribute processor with the given name, or <tt>null</tt> if no
 	 * 		   processor could be found.
 	 */
-	public static Processor getAttributeProcessor(IJavaProject project, String processorname) {
+	static Processor getAttributeProcessor(IJavaProject project, String processorName) {
 
-		loadDialectsFromProject(project);
+		loadDialectsFromProject(project)
 
-		for (AttributeProcessor processor: dialecttree.getAttributeProcessorsForProject(project)) {
-			if (processor.getFullName().equals(processorname)) {
-				return processor;
-			}
+		return dialectTree.getAttributeProcessorsForProject(project).find { processor ->
+			return processor.fullName == processorName
 		}
-		return null;
 	}
 
 	/**
 	 * Retrieve all attribute processors for the given project, whose names
 	 * match the starting pattern.
 	 * 
-	 * @param project	 The current project.
+	 * @param project    The current project.
 	 * @param namespaces List of namespaces available at the current point in
-	 * 					 the document.
-	 * @param pattern	 Start-of-string pattern to match.
+	 *                   the document.
+	 * @param pattern    Start-of-string pattern to match.
 	 * @return List of all matching attribute processors.
 	 */
-	public static List<AttributeProcessor> getAttributeProcessors(IJavaProject project,
-		List<QName> namespaces, String pattern) {
+	static List<AttributeProcessor> getAttributeProcessors(IJavaProject project, List<QName> namespaces, String pattern) {
 
-		loadDialectsFromProject(project);
+		loadDialectsFromProject(project)
 
-		ArrayList<AttributeProcessor> matchedprocessors = new ArrayList<AttributeProcessor>();
-		for (AttributeProcessor processor: dialecttree.getAttributeProcessorsForProject(project)) {
-			Dialect dialect = processor.getDialect();
-			if ((thymeleafNatureEnabled(project) || dialectInNamespace(dialect, namespaces)) &&
-				processorMatchesPattern(processor, pattern)) {
-				matchedprocessors.add(processor);
-			}
+		return dialectTree.getAttributeProcessorsForProject(project).findAll { processor ->
+			return (thymeleafNatureEnabled(project) || dialectInNamespace(processor.dialect, namespaces)) &&
+				processorMatchesPattern(processor, pattern)
 		}
-		return matchedprocessors;
 	}
 
 	/**
 	 * Retrieve all element processors for the given project, whose names match
 	 * the starting pattern.
 	 * 
-	 * @param project	 The current project.
+	 * @param project    The current project.
 	 * @param namespaces List of namespaces available at the current point in
-	 * 					 the document.
-	 * @param pattern	 Start-of-string pattern to match.
+	 *                   the document.
+	 * @param pattern	   Start-of-string pattern to match.
 	 * @return List of all matching element processors
 	 */
-	public static List<ElementProcessor> getElementProcessors(IJavaProject project,
-		List<QName> namespaces, String pattern) {
+	static List<ElementProcessor> getElementProcessors(IJavaProject project, List<QName> namespaces, String pattern) {
 
-		loadDialectsFromProject(project);
+		loadDialectsFromProject(project)
 
-		ArrayList<ElementProcessor> matchedprocessors = new ArrayList<ElementProcessor>();
-		for (ElementProcessor processor: dialecttree.getElementProcessorsForProject(project)) {
-			Dialect dialect = processor.getDialect();
-			if ((thymeleafNatureEnabled(project) || dialectInNamespace(dialect, namespaces)) &&
-				processorMatchesPattern(processor, pattern)) {
-				matchedprocessors.add(processor);
-			}
+		dialectTree.getElementProcessorsForProject(project).findAll { processor ->
+			return (thymeleafNatureEnabled(project) || dialectInNamespace(processor.dialect, namespaces)) &&
+				processorMatchesPattern(processor, pattern)
 		}
-		return matchedprocessors;
 	}
 
 	/**
@@ -188,71 +160,59 @@ public class DialectCache {
 	 * @return Expression object with the given name, or <tt>null</tt> if no
 	 * 		   expression object matches.
 	 */
-	public static ExpressionObjectMethod getExpressionObjectMethod(IJavaProject project,
+	static ExpressionObjectMethod getExpressionObjectMethod(IJavaProject project,
 		List<QName> namespaces, String methodname) {
 
-		loadDialectsFromProject(project);
+		loadDialectsFromProject(project)
 
-		for (ExpressionObjectMethod expressionobject: dialecttree.getExpressionObjectMethodsForProject(project)) {
-			if ((thymeleafNatureEnabled(project) || dialectInNamespace(expressionobject.getDialect(), namespaces)) &&
-				expressionObjectMethodMatchesName(expressionobject, methodname)) {
-				return expressionobject;
-			}
+		return dialectTree.getExpressionObjectMethodsForProject(project).find { expressionObject ->
+			return (thymeleafNatureEnabled(project) || dialectInNamespace(expressionObject.dialect, namespaces)) &&
+				expressionObjectMethodMatchesName(expressionObject, methodname)
 		}
-		return null;
 	}
 
 	/**
 	 * Retrieve all expression object methods for the given project, whose names
 	 * match the starting pattern.
 	 * 
-	 * @param project	 The current project.
+	 * @param project    The current project.
 	 * @param namespaces List of namespaces available at the current point in
-	 * 					 the document.
-	 * @param pattern	 Start-of-string pattern to match.
+	 *                   the document.
+	 * @param pattern    Start-of-string pattern to match.
 	 * @return List of all matching expression object methods.
 	 */
-	public static List<ExpressionObjectMethod> getExpressionObjectMethods(IJavaProject project,
+	static List<ExpressionObjectMethod> getExpressionObjectMethods(IJavaProject project,
 		List<QName> namespaces, String pattern) {
 
-		loadDialectsFromProject(project);
+		loadDialectsFromProject(project)
 
-		ArrayList<ExpressionObjectMethod> matchedexpressionobjects = new ArrayList<ExpressionObjectMethod>();
-		for (ExpressionObjectMethod expressionobjectmethod: dialecttree.getExpressionObjectMethodsForProject(project)) {
-			Dialect dialect = expressionobjectmethod.getDialect();
-			if ((thymeleafNatureEnabled(project) || dialectInNamespace(dialect, namespaces)) &&
-				expressionObjectMethodMatchesPattern(expressionobjectmethod, pattern)) {
-				matchedexpressionobjects.add(expressionobjectmethod);
-			}
+		return dialectTree.getExpressionObjectMethodsForProject(project).findAll { expressionObjectMethod ->
+			return (thymeleafNatureEnabled(project) || dialectInNamespace(expressionObjectMethod.dialect, namespaces)) &&
+				expressionObjectMethodMatchesPattern(expressionObjectMethod, pattern)
 		}
-		return matchedexpressionobjects;
 	}
 
 	/**
 	 * Retrieve the processor with the full matching name.
 	 * 
-	 * @param project		The current project.
-	 * @param namespaces	List of namespaces available at the current point in
-	 * 						the document.
-	 * @param processorname	Full name of the processor.
+	 * @param project       The current project.
+	 * @param namespaces    List of namespaces available at the current point in
+	 *                      the document.
+	 * @param processorName	Full name of the processor.
 	 * @return Processor for the given prefix and name, or <tt>null</tt> if no
 	 * 		   processor matches.
 	 */
-	public static Processor getProcessor(IJavaProject project, List<QName> namespaces, String processorname) {
+	static Processor getProcessor(IJavaProject project, List<QName> namespaces, String processorName) {
 
-		loadDialectsFromProject(project);
+		loadDialectsFromProject(project)
 
-		ArrayList<Processor> processors = new ArrayList<Processor>();
-		processors.addAll(dialecttree.getAttributeProcessorsForProject(project));
-		processors.addAll(dialecttree.getElementProcessorsForProject(project));
-
-		for (Processor processor: processors) {
-			if ((thymeleafNatureEnabled(project) || dialectInNamespace(processor.getDialect(), namespaces)) &&
-				processorMatchesName(processor, processorname)) {
-				return processor;
-			}
+		def processors =
+			dialectTree.getAttributeProcessorsForProject(project) +
+			dialectTree.getElementProcessorsForProject(project)
+		return processors.find { processor ->
+			return (thymeleafNatureEnabled(project) || dialectInNamespace(processor.dialect, namespaces)) &&
+				processorMatchesName(processor, processorName)
 		}
-		return null;
 	}
 
 	/**
@@ -263,22 +223,19 @@ public class DialectCache {
 	 */
 	private static void loadDialectsFromProject(IJavaProject project) {
 
-		if (!dialecttree.containsProject(project)) {
-			ProjectDependencyDialectLocator projectdialectlocator = new ProjectDependencyDialectLocator(project);
-			List<Dialect> dialects = xmldialectloader.loadDialects(projectdialectlocator);
-			List<IPath> dialectfilepaths = projectdialectlocator.getDialectFilePaths();
-
+		if (!dialectTree.containsProject(project)) {
+			def projectDialectLocator = new ProjectDependencyDialectLocator(project)
+			def dialects = xmlDialectLoader.loadDialects(projectDialectLocator)
+			def dialectFilePaths = projectDialectLocator.dialectFilePaths
 			if (dialects.size() > 0) {
-				for (int i = 0; i < dialects.size(); i++) {
-					Dialect dialect = dialects.get(i);
-					IPath dialectfilepath = dialectfilepaths.get(i);
-
-					dialecttree.addProjectDialect(project, dialectfilepath, processDialectItems(dialect, project));
-					dialectchangelistener.trackDialectFileForChanges(dialectfilepath, project);
+				dialects.eachWithIndex { dialect, index ->
+					def dialectFilePath = dialectFilePaths.get(index)
+					dialectTree.addProjectDialect(project, dialectFilePath, processDialectItems(dialect, project))
+					dialectChangeListener.trackDialectFileForChanges(dialectFilePath, project)
 				}
 			}
 			else {
-				dialecttree.addProjectDialect(project, null, new ArrayList<DialectItem>());
+				dialectTree.addProjectDialect(project, null, new ArrayList<DialectItem>())
 			}
 		}
 	}
@@ -293,10 +250,8 @@ public class DialectCache {
 	 */
 	private static boolean processorMatchesName(Processor processor, String name) {
 
-		return name != null && !name.isEmpty() &&
-				(processor.getFullName().equals(name) ||
-				(processor instanceof AttributeProcessor &&
-						((AttributeProcessor)processor).getFullDataName().equals(name)));
+		return processor.fullName == name ||
+			(processor instanceof AttributeProcessor && processor.fullDataName == name)
 	}
 
 	/**
@@ -310,31 +265,29 @@ public class DialectCache {
 	 */
 	private static boolean processorMatchesPattern(Processor processor, String pattern) {
 
-		return pattern != null &&
-				(processor.getFullName().startsWith(pattern) ||
-				(processor instanceof AttributeProcessor &&
-						((AttributeProcessor)processor).getFullDataName().startsWith(pattern)));
+		return processor.fullName.startsWith(pattern) ||
+			(processor instanceof AttributeProcessor && processor.fullDataName.startsWith(pattern))
 	}
 
 	/**
 	 * Shutdown method of the cache, cleans up any processes that need
 	 * cleaning-up.
 	 */
-	public static void shutdown() {
+	static void shutdown() {
 
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(dialectchangelistener);
-		dialectchangelistener.shutdown();
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(dialectChangeListener)
+		dialectChangeListener.shutdown()
 	}
 
 	/**
 	 * Initialize the cache.
 	 */
-	public static void startup() {
+	static void startup() {
 
-		dialecttree = new DialectTree();
-		dialectchangelistener = new DialectChangeListener(xmldialectloader, dialecttree);
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(dialectchangelistener,
-				POST_CHANGE | PRE_CLOSE | PRE_DELETE);
+		dialectTree = new DialectTree()
+		dialectChangeListener = new DialectChangeListener(xmlDialectLoader, dialectTree)
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(dialectChangeListener,
+				POST_CHANGE | PRE_CLOSE | PRE_DELETE)
 	}
 
 	/**
@@ -345,6 +298,6 @@ public class DialectCache {
 	 */
 	private static boolean thymeleafNatureEnabled(IJavaProject project) {
 
-		return ThymeleafNature.thymeleafNatureEnabled(project.getProject());
+		return project.project.hasNature(ThymeleafNature.THYMELEAF_NATURE_ID)
 	}
 }

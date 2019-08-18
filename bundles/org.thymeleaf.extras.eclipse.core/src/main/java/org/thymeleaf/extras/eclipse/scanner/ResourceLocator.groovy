@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.scanner;
-
-import java.util.List;
+package org.thymeleaf.extras.eclipse.scanner
 
 /**
  * Locates certain kinds of resources to be loaded at a later time.
@@ -24,7 +22,7 @@ import java.util.List;
  * @param <F> The type/format being returned by the locator.
  * @author Emanuel Rabina
  */
-public interface ResourceLocator<F> {
+interface ResourceLocator<F> {
 
 	/**
 	 * Looks for resources and returns a list over those resources that can be
@@ -32,5 +30,5 @@ public interface ResourceLocator<F> {
 	 * 
 	 * @return List of formats over a resource type.
 	 */
-	public List<F> locateResources();
+	List<F> locateResources()
 }

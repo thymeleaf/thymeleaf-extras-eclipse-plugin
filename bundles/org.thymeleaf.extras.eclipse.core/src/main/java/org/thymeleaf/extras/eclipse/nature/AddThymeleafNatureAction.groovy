@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,64 +14,44 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.nature;
+package org.thymeleaf.extras.eclipse.nature
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.expressions.IEvaluationContext;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.core.commands.AbstractHandler
+import org.eclipse.core.commands.ExecutionEvent
+import org.eclipse.core.expressions.IEvaluationContext
+import org.eclipse.core.resources.IProject
+import org.eclipse.core.resources.IProjectDescription
+import org.eclipse.core.runtime.CoreException
+import org.eclipse.jdt.core.IJavaProject
 
 /**
  * Adds a Thymeleaf nature to selected projects.
  * 
  * @author Emanuel Rabina
  */
-public class AddThymeleafNatureAction extends AbstractHandler {
+class AddThymeleafNatureAction extends AbstractHandler {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Object execute(ExecutionEvent event) {
+	Object execute(ExecutionEvent event) {
 	
-		IEvaluationContext context = (IEvaluationContext)event.getApplicationContext();
-		Collection<?> selectedProjects = (Collection<?>) context.getDefaultVariable();
-		List<IProject> projects = new ArrayList<IProject>();
-		
-		// Cycle through the context variables to retrieve typed projects
-		for (Object selectedProject : selectedProjects) {
-			if (selectedProject instanceof IProject) {
-				IProject project = (IProject) selectedProject;
-				projects.add(project);
-			} else if (selectedProject instanceof IJavaProject) {
-				IJavaProject javaProject = (IJavaProject) selectedProject;
-				projects.add(javaProject.getProject());
+		def selectedProjects = event.applicationContext.defaultVariable
+		selectedProjects
+			// Projects in the current selection that can receive the Thymeleaf nature
+			.inject([]) { acc, selectedProject ->
+				return selectedProject instanceof IProject ? acc << selectedProject :
+					selectedProject instanceof IJavaProject ? acc << selectedProject.project :
+					acc
 			}
-		}
-		
-		// Add the Thymeleaf nature to all selected projects
-		for (IProject project : projects) {
-			try {
-				IProjectDescription description = project.getDescription();
-				String[] natures = description.getNatureIds();
-				String[] newnatures = new String[natures.length + 1];
-				System.arraycopy(natures, 0, newnatures, 0, natures.length);
-				newnatures[natures.length] = ThymeleafNature.THYMELEAF_NATURE_ID;
-				description.setNatureIds(newnatures);
-				project.setDescription(description, null);
+			// Add the Thymeleaf nature to the selected projects
+			.each { project ->
+				def description = project.description
+				description.natureIds = description.natureIds + ThymeleafNature.THYMELEAF_NATURE_ID
+				project.setDescription(description, null)
 			}
-			catch (CoreException ex) {
-				// Do nothing
-			}
-		}
 
-		return null;
+		return null
 	}
 }

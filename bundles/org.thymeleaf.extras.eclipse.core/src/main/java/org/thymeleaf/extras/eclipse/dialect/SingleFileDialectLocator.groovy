@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,50 +14,45 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.dialect;
+package org.thymeleaf.extras.eclipse.dialect
 
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import static org.thymeleaf.extras.eclipse.CorePlugin.*;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.core.runtime.CoreException
+import org.eclipse.core.runtime.IPath
+import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
 /**
  * A dialect locator target at a single, already-known, dialect file.
  * 
  * @author Emanuel Rabina
  */
-public class SingleFileDialectLocator implements DialectLocator<InputStream> {
+class SingleFileDialectLocator implements DialectLocator<InputStream> {
 
-	private final IPath dialectfilepath;
+	private final IPath dialectFilePath
 
 	/**
 	 * Constructor, set the dialect file path that this locator will retrieve.
 	 * 
 	 * @param dialectfilepath
 	 */
-	public SingleFileDialectLocator(IPath dialectfilepath) {
+	SingleFileDialectLocator(IPath dialectFilePath) {
 
-		this.dialectfilepath = dialectfilepath;
+		this.dialectFilePath = dialectFilePath
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<InputStream> locateDialects() {
+	List<InputStream> locateDialects() {
 
-		ArrayList<InputStream> dialectstreams = new ArrayList<InputStream>();
+		def dialectStreams = []
 		try {
-			dialectstreams.add(ResourcesPlugin.getWorkspace().getRoot()
-					.getFile(dialectfilepath).getContents());
+			dialectStreams.add(ResourcesPlugin.workspace.root.getFile(dialectFilePath).contents)
 		}
 		catch (CoreException ex) {
-			logError("Dialect file " + dialectfilepath.lastSegment() + " could not be read", ex);
+			logError("Dialect file ${dialectFilePath.lastSegment()} could not be read", ex)
 		}
-		return dialectstreams;
+		return dialectStreams
 	}
 }
