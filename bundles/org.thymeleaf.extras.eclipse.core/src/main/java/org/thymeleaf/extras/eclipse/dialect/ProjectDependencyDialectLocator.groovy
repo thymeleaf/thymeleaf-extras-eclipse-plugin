@@ -54,13 +54,12 @@ class ProjectDependencyDialectLocator implements DialectLocator<InputStream> {
 
 	private static final String DIALECT_EXTRAS_NAMESPACE = "http://www.thymeleaf.org/extras/dialect"
 
-	private static final SAXParser saxParser
+	private static final SAXParserFactory saxParserFactory
 	static {
 		def parserFactory = SAXParserFactory.newInstance()
 		parserFactory.setNamespaceAware(true)
 		parserFactory.setFeature(XML_FEATURE_LOAD_DTD_GRAMMAR, false)
 		parserFactory.setFeature(XML_FEATURE_LOAD_EXTERNAL_DTD, false)
-		saxParser = parserFactory.newSAXParser()
 	}
 
 	final IJavaProject project
@@ -90,7 +89,8 @@ class ProjectDependencyDialectLocator implements DialectLocator<InputStream> {
 		try {
 			if (((resource instanceof IJarEntryResource && resource.isFile()) ||
 				resource instanceof IFile) && resource.name.endsWith('.xml')) {
-				resource.contents.withStream { resourceStream ->
+				return resource.contents.withStream { resourceStream ->
+					def saxParser = saxParserFactory.newSAXParser()
 					def handler = new NamespaceHandler()
 					saxParser.parse(resourceStream, handler)
 					return handler.namespace == DIALECT_EXTRAS_NAMESPACE

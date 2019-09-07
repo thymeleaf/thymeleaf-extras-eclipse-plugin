@@ -33,9 +33,6 @@ class CorePlugin extends Plugin {
 
 	private static CorePlugin plugin
 
-	private DialectCache dialectCache
-	private TemplateCache templateCache
-
 	/**
 	 * Returns the shared instance of this plugin.
 	 *
@@ -75,8 +72,10 @@ class CorePlugin extends Plugin {
 
 		super.start(context)
 		plugin = this
-		dialectCache = new DialectCache()
-		templateCache = new TemplateCache()
+
+		// TODO: Really wish I could use DI here... :'(
+		DialectCache.startup()
+		TemplateCache.startup()
 	}
 
 	/**
@@ -85,8 +84,8 @@ class CorePlugin extends Plugin {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 
-		dialectCache.shutdown()
-		templateCache.shutdown()
+		DialectCache.shutdown()
+		TemplateCache.shutdown()
 		plugin = null
 		super.stop(context)
 	}

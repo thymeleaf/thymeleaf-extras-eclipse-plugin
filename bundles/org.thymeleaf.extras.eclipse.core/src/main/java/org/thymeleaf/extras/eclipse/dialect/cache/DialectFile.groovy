@@ -69,7 +69,6 @@ public class DialectFile {
 	 * @param <T>  Item type.
 	 * @return List of all dialect items of the given type.
 	 */
-	@SuppressWarnings("unchecked")
 	private <T> ArrayList<T> getDialectItemsByType(Class<T> type) {
 
 		ArrayList<T> items = new ArrayList<T>();

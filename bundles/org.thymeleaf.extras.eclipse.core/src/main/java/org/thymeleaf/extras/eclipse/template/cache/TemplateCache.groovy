@@ -31,10 +31,10 @@ import org.thymeleaf.extras.eclipse.template.model.Template
  */
 class TemplateCache {
 
-	private TemplateLoader templateLoader = new TemplateLoader()
+	private static TemplateLoader templateLoader = new TemplateLoader()
 
 	// Tree structure of all fragments in the user's workspace
-	private ResourceTree<Template> fragmentTree = new ResourceTree<Template>()
+	private static ResourceTree<Template> fragmentTree = new ResourceTree<Template>()
 
 	/**
 	 * Return all of the fragments in the given project.
@@ -42,7 +42,7 @@ class TemplateCache {
 	 * @param project The current project.
 	 * @return List of fragments in the project.
 	 */
-	List<Fragment> getFragments(IJavaProject project) {
+	static List<Fragment> getFragments(IJavaProject project) {
 
 		// Build and cache a fragment library for the given project
 		if (!fragmentTree.containsProject(project)) {
@@ -61,5 +61,17 @@ class TemplateCache {
 		return fragmentTree.getResourcesForProject(project).inject([]) { fragments, template ->
 			return fragments.addAll(template.fragments)
 		}
+	}
+
+	/**
+	 * Clear the cache and perform any other cleanup.
+	 */
+	static void shutdown() {
+	}
+
+	/**
+	 * Initialize the cache.
+	 */
+	static void startup() {
 	}
 }

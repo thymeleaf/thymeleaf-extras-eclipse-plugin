@@ -42,7 +42,7 @@ class TemplateLoader implements ResourceLoader<IFile, ProjectTemplateLocator, Te
 		return locator.locateResources().collect { file ->
 			def fileName = file.name
 			try {
-				new BufferedReader(new InputStreamReader(file.contents)).withReader { reader ->
+				return new BufferedReader(new InputStreamReader(file.contents)).withReader { reader ->
 					def parser = new DOMMarkupParser(ParseConfiguration.htmlConfiguration())
 					def document = parser.parse(fileName, reader)
 					return new Template(file.fullPath, document)
@@ -51,7 +51,6 @@ class TemplateLoader implements ResourceLoader<IFile, ProjectTemplateLocator, Te
 			catch (CoreException | IOException | ParseException ex) {
 				logError("An error occured while reading ${fileName}", ex);
 			}
-
 		}
 	}
 }
