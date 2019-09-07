@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2014, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators;
+package org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators
 
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument;
-import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion;
-import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion;
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode;
-import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer;
-
-import java.util.List;
+import org.eclipse.jface.text.BadLocationException
+import org.eclipse.jface.text.IDocument
+import org.eclipse.jface.text.contentassist.ICompletionProposal
+import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
+import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
+import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
+import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
+import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer
 
 /**
  * Class for generating Eclipse autocompletion proposals.
@@ -33,44 +31,40 @@ import java.util.List;
  * @author Emanuel Rabina
  * @param <P> The type of item proposal being generated.
  */
-@SuppressWarnings("restriction")
-public abstract class AbstractItemProposalGenerator<P extends ICompletionProposal>
-	extends AbstractComputer {
+@SuppressWarnings('restriction')
+abstract class AbstractItemProposalGenerator<P extends ICompletionProposal> extends AbstractComputer {
 
 	/**
 	 * Return the processor name pattern before the cursor position.
 	 * 
 	 * @param document
-	 * @param cursorposition
+	 * @param cursorPosition
 	 * @return The text entered up to the document offset, if the text could
 	 * 		   constitute a processor name.
-	 * @throws BadLocationException
 	 */
-	protected static String findProcessorNamePattern(IDocument document, int cursorposition)
-		throws BadLocationException {
+	protected static String findProcessorNamePattern(IDocument document, int cursorPosition) {
 
-		int position = cursorposition;
-		int length = 0;
+		def position = cursorPosition
+		def length = 0
 		while (--position > 0 && isProcessorChar(document.getChar(position))) {
-			length++;
+			length++
 		}
-		return document.get(position + 1, length);
+		return document.get(position + 1, length)
 	}
 
 	/**
 	 * Generate the autocomplete proposals.
 	 * 
 	 * @param node
-	 * @param textregion
-	 * @param documentregion
+	 * @param textRegion
+	 * @param documentRegion
 	 * @param document
-	 * @param cursorposition
+	 * @param cursorPosition
 	 * @return List of autocomplete proposals.
-	 * @throws BadLocationException
 	 */
-	public abstract List<P> generateProposals(IDOMNode node,  ITextRegion textregion,
-			IStructuredDocumentRegion documentregion, IStructuredDocument document, int cursorposition)
-			throws BadLocationException;
+	abstract List<P> generateProposals(IDOMNode node, ITextRegion textRegion,
+			IStructuredDocumentRegion documentRegion, IStructuredDocument document,
+			int cursorPosition)
 
 	/**
 	 * Returns whether or not the given character is a valid processor name
@@ -82,6 +76,6 @@ public abstract class AbstractItemProposalGenerator<P extends ICompletionProposa
 	 */
 	protected static boolean isProcessorChar(char c) {
 
-		return Character.isLetterOrDigit(c) || c == ':' || c == '-';
+		return Character.isLetterOrDigit(c) || c == ':' || c == '-'
 	}
 }

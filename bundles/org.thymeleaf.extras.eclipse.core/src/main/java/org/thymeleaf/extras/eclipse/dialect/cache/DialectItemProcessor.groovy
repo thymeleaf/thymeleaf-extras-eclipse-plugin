@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,40 +14,28 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.dialect.cache;
+package org.thymeleaf.extras.eclipse.dialect.cache
 
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.ui.JavadocContentAccess;
-import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
-import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
-import org.thymeleaf.extras.eclipse.dialect.xml.Documentation;
-import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObject;
-import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
-import org.thymeleaf.extras.eclipse.dialect.xml.Processor;
-import static org.thymeleaf.extras.eclipse.CorePlugin.*;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import org.eclipse.core.runtime.NullProgressMonitor
+import org.eclipse.jdt.core.IJavaProject
+import org.eclipse.jdt.core.IMethod
+import org.eclipse.jdt.core.IType
+import org.eclipse.jdt.core.JavaModelException
+import org.eclipse.jdt.ui.JavadocContentAccess
+import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
+import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
+import org.thymeleaf.extras.eclipse.dialect.xml.Documentation
+import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObject
+import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
+import org.thymeleaf.extras.eclipse.dialect.xml.Processor
+import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
 /**
  * Creates a content-assist ready dialect item from a dialect file definition.
  * 
  * @author Emanuel Rabina
  */
-public class DialectItemProcessor {
-
-	/**
-	 * Package-only constructor.
-	 */
-	DialectItemProcessor() {
-	}
+class DialectItemProcessor {
 
 	/**
 	 * Creates a documentation element from the Javadocs of a processor class.
@@ -55,99 +43,81 @@ public class DialectItemProcessor {
 	 * @param processor
 	 * @param project
 	 * @return Documentation element with the processor's Javadoc content, or
-	 * 		   <tt>null</tt> if the processor had no Javadocs on it.
+	 *   <tt>null</tt> if the processor had no Javadocs on it.
 	 */
 	private static Documentation generateDocumentation(Processor processor, IJavaProject project) {
 
-		String processorclassname = processor.getClazz();
-
-		try {
-			IType type = project.findType(processorclassname, new NullProgressMonitor());
-			if (type != null) {
-				Reader reader = JavadocContentAccess.getHTMLContentReader(type, false, false);
-				if (reader != null) {
-					try {
-						StringBuilder javadoc = new StringBuilder();
-						int nextchar = reader.read();
-						while (nextchar != -1) {
-							javadoc.append((char)nextchar);
-							nextchar = reader.read();
-						}
-						Documentation documentation = new Documentation();
-						documentation.setValue(javadoc.toString());
-						return documentation;
+		def type = project.findType(processor.clazz, new NullProgressMonitor())
+		if (type) {
+			def htmlContentReader = JavadocContentAccess.getHTMLContentReader(type, false, false)
+			if (htmlContentReader) {
+				def htmlContent = htmlContentReader.withReader { reader ->
+					def javaDoc = ""
+					int nextChar = reader.read()
+					while (nextChar != -1) {
+						javaDoc += nextChar
+						nextChar = reader.read()
 					}
-					finally {
-						reader.close();
-					}
+					return javaDoc
 				}
+				return new Documentation(
+					value: htmlContent
+				)
 			}
 		}
-		catch (JavaModelException ex) {
-			logError("Unable to access " + processorclassname + " in the project", ex);
-		}
-		catch (IOException ex) {
-			logError("Unable to read javadocs from " + processorclassname, ex);
-		}
-
-		return null;
+		return null
 	}
 
 	/**
 	 * Creates expression object method suggestions from an expression object
 	 * reference.
 	 * 
-	 * @param dialect		   Parent dialect.
-	 * @param expressionobject The exression object reference.
+	 * @param dialect
+	 *   Parent dialect.
+	 * @param expressionObject
+	 *   The exression object reference.
 	 * @param project
 	 * @return Set of expression object method suggestions based on the visible
-	 * 		   methods of the expression object.
+	 *   methods of the expression object.
 	 */
 	private static HashSet<ExpressionObjectMethod> generateExpressionObjectMethods(Dialect dialect,
-		ExpressionObject expressionobject, IJavaProject project) {
+		ExpressionObject expressionObject, IJavaProject project) {
 
-		HashSet<ExpressionObjectMethod> generatedmethods = new HashSet<ExpressionObjectMethod>();
+		def generatedMethods = new HashSet<ExpressionObjectMethod>()
 
-		String classname = expressionobject.getClazz();
-		try {
-			IType type = project.findType(classname);
-			if (type != null) {
-				for (IMethod method: type.getMethods()) {
-					if (!method.isConstructor()) {
+		def type = project.findType(expressionObject.clazz)
+		if (type) {
+			for (def method: type.methods) {
+				if (!method.constructor) {
+					def expressionObjectMethod = new ExpressionObjectMethod(
+						dialect: dialect
+					)
 
-						ExpressionObjectMethod expressionobjectmethod = new ExpressionObjectMethod();
-						expressionobjectmethod.setDialect(dialect);
+					// For Java bean methods, convert the suggestion to a property
+					def methodName = method.elementName
+					def propertyPoint =
+							methodName.startsWith('get') || methodName.startsWith('set') ? 3 :
+							methodName.startsWith('is') ? 2 :
+							-1
 
-						// For Java bean methods, convert the suggestion to a property
-						String methodname = method.getElementName();
-						int propertypoint =
-								methodname.startsWith("get") || methodname.startsWith("set") ? 3 :
-								methodname.startsWith("is") ? 2 :
-								-1;
+					if (propertyPoint != -1 && methodName.length() > propertyPoint &&
+						Character.isUpperCase(methodName.charAt(propertyPoint))) {
 
-						if (propertypoint != -1 && methodname.length() > propertypoint &&
-							Character.isUpperCase(methodname.charAt(propertypoint))) {
-
-							StringBuilder propertyname = new StringBuilder(methodname.substring(propertypoint));
-							propertyname.insert(0, Character.toLowerCase(propertyname.charAt(0)));
-							propertyname.deleteCharAt(1);
-							expressionobjectmethod.setName(expressionobject.getName() + "." + propertyname);
-							expressionobjectmethod.setJavaBeanProperty(true);
-						}
-						else {
-							expressionobjectmethod.setName(expressionobject.getName() + "." + methodname);
-						}
-
-						generatedmethods.add(expressionobjectmethod);
+						StringBuilder propertyName = new StringBuilder(methodName.substring(propertyPoint))
+						propertyName.insert(0, Character.toLowerCase(propertyName.charAt(0)))
+						propertyName.deleteCharAt(1)
+						expressionObjectMethod.name = "${expressionObject.name}.${propertyName}"
+						expressionObjectMethod.javaBeanProperty = true
 					}
+					else {
+						expressionObjectMethod.name = "${expressionObject.name}.${methodName}"
+					}
+
+					generatedMethods << expressionObjectMethod
 				}
 			}
 		}
-		catch (JavaModelException ex) {
-			logError("Unable to locate expression object reference: " + classname, ex);
-		}
-
-		return generatedmethods;
+		return generatedMethods
 	}
 
 	/**
@@ -156,32 +126,25 @@ public class DialectItemProcessor {
 	 * @param dialect
 	 * @param project
 	 * @return List of dialect items, already processed to include all the
-	 * 		   necessary documentation to be a part of the content assist
-	 * 		   system.
+	 *   necessary documentation to be a part of the content assist system.
 	 */
 	static List<DialectItem> processDialectItems(Dialect dialect, IJavaProject project) {
 
-		ArrayList<DialectItem> dialectitems = new ArrayList<DialectItem>();
-
-		for (DialectItem dialectitem: dialect.getDialectItems()) {
-			if (dialectitem instanceof Processor) {
-				Processor processor = (Processor)dialectitem;
-
+		return dialect.dialectItems.inject([]) { acc, dialectItem ->
+			if (dialectItem instanceof Processor) {
 				// Generate and save javadocs if no documentation present
-				if (!dialectitem.isSetDocumentation() && dialectitem.isSetClazz()) {
-					dialectitem.setDocumentation(generateDocumentation(processor, project));
+				if (!dialectItem.setDocumentation && dialectItem.setClazz) {
+					dialectItem.documentation = generateDocumentation(dialectItem, project)
 				}
-				dialectitems.add(processor);
+				acc << dialectItem
 			}
-			else if (dialectitem instanceof ExpressionObject) {
-				dialectitems.addAll(generateExpressionObjectMethods(dialect,
-						(ExpressionObject)dialectitem, project));
+			else if (dialectItem instanceof ExpressionObject) {
+				acc += generateExpressionObjectMethods(dialect, dialectItem, project)
 			}
 			else {
-				dialectitems.add(dialectitem);
+				acc << dialectItem
 			}
+			return acc
 		}
-
-		return dialectitems;
 	}
 }

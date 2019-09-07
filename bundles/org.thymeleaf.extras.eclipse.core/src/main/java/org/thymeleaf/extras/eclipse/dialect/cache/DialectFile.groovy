@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,97 +14,52 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.dialect.cache;
+package org.thymeleaf.extras.eclipse.dialect.cache
 
-import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
-import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
-import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
-import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
+import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
+import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor
+import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
 
 /**
  * Representation of a file containing dialect information.
  * 
  * @author Emanuel Rabina
  */
-public class DialectFile {
+class DialectFile {
 
-	private final HashSet<DialectItem> dialectitems = new HashSet<DialectItem>();
-	private ArrayList<AttributeProcessor> attributeprocessors;
-	private ArrayList<ElementProcessor> elementprocessors;
-	private ArrayList<ExpressionObjectMethod> expressionobjectmethods;
+	private final ArrayList<DialectItem> dialectItems
 
-	/**
-	 * Package-only constructor, associate this class with a dialect's processed
-	 * items.
-	 * 
-	 * @param dialectitems
-	 */
-	DialectFile(List<DialectItem> dialectitems) {
+	@Lazy(soft = true)
+	ArrayList<AttributeProcessor> attributeProcessors = { -> getDialectItemsByType(AttributeProcessor) }()
 
-		this.dialectitems.addAll(dialectitems);
-	}
+	@Lazy(soft = true)
+	ArrayList<ElementProcessor> elementProcessors = { -> getDialectItemsByType(ElementProcessor) }()
+
+	@Lazy(soft = true)
+	ArrayList<ExpressionObjectMethod> expressionObjectMethods = { -> getDialectItemsByType(ExpressionObjectMethod) }()
 
 	/**
-	 * Get all the attribute processors in this dialect.
+	 * Constructor, associate this class with a dialect's processed items.
 	 * 
-	 * @return Attribute processors.
+	 * @param dialectItems
 	 */
-	List<AttributeProcessor> getAttributeProcessors() {
+	DialectFile(List<DialectItem> dialectItems) {
 
-		if (attributeprocessors == null) {
-			attributeprocessors = getDialectItemsByType(AttributeProcessor.class);
-			attributeprocessors.trimToSize();
-		}
-		return attributeprocessors;
+		this.dialectItems = new ArrayList<>(dialectItems)
 	}
 
 	/**
 	 * Get all of the given type of dialect item in this dialect.
 	 * 
-	 * @param type Item type.
-	 * @param <T>  Item type.
+	 * @param type
+	 *   Item type.
+	 * @param <T>
+	 *   Item type.
 	 * @return List of all dialect items of the given type.
 	 */
 	private <T> ArrayList<T> getDialectItemsByType(Class<T> type) {
 
-		ArrayList<T> items = new ArrayList<T>();
-		for (DialectItem dialectitem: dialectitems) {
-			if (type.isAssignableFrom(dialectitem.getClass())) {
-				items.add((T)dialectitem);
-			}
-		}
-		return items;
-	}
-
-	/**
-	 * Get all the element processors in this dialect.
-	 * 
-	 * @return Element processors.
-	 */
-	List<ElementProcessor> getElementProcessors() {
-
-		if (elementprocessors == null) {
-			elementprocessors = getDialectItemsByType(ElementProcessor.class);
-			elementprocessors.trimToSize();
-		}
-		return elementprocessors;
-	}
-
-	/**
-	 * Get all the expression object methods in this dialect.
-	 * 
-	 * @return Expression object methods.
-	 */
-	List<ExpressionObjectMethod> getExpressionObjectMethods() {
-
-		if (expressionobjectmethods == null) {
-			expressionobjectmethods = getDialectItemsByType(ExpressionObjectMethod.class);
-			expressionobjectmethods.trimToSize();
-		}
-		return expressionobjectmethods;
+		return dialectItems.findAll { dialectItem -> type.isAssignableFrom(dialectItem.class) }
 	}
 }

@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.contentassist;
+package org.thymeleaf.extras.eclipse.contentassist
 
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*;
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer
+import org.eclipse.jface.preference.IPreferenceStore
+import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 
 /**
  * Initializes preferences for this plugin.
  * 
  * @author Emanuel Rabina
  */
-public class ContentAssistPreferenceInitializer extends AbstractPreferenceInitializer {
+class ContentAssistPreferenceInitializer extends AbstractPreferenceInitializer {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void initializeDefaultPreferences() {
+	void initializeDefaultPreferences() {
 
-		IPreferenceStore preferences = getDefault().getPreferenceStore();
-		preferences.setDefault(AUTO_PROPOSE_PREF, true);
+		def preferences = getDefault().preferenceStore
+		preferences.setDefault(AUTO_PROPOSE_PREF, true)
 	}
 }

@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.contentassist;
+package org.thymeleaf.extras.eclipse.contentassist
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
+import org.w3c.dom.Attr
+import org.w3c.dom.Element
+import org.w3c.dom.NamedNodeMap
+import org.w3c.dom.Node
 
-import java.util.ArrayList;
-
-import javax.xml.namespace.QName;
+import javax.xml.namespace.QName
 
 /**
  * Common code between the various content assist computers that pick out
@@ -31,7 +29,7 @@ import javax.xml.namespace.QName;
  * 
  * @author Emanuel Rabina
  */
-public abstract class AbstractComputer {
+abstract class AbstractComputer {
 
 	/**
 	 * Return a list of the namespaces valid at the given node.
@@ -41,23 +39,23 @@ public abstract class AbstractComputer {
 	 */
 	protected static ArrayList<QName> findNodeNamespaces(Node node) {
 
-		ArrayList<QName> namespaces = new ArrayList<QName>();
+		def namespaces = []
 
 		if (node instanceof Element) {
-			NamedNodeMap attributes = node.getAttributes();
-			for (int i = 0; i < attributes.getLength(); i++) {
-				String name = ((Attr)attributes.item(i)).getName();
+			def attributes = node.attributes
+			for (def i = 0; i < attributes.length; i++) {
+				def name = ((Attr)attributes.item(i)).name
 				if (name.startsWith("xmlns:")) {
-					namespaces.add(new QName(((Element)node).getAttribute(name), "", name.substring(6)));
+					namespaces.add(new QName(((Element)node).getAttribute(name), '', name.substring(6)))
 				}
 			}
 		}
-		Node parent = node.getParentNode();
+		def parent = node.parentNode
 		if (parent != null) {
-			namespaces.addAll(findNodeNamespaces(parent));
+			namespaces.addAll(findNodeNamespaces(parent))
 		}
 
-		return namespaces;
+		return namespaces
 	}
 
 	/**
@@ -70,6 +68,6 @@ public abstract class AbstractComputer {
 	 */
 	protected static boolean isExpressionObjectMethodChar(char c) {
 
-		return Character.isLetterOrDigit(c) || c == '#' || c =='.';
+		return Character.isLetterOrDigit(c) || c == '#' || c =='.'
 	}
 }

@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.dialect.cache;
+package org.thymeleaf.extras.eclipse.dialect.cache
 
-import org.eclipse.core.runtime.IPath;
-import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
-import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
-import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
-import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import org.eclipse.core.runtime.IPath
+import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
+import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
+import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor
+import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
 
 /**
  * Representation of a project that contains one or more files which in turn
@@ -32,98 +28,60 @@ import java.util.List;
  * 
  * @author Emanuel Rabina
  */
-public class DialectProject {
+class DialectProject {
 
-	private final HashMap<IPath,DialectFile> dialectfilepaths = new HashMap<IPath,DialectFile>();
-	private ArrayList<AttributeProcessor> attributeprocessors;
-	private ArrayList<ElementProcessor> elementprocessors;
-	private ArrayList<ExpressionObjectMethod> expressionobjectmethods;
+	private final HashMap<IPath,DialectFile> dialectFilePaths = [:]
 
-	/**
-	 * Package-only constructor.
-	 */
-	DialectProject() {
-	}
+	@Lazy(soft = true)
+	private ArrayList<AttributeProcessor> attributeProcessors = { ->
+		return dialectFilePaths.values().inject([]) { acc, dialectFile ->
+			return acc + dialectFile.attributeProcessors
+		}
+	}()
+
+	@Lazy(soft = true)
+	private ArrayList<ElementProcessor> elementProcessors = { ->
+		return dialectFilePaths.values().inject([]) { acc, dialectFile ->
+			return acc + dialectFile.elementProcessors
+		}
+	}()
+
+	@Lazy(soft = true)
+	private ArrayList<ExpressionObjectMethod> expressionObjectMethods = { ->
+		return dialectFilePaths.values().inject([]) { acc, dialectFile ->
+			return acc + dialectFile.expressionObjectMethods
+		}
+	}()
 
 	/**
 	 * Adds a dialect to this project.  If the path already exists for a dialect
 	 * in this project, then this method will ovewrite that dialect.
 	 * 
-	 * @param dialectfilepath  The resource path to the dialect.
-	 * @param dialectitems	   A list of the items in the dialect, but already
-	 * 						   processed to include all the information they
-	 * 						   need for content assist queries.
+	 * @param dialectFilepath
+	 *   The resource path to the dialect.
+	 * @param dialectItems
+	 *   A list of the items in the dialect, but already processed to include all
+	 *   the information they need for content assist queries.
 	 */
-	void addDialect(IPath dialectfilepath, List<DialectItem> dialectitems) {
+	void addDialect(IPath dialectFilePath, List<DialectItem> dialectItems) {
 
-		dialectfilepaths.put(dialectfilepath, new DialectFile(dialectitems));
-		attributeprocessors     = null;
-		elementprocessors       = null;
-		expressionobjectmethods = null;
-	}
-
-	/**
-	 * Return all of the attribute processors in this project.
-	 * 
-	 * @return List of this project's attribute processors.
-	 */
-	List<AttributeProcessor> getAttributeProcessors() {
-
-		if (attributeprocessors == null) {
-			attributeprocessors = new ArrayList<AttributeProcessor>();
-			for (DialectFile dialectfile: dialectfilepaths.values()) {
-				attributeprocessors.addAll(dialectfile.getAttributeProcessors());
-			}
-			attributeprocessors.trimToSize();
-		}
-		return attributeprocessors;
-	}
-
-	/**
-	 * Return all of the element processors in this project.
-	 * 
-	 * @return List of this project's element processors.
-	 */
-	List<ElementProcessor> getElementProcessors() {
-
-		if (elementprocessors == null) {
-			elementprocessors = new ArrayList<ElementProcessor>();
-			for (DialectFile dialectfile: dialectfilepaths.values()) {
-				elementprocessors.addAll(dialectfile.getElementProcessors());
-			}
-			elementprocessors.trimToSize();
-		}
-		return elementprocessors;
-	}
-
-	/**
-	 * Return all of the expression object methods in this project.
-	 * 
-	 * @return List of this project's expression object methods.
-	 */
-	List<ExpressionObjectMethod> getExpressionObjectMethods() {
-
-		if (expressionobjectmethods == null) {
-			expressionobjectmethods = new ArrayList<ExpressionObjectMethod>();
-			for (DialectFile dialectfile: dialectfilepaths.values()) {
-				expressionobjectmethods.addAll(dialectfile.getExpressionObjectMethods());
-			}
-			expressionobjectmethods.trimToSize();
-		}
-		return expressionobjectmethods;
+		dialectFilePaths[dialectFilePath] = new DialectFile(dialectItems)
+		attributeProcessors     = null
+		elementProcessors       = null
+		expressionObjectMethods = null
 	}
 
 	/**
 	 * Return whether or not this project makes use of a dialect with the given
 	 * resource path.
 	 * 
-	 * @param dialectfilepath
+	 * @param dialectFilePath
 	 * @return <tt>true</tt> if a dialect in this project originates from the
 	 * 		   given path.
 	 */
-	boolean hasDialect(IPath dialectfilepath) {
+	boolean hasDialect(IPath dialectFilePath) {
 
-		return dialectfilepaths.keySet().contains(dialectfilepath);
+		return dialectFilePaths[dialectFilePath]
 	}
 
 	/**
@@ -133,9 +91,9 @@ public class DialectProject {
 	 */
 	void removeDialect(IPath dialectfilepath) {
 
-		dialectfilepaths.remove(dialectfilepath);
-		attributeprocessors     = null;
-		elementprocessors       = null;
-		expressionobjectmethods = null;
+		dialectFilePaths.remove(dialectfilepath)
+		attributeProcessors     = null
+		elementProcessors       = null
+		expressionObjectMethods = null
 	}
 }

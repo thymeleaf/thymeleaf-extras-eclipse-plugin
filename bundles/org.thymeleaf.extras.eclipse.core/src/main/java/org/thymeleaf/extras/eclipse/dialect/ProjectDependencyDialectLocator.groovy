@@ -56,14 +56,14 @@ class ProjectDependencyDialectLocator implements DialectLocator<InputStream> {
 
 	private static final SAXParserFactory saxParserFactory
 	static {
-		def parserFactory = SAXParserFactory.newInstance()
-		parserFactory.setNamespaceAware(true)
-		parserFactory.setFeature(XML_FEATURE_LOAD_DTD_GRAMMAR, false)
-		parserFactory.setFeature(XML_FEATURE_LOAD_EXTERNAL_DTD, false)
+		saxParserFactory = SAXParserFactory.newInstance()
+		saxParserFactory.setNamespaceAware(true)
+		saxParserFactory.setFeature(XML_FEATURE_LOAD_DTD_GRAMMAR, false)
+		saxParserFactory.setFeature(XML_FEATURE_LOAD_EXTERNAL_DTD, false)
 	}
 
 	final IJavaProject project
-	final ArrayList<IPath> dialectFilePaths = new ArrayList<IPath>()
+	final ArrayList<IPath> dialectFilePaths = []
 
 	/**
 	 * Constructor, sets which project will be scanned for Thymeleaf dialect
@@ -86,19 +86,14 @@ class ProjectDependencyDialectLocator implements DialectLocator<InputStream> {
 	 */
 	private static boolean isDialectHelpXmlFile(IStorage resource) {
 
-		try {
-			if (((resource instanceof IJarEntryResource && resource.isFile()) ||
-				resource instanceof IFile) && resource.name.endsWith('.xml')) {
-				return resource.contents.withStream { resourceStream ->
-					def saxParser = saxParserFactory.newSAXParser()
-					def handler = new NamespaceHandler()
-					saxParser.parse(resourceStream, handler)
-					return handler.namespace == DIALECT_EXTRAS_NAMESPACE
-				}
+		if (((resource instanceof IJarEntryResource && resource.isFile()) ||
+			resource instanceof IFile) && resource.name.endsWith('.xml')) {
+			return resource.contents.withStream { resourceStream ->
+				def saxParser = saxParserFactory.newSAXParser()
+				def handler = new NamespaceHandler()
+				saxParser.parse(resourceStream, handler)
+				return handler.namespace == DIALECT_EXTRAS_NAMESPACE
 			}
-		}
-		catch (Exception ex) {
-			logError("Unable to read XML file", ex)
 		}
 		return false
 	}

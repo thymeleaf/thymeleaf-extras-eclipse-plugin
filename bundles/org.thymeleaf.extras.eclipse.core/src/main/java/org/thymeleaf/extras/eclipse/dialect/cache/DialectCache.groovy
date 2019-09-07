@@ -221,6 +221,8 @@ class DialectCache {
 	 * 
 	 * @param project Project to scan for dialect information.
 	 */
+	// TODO: Is it possible to make this use @Lazy so it's not being called from
+	//       all the other methods?
 	private static void loadDialectsFromProject(IJavaProject project) {
 
 		if (!dialectTree.containsProject(project)) {
@@ -275,7 +277,7 @@ class DialectCache {
 	 */
 	static void shutdown() {
 
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(dialectChangeListener)
+		ResourcesPlugin.workspace.removeResourceChangeListener(dialectChangeListener)
 		dialectChangeListener.shutdown()
 	}
 
@@ -285,8 +287,8 @@ class DialectCache {
 	static void startup() {
 
 		dialectTree = new DialectTree()
-		dialectChangeListener = new DialectChangeListener(xmlDialectLoader, dialectTree)
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(dialectChangeListener,
+		dialectChangeListener = new DialectChangeListener(dialectTree, xmlDialectLoader)
+		ResourcesPlugin.workspace.addResourceChangeListener(dialectChangeListener,
 				POST_CHANGE | PRE_CLOSE | PRE_DELETE)
 	}
 

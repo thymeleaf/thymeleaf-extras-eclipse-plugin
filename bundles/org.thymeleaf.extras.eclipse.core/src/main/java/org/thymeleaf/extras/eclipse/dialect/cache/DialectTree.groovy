@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.dialect.cache;
+package org.thymeleaf.extras.eclipse.dialect.cache
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IJavaProject;
-import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor;
-import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
-import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
-import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor;
-import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.eclipse.core.runtime.IPath
+import org.eclipse.jdt.core.IJavaProject
+import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
+import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
+import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
+import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor
+import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
 
 /**
  * Representation of all of the projects which contain dialect files found in
@@ -39,23 +32,23 @@ import java.util.Map;
  * 
  * @author Emanuel Rabina
  */
-public class DialectTree {
+class DialectTree {
 
-	private HashMap<IJavaProject,DialectProject> dialectprojects = new HashMap<IJavaProject,DialectProject>();
+	private HashMap<IJavaProject,DialectProject> dialectProjects = [:]
 
 	// Saved project dialect item lists
-	private HashMap<IJavaProject,ArrayList<AttributeProcessor>> projectattributeprocessors =
-			new HashMap<IJavaProject,ArrayList<AttributeProcessor>>();
-	private HashMap<IJavaProject,ArrayList<ElementProcessor>> projectelementprocessors =
-			new HashMap<IJavaProject,ArrayList<ElementProcessor>>();
-
-	private HashMap<IJavaProject,ArrayList<ExpressionObjectMethod>> projectexpressionobjectmethods =
-			new HashMap<IJavaProject,ArrayList<ExpressionObjectMethod>>();
+	private HashMap<IJavaProject,ArrayList<AttributeProcessor>> projectAttributeProcessors = [:]
+	private HashMap<IJavaProject,ArrayList<ElementProcessor>> projectElementProcessors = [:]
+	private HashMap<IJavaProject,ArrayList<ExpressionObjectMethod>> projectExpressionobjectMethods = [:]
 
 	/**
-	 * Package-only constructor.
+	 * Comparator for dialect items.  Dialect items are sorted in alphabetical
+	 * order, prefix first, then the processor name.
 	 */
-	DialectTree() {
+	private static final Closure dialectItemSorter = { DialectItem item1, DialectItem item2 ->
+		def dialect1 = item1.dialect
+		def dialect2 = item2.dialect
+		return dialect1 != dialect2 ? dialect1.prefix <=> dialect2.prefix : item1.name <=> item2.name
 	}
 
 	/**
@@ -64,17 +57,18 @@ public class DialectTree {
 	 * instead.
 	 * 
 	 * @param project
-	 * @param dialectpath  The resource path to the dialect.
-	 * @param dialectitems A list of the items in the dialect, but already
-	 * 					   processed to include all the information they need
-	 * 					   for content assist queries.
+	 * @param dialectPath
+	 *   The resource path to the dialect.
+	 * @param dialectItems
+	 *   A list of the items in the dialect, but already processed to include all
+	 *   the information they need for content assist queries.
 	 */
-	void addProjectDialect(IJavaProject project, IPath dialectpath, List<DialectItem> dialectitems) {
+	void addProjectDialect(IJavaProject project, IPath dialectPath, List<DialectItem> dialectItems) {
 
-		if (!containsProject(project)) {
-			dialectprojects.put(project, new DialectProject());
+		if (!dialectProjects[project]) {
+			dialectProjects[project] = new DialectProject()
 		}
-		dialectprojects.get(project).addDialect(dialectpath, dialectitems);
+		dialectProjects[project].addDialect(dialectPath, dialectItems)
 	}
 
 	/**
@@ -85,7 +79,7 @@ public class DialectTree {
 	 */
 	boolean containsProject(IJavaProject project) {
 
-		return dialectprojects.containsKey(project);
+		return dialectProjects[project]
 	}
 
 	/**
@@ -96,14 +90,9 @@ public class DialectTree {
 	 */
 	List<AttributeProcessor> getAttributeProcessorsForProject(IJavaProject project) {
 
-		if (!projectattributeprocessors.containsKey(project)) {
-			ArrayList<AttributeProcessor> attributeprocessors = new ArrayList<AttributeProcessor>(
-					dialectprojects.get(project).getAttributeProcessors());
-			Collections.sort(attributeprocessors, new DialectItemComparator());
-			attributeprocessors.trimToSize();
-			projectattributeprocessors.put(project, attributeprocessors);
+		return projectAttributeProcessors.getOrCreate(project) { ->
+			return dialectProjects[project].attributeProcessors.sort(false, dialectItemSorter)
 		}
-		return projectattributeprocessors.get(project);
 	}
 
 	/**
@@ -114,14 +103,9 @@ public class DialectTree {
 	 */
 	List<ElementProcessor> getElementProcessorsForProject(IJavaProject project) {
 
-		if (!projectelementprocessors.containsKey(project)) {
-			ArrayList<ElementProcessor> elementprocessors = new ArrayList<ElementProcessor>(
-					dialectprojects.get(project).getElementProcessors());
-			Collections.sort(elementprocessors, new DialectItemComparator());
-			elementprocessors.trimToSize();
-			projectelementprocessors.put(project, elementprocessors);
+		return projectAttributeProcessors.getOrCreate(project) { ->
+			return dialectProjects[project].elementProcessors.sort(false, dialectItemSorter)
 		}
-		return projectelementprocessors.get(project);
 	}
 
 	/**
@@ -132,62 +116,32 @@ public class DialectTree {
 	 */
 	List<ExpressionObjectMethod> getExpressionObjectMethodsForProject(IJavaProject project) {
 
-		if (!projectexpressionobjectmethods.containsKey(project)) {
-			ArrayList<ExpressionObjectMethod> expressionobjectmethods = new ArrayList<ExpressionObjectMethod>(
-					dialectprojects.get(project).getExpressionObjectMethods());
-			Collections.sort(expressionobjectmethods, new DialectItemComparator());
-			expressionobjectmethods.trimToSize();
-			projectexpressionobjectmethods.put(project, expressionobjectmethods);
+		return projectExpressionobjectMethods.getOrCreate(project) { ->
+			return dialectProjects[project].expressionObjectMethods.sort(false, dialectItemSorter)
 		}
-		return projectexpressionobjectmethods.get(project);
 	}
 
 	/**
 	 * Update the dialect file that was mapped to the given path, with the new
 	 * processed dialect items.
 	 * 
-	 * @param dialectfilepath
-	 * @param dialectitems
+	 * @param dialectFilepath
+	 * @param dialectItems
 	 */
-	void updateDialect(IPath dialectfilepath, List<DialectItem> dialectitems) {
+	void updateDialect(IPath dialectFilePath, List<DialectItem> dialectItems) {
 
-		for (Map.Entry<IJavaProject,DialectProject> entryset: dialectprojects.entrySet()) {
-			IJavaProject javaproject = entryset.getKey();
-			DialectProject dialectproject = entryset.getValue();
-
-			if (dialectproject.hasDialect(dialectfilepath)) {
-				if (dialectitems != null) {
-					dialectproject.addDialect(dialectfilepath, dialectitems);
+		dialectProjects.each { javaProject, dialectProject ->
+			if (dialectProject.hasDialect(dialectFilePath)) {
+				if (dialectItems) {
+					dialectProject.addDialect(dialectFilePath, dialectItems)
 				}
 				else {
-					dialectproject.removeDialect(dialectfilepath);
+					dialectProject.removeDialect(dialectFilePath)
 				}
-				projectattributeprocessors.remove(javaproject);
-				projectelementprocessors.remove(javaproject);
-				projectexpressionobjectmethods.remove(javaproject);
+				projectAttributeProcessors.remove(javaProject)
+				projectElementProcessors.remove(javaProject)
+				projectExpressionobjectMethods.remove(javaProject)
 			}
-		}
-	}
-
-
-	/**
-	 * Comparator for dialect items.  Dialect items are sorted in alphabetical
-	 * order, prefix first, then the processor name.
-	 */
-	private class DialectItemComparator implements Comparator<DialectItem> {
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public int compare(DialectItem item1, DialectItem item2) {
-
-			Dialect dialect1 = item1.getDialect();
-			Dialect dialect2 = item2.getDialect();
-
-			return !dialect1.equals(dialect2) ?
-					dialect1.getPrefix().compareTo(dialect2.getPrefix()) :
-					item1.getName().compareTo(item2.getName());
 		}
 	}
 }

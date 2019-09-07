@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Emanuel Rabina (http://www.ultraq.net.nz/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.dialect.cache;
+package org.thymeleaf.extras.eclipse.dialect.cache
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.thymeleaf.extras.eclipse.dialect.SingleFileDialectLocator;
-import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader;
-import org.thymeleaf.extras.eclipse.dialect.xml.Dialect;
-import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem;
-import static org.eclipse.core.resources.IResourceChangeEvent.*;
-import static org.thymeleaf.extras.eclipse.CorePlugin.*;
-import static org.thymeleaf.extras.eclipse.dialect.cache.DialectItemProcessor.*;
+import org.eclipse.core.resources.IProject
+import org.eclipse.core.resources.IResourceChangeEvent
+import org.eclipse.core.resources.IResourceChangeListener
+import org.eclipse.core.resources.IResourceDelta
+import org.eclipse.core.runtime.IPath
+import org.eclipse.jdt.core.IJavaProject
+import org.eclipse.jdt.core.JavaCore
+import org.thymeleaf.extras.eclipse.dialect.SingleFileDialectLocator
+import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader
+import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
+import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
+import static org.eclipse.core.resources.IResourceChangeEvent.*
+import static org.thymeleaf.extras.eclipse.CorePlugin.*
+import static org.thymeleaf.extras.eclipse.dialect.cache.DialectItemProcessor.*
 
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import groovy.transform.MapConstructor
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  * A resource change listener, acting on changes made to any dialect files,
@@ -43,27 +43,24 @@ import java.util.concurrent.TimeUnit;
  * 
  * @author Emanuel Rabina
  */
-public class DialectChangeListener implements IResourceChangeListener {
+class DialectChangeListener implements IResourceChangeListener {
 
-	private final ExecutorService resourcechangeexecutor = Executors.newSingleThreadExecutor();
+	private final ExecutorService resourceChangeExecutor = Executors.newSingleThreadExecutor()
 
 	// Collection of dialect files that will be watched for updates to keep the cache up-to-date
-	private final ConcurrentHashMap<IPath,IProject> dialectfilepaths =
-			new ConcurrentHashMap<IPath,IProject>();
+	private final ConcurrentHashMap<IPath,IProject> dialectFilePaths = new ConcurrentHashMap<>()
 
-	private final XmlDialectLoader xmldialectloader;
-	private final DialectTree dialecttree;
+	final DialectTree dialectTree
+	final XmlDialectLoader xmlDialectLoader
 
 	/**
-	 * Package-only constructor, watch over the given dialect tree.
-	 * 
-	 * @param xmldialectloader
-	 * @param dialecttree
+	 * @param dialectTree
+	 * @param xmlDialectLoader
 	 */
-	DialectChangeListener(XmlDialectLoader xmldialectloader, DialectTree dialecttree) {
+	DialectChangeListener(DialectTree dialectTree, XmlDialectLoader xmlDialectLoader) {
 
-		this.xmldialectloader = xmldialectloader;
-		this.dialecttree      = dialecttree;
+		this.dialectTree = dialectTree
+		this.xmlDialectLoader = xmlDialectLoader
 	}
 
 	/**
@@ -71,52 +68,41 @@ public class DialectChangeListener implements IResourceChangeListener {
 	 * executor thread so as to not block the event change thread.
 	 */
 	@Override
-	public void resourceChanged(final IResourceChangeEvent event) {
+	void resourceChanged(final IResourceChangeEvent event) {
 
-		resourcechangeexecutor.execute(new Runnable() {
-			@Override
-			public void run() {
+		resourceChangeExecutor.execute { ->
+			switch (event.type) {
 
-				switch (event.getType()) {
+			// If a dialect file has changed, update the dialect items associated with it
+			case POST_CHANGE:
+				for (def dialectFilePath: dialectFilePaths.keySet()) {
+					def dialectFileDelta = event.delta.findMember(dialectFilePath)
+					if (dialectFileDelta) {
+						logInfo("Dialect file ${dialectFilePath.lastSegment()} changed, reloading dialect")
+						def javaProject = JavaCore.create(dialectFileDelta.resource.project)
 
-				// If a dialect file has changed, update the dialect items associated with it
-				case POST_CHANGE:
-					IResourceDelta delta = event.getDelta();
-					for (IPath dialectfilepath: dialectfilepaths.keySet()) {
-						IResourceDelta dialectfiledelta = delta.findMember(dialectfilepath);
-						if (dialectfiledelta != null) {
-							logInfo("Dialect file " + dialectfilepath.lastSegment() +
-									" changed, reloading dialect");
-							IProject dialectfileproject = dialectfiledelta.getResource().getProject();
-							IJavaProject javaproject = JavaCore.create(dialectfileproject);
-
-							List<Dialect> updatedialect = xmldialectloader.loadDialects(
-									new SingleFileDialectLocator(dialectfilepath));
-							List<DialectItem> updateddialectitems = processDialectItems(
-									updatedialect.get(0), javaproject);
-							dialecttree.updateDialect(dialectfilepath, updateddialectitems);
-						}
+						def updateDialect = xmlDialectLoader.loadDialects(new SingleFileDialectLocator(dialectFilePath))
+						def updatedDialectItems = processDialectItems(updateDialect.first(), javaProject)
+						dialectTree.updateDialect(dialectFilePath, updatedDialectItems)
 					}
-					break;
-
-				// If a project containing a dialect is changing, remove the dialect
-				// from the dialect tree.
-				case PRE_CLOSE:
-				case PRE_DELETE:
-					IProject project = (IProject)event.getResource();
-					for (IPath dialectfilepath: dialectfilepaths.keySet()) {
-						IProject dialectproject = dialectfilepaths.get(dialectfilepath);
-						if (project.equals(dialectproject)) {
-							logInfo("Project containing dialect file " + dialectfilepath.lastSegment() +
-									" has been closed/deleted, removing dialect.");
-							dialecttree.updateDialect(dialectfilepath, null);
-							dialectfilepaths.remove(dialectfilepath);
-						}
-					}
-					break;
 				}
+				break
+
+			// If a project containing a dialect is changing, remove the dialect from the dialect tree.
+			case PRE_CLOSE:
+			case PRE_DELETE:
+				def project = (IProject)event.resource
+				for (def dialectFilePath: dialectFilePaths.keySet()) {
+					def dialectProject = dialectFilePaths.get(dialectFilePath)
+					if (project == dialectProject) {
+						logInfo("Project containing dialect file ${dialectFilePath.lastSegment()} has been closed/deleted, removing dialect.")
+						dialectTree.updateDialect(dialectFilePath, null)
+						dialectFilePaths.remove(dialectFilePath)
+					}
+				}
+				break
 			}
-		});
+		}
 	}
 
 	/**
@@ -124,25 +110,20 @@ public class DialectChangeListener implements IResourceChangeListener {
 	 */
 	void shutdown() {
 
-		resourcechangeexecutor.shutdown();
-		try {
-			if (resourcechangeexecutor.awaitTermination(5, TimeUnit.SECONDS)) {
-				resourcechangeexecutor.shutdownNow();
-			}
-		}
-		catch (InterruptedException ex) {
-			// Do nothing
+		resourceChangeExecutor.shutdown()
+		if (resourceChangeExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+			resourceChangeExecutor.shutdownNow()
 		}
 	}
 
 	/**
 	 * Track a dialect file for changes.
 	 * 
-	 * @param dialectfilepath
+	 * @param dialectFilePath
 	 * @param project
 	 */
-	void trackDialectFileForChanges(IPath dialectfilepath, IJavaProject project) {
+	void trackDialectFileForChanges(IPath dialectFilePath, IJavaProject project) {
 
-		dialectfilepaths.put(dialectfilepath, project.getProject());
+		dialectFilePaths.put(dialectFilePath, project.project)
 	}
 }
