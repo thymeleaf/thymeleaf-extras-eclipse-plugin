@@ -81,7 +81,8 @@ class DialectChangeListener implements IResourceChangeListener {
 						logInfo("Dialect file ${dialectFilePath.lastSegment()} changed, reloading dialect")
 						def javaProject = JavaCore.create(dialectFileDelta.resource.project)
 
-						def updateDialect = xmlDialectLoader.loadDialects(new SingleFileDialectLocator(dialectFilePath))
+						def locator = new SingleFileDialectLocator(dialectFilePath)
+						def updateDialect = xmlDialectLoader.loadDialects(locator.locateDialects())
 						def updatedDialectItems = processDialectItems(updateDialect.first(), javaProject)
 						dialectTree.updateDialect(dialectFilePath, updatedDialectItems)
 					}

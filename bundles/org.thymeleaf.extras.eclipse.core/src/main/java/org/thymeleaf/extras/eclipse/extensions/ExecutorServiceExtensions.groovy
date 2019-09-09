@@ -16,30 +16,37 @@
 
 package org.thymeleaf.extras.eclipse.extensions
 
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.TimeUnit
+
 /**
- * Extension methods for the Map class.
+ * Extensions to the {@code ExecutorService} interface.
  * 
  * @author Emanuel Rabina
  */
-class MapExtensions {
+class ExecutorServiceExtensions {
 
 	/**
-	 * Retrieves a value from a map by it's key.  If there is no value for the
-	 * given key, then the {@code create} closure is executed whose return value
-	 * is then used as the value on the map for the key.
+	 * Execute the given closure, performing a shutdown after it has exited.
 	 * 
-	 * @param <K>
-	 * @param <V>
+	 * @param <T>
 	 * @param self
-	 * @param key
-	 * @param create
-	 * @return The value stored to the map by the key.
+	 * @param closure
+	 *   Called within the context of a try/finally block with the executor
+	 *   service itself for performing any parallel tasks.
+	 * @return
+	 *   The return value from the closure.
 	 */
-	static <K,V> V getOrCreate(Map<K,V> self, K key, Closure create) {
+	static <T> T executeAndShutdown(ExecutorService self, Closure<T> closure) {
 
-		if (!self[key]) {
-			self[key] = create()
+		try {
+			return closure(self)
 		}
-		return self[key]
+		finally {
+			self.shutdown()
+			if (!self.awaitTermination(5, TimeUnit.SECONDS)) {
+				self.shutdownNow()
+			}
+		}
 	}
 }

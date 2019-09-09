@@ -17,10 +17,7 @@
 package org.thymeleaf.extras.eclipse.dialect
 
 import nz.net.ultraq.jaxb.XmlReader
-
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
-import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
-import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
 /**
  * Loads dialect help/documentation XML files from those returned by a
@@ -28,35 +25,26 @@ import static org.thymeleaf.extras.eclipse.CorePlugin.*
  * 
  * @author Emanuel Rabina
  */
-class XmlDialectLoader implements DialectLoader<InputStream> {
+class XmlDialectLoader implements DialectLoader {
 
-	private static final XmlReader<Dialect> xmlReader = new XmlReader<Dialect>(Dialect)
+	private static final XmlReader<Dialect> xmlReader = new XmlReader<>(Dialect)
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	List<Dialect> loadDialects(DialectLocator<InputStream> locator) {
+	List<Dialect> loadDialects(List<DialectMetadata> dialectMetadatas) {
 
-		def dialects = new ArrayList<Dialect>()
-
-		locator.locateDialects().each { dialectFileStream ->
-			dialectFileStream.withStream { stream ->
-	
+		return dialectMetadatas.collect { dialectMetadata ->
+			return dialectMetadata.stream.withStream { stream ->
 				// Link processors and expression objects/methods with their dialect
-				try {
-					def dialect = xmlReader.read(stream)
-					dialect.dialectItems.each { dialectItem ->
-						dialectItem.setDialect(dialect)
-					}
-					dialects.add(dialect)
+				// TODO: Unnecessary with the XML slurper?
+				def dialect = xmlReader.read(stream)
+				dialect.dialectItems.each { dialectItem ->
+					dialectItem.dialect = dialect
 				}
-				catch (Exception ex) {
-					logError('Error reading the dialect file', ex)
-				}
+				return dialect
 			}
 		}
-
-		return dialects
 	}
 }

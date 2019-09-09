@@ -227,11 +227,11 @@ class DialectCache {
 
 		if (!dialectTree.containsProject(project)) {
 			def projectDialectLocator = new ProjectDependencyDialectLocator(project)
-			def dialects = xmlDialectLoader.loadDialects(projectDialectLocator)
-			def dialectFilePaths = projectDialectLocator.dialectFilePaths
+			def dialectMetadatas = projectDialectLocator.locateDialects()
+			def dialects = xmlDialectLoader.loadDialects(dialectMetadatas)
 			if (dialects.size() > 0) {
 				dialects.eachWithIndex { dialect, index ->
-					def dialectFilePath = dialectFilePaths.get(index)
+					def dialectFilePath = dialectMetadatas.get(index).path
 					dialectTree.addProjectDialect(project, dialectFilePath, processDialectItems(dialect, project))
 					dialectChangeListener.trackDialectFileForChanges(dialectFilePath, project)
 				}

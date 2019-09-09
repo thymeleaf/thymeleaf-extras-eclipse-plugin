@@ -16,30 +16,28 @@
 
 package org.thymeleaf.extras.eclipse.extensions
 
+import static org.thymeleaf.extras.eclipse.CorePlugin.logInfo
+
 /**
- * Extension methods for the Map class.
+ * Extensions to the main Object!
  * 
  * @author Emanuel Rabina
  */
-class MapExtensions {
+class ObjectExtensions {
 
 	/**
-	 * Retrieves a value from a map by it's key.  If there is no value for the
-	 * given key, then the {@code create} closure is executed whose return value
-	 * is then used as the value on the map for the key.
+	 * Capture and log the time it takes to perform the given closure.
 	 * 
-	 * @param <K>
-	 * @param <V>
-	 * @param self
-	 * @param key
-	 * @param create
-	 * @return The value stored to the map by the key.
+	 * @param <T>
+	 * @param actionName
+	 * @param closure
+	 * @return
 	 */
-	static <K,V> V getOrCreate(Map<K,V> self, K key, Closure create) {
+	static <T> T time(Object self, String actionName, Closure<T> closure) {
 
-		if (!self[key]) {
-			self[key] = create()
-		}
-		return self[key]
+		def start = System.currentTimeMillis()
+		def result = closure()
+		logInfo("${actionName} complete.  Execution time: ${System.currentTimeMillis() - start}ms")
+		return result
 	}
 }

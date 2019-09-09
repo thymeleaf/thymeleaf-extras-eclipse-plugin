@@ -14,32 +14,21 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.extensions
+package org.thymeleaf.extras.eclipse.dialect
+
+import org.eclipse.core.runtime.IPath
+
+import groovy.transform.MapConstructor
 
 /**
- * Extension methods for the Map class.
+ * Information about the dialect, used to communicate the results of a dialect
+ * locator for a dialect loader.
  * 
  * @author Emanuel Rabina
  */
-class MapExtensions {
+@MapConstructor
+class DialectMetadata {
 
-	/**
-	 * Retrieves a value from a map by it's key.  If there is no value for the
-	 * given key, then the {@code create} closure is executed whose return value
-	 * is then used as the value on the map for the key.
-	 * 
-	 * @param <K>
-	 * @param <V>
-	 * @param self
-	 * @param key
-	 * @param create
-	 * @return The value stored to the map by the key.
-	 */
-	static <K,V> V getOrCreate(Map<K,V> self, K key, Closure create) {
-
-		if (!self[key]) {
-			self[key] = create()
-		}
-		return self[key]
-	}
+	final IPath path
+	final InputStream stream
 }

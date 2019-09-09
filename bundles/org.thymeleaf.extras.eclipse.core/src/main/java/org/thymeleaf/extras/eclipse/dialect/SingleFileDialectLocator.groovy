@@ -17,16 +17,14 @@
 package org.thymeleaf.extras.eclipse.dialect
 
 import org.eclipse.core.resources.ResourcesPlugin
-import org.eclipse.core.runtime.CoreException
 import org.eclipse.core.runtime.IPath
-import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
 /**
  * A dialect locator target at a single, already-known, dialect file.
  * 
  * @author Emanuel Rabina
  */
-class SingleFileDialectLocator implements DialectLocator<InputStream> {
+class SingleFileDialectLocator implements DialectLocator {
 
 	private final IPath dialectFilePath
 
@@ -44,15 +42,13 @@ class SingleFileDialectLocator implements DialectLocator<InputStream> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	List<InputStream> locateDialects() {
+	List<DialectMetadata> locateDialects() {
 
-		def dialectStreams = []
-		try {
-			dialectStreams.add(ResourcesPlugin.workspace.root.getFile(dialectFilePath).contents)
-		}
-		catch (CoreException ex) {
-			logError("Dialect file ${dialectFilePath.lastSegment()} could not be read", ex)
-		}
-		return dialectStreams
+		return [
+			new DialectMetadata(
+				path: dialectFilePath,
+				stream: ResourcesPlugin.workspace.root.getFile(dialectFilePath).contents
+			)
+		]
 	}
 }

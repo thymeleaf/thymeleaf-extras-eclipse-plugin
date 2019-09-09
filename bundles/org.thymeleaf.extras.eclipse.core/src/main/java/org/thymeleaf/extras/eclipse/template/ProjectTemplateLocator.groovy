@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.IJavaProject
 import org.thymeleaf.extras.eclipse.scanner.ResourceLocator
 import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
+import groovy.transform.TupleConstructor
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
@@ -39,21 +40,10 @@ import java.util.concurrent.TimeUnit
  * 
  * @author Emanuel Rabina
  */
+@TupleConstructor(defaults = false)
 class ProjectTemplateLocator implements ResourceLocator<IFile> {
 
-	private static final String HTML_FILE_EXTENSION = ".html"
-
-	private final IJavaProject project
-
-	/**
-	 * Constructor, sets the project to scan for templates.
-	 * 
-	 * @param project
-	 */
-	ProjectTemplateLocator(IJavaProject project) {
-
-		this.project = project
-	}
+	final IJavaProject project
 
 	/**
 	 * {@inheritDoc}
@@ -62,87 +52,38 @@ class ProjectTemplateLocator implements ResourceLocator<IFile> {
 	List<IFile> locateResources() {
 
 		logInfo("Scanning for Thymeleaf templates in the project")
-		long start = System.currentTimeMillis()
 
-		ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
-		final ArrayList<IFile> templateStreams = new ArrayList<IFile>()
+		return time('Scanning for templates') { ->
 
-		try {
-			// Multi-threaded search for template files - there can be a lot of files to get through
-			ArrayList<Future<List<IFile>>> scannerTasks = new ArrayList<Future<List<IFile>>>()
+			// Multi-threaded search for template files - there can be a lot of files
+			// to get through.
+			def executorService = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors())
+			return executorService.executeAndShutdown { ExecutorService executor ->
 
-			scanContainer(project.project, scannerTasks, executorService)
-
-			// Collect all file results
-			for (Future<List<IFile>> scannerTask: scannerTasks) {
-				try {
-					for (IFile file: scannerTask.get()) {
-						templateStreams.add(file)
-					}
-				}
-				catch (ExecutionException ex) {
-					logError("Unable to execute scanning task", ex)
-				}
-				catch (InterruptedException ex) {
-					logError("Unable to execute scanning task", ex)
-				}
-			}
-		}
-		finally {
-			executorService.shutdown()
-			try {
-				if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
-					executorService.shutdownNow()
-				}
-			}
-			catch (Exception ex) {
-				logError('An error occured while attempting to shut down the project locator executor service', ex)
-			}
-		}
-
-		logInfo("Scanning complete.  Execution time: ${System.currentTimeMillis() - start} ms")
-		return templateStreams
-	}
-
-	/**
-	 * Recursive scan of a container resource (currently only folders and
-	 * projects), searches for files to load.
-	 * 
-	 * TODO: Make this method contain all of the multi-threaded execution so
-	 *       that we don't have to share the executor service across methods in
-	 *       this class.
-	 * 
-	 * @param container
-	 * @param executorService
-	 */
-	private static void scanContainer(final IContainer container,
-		final ArrayList<Future<List<IFile>>> scannerTasks, final ExecutorService executorService) {
-
-		// Projects and folders
-		if (container instanceof IProject || container instanceof IFolder) {
-			scannerTasks.add(executorService.submit(new Callable<List<IFile>>() {
-				@Override
-				public List<IFile> call() throws Exception {
-
-					ArrayList<IFile> files = new ArrayList<IFile>()
-					for (IResource resource: container.members()) {
-
-						// Recurse folder scanning
-						if (resource instanceof IContainer) {
-							scanContainer((IContainer)resource, scannerTasks, executorService)
-						}
-
-						// Accept files
-						else if (resource instanceof IFile) {
-							IFile file = (IFile)resource
-							if (file.getName().endsWith(HTML_FILE_EXTENSION)) {
-								files.add(file)
+				def scannerTasks = new ArrayList<Future<List<IFile>>>()
+				def addTasks
+				addTasks = { IContainer container ->
+					if (container instanceof IProject || container instanceof IFolder) {
+						scannerTasks << executor.submit({ ->
+							def files = new ArrayList<IFile>()
+							container.members().each { resource ->
+								if (resource instanceof IContainer) {
+									addTasks(container)
+								}
+								else if (resource instanceof IFile && resource.name.endsWith('.html')) {
+									files << resource
+								}
 							}
-						}
+							return files
+						} as Callable)
 					}
-					return files
 				}
-			}))
+				addTasks(project.project)
+
+				return scannerTasks.inject([]) { acc, scannerTask ->
+					return acc + scannerTask.get()
+				}
+			}
 		}
 	}
 }

@@ -30,6 +30,8 @@ import org.xml.sax.SAXException
 import org.xml.sax.helpers.DefaultHandler
 import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
+import groovy.transform.MapConstructor
+import groovy.transform.TupleConstructor
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
@@ -45,7 +47,8 @@ import javax.xml.parsers.SAXParserFactory
  * 
  * @author Emanuel Rabina
  */
-class ProjectDependencyDialectLocator implements DialectLocator<InputStream> {
+@TupleConstructor(defaults = false)
+class ProjectDependencyDialectLocator implements DialectLocator {
 
 	private static final String XML_FEATURE_LOAD_DTD_GRAMMAR =
 			"http://apache.org/xml/features/nonvalidating/load-dtd-grammar"
@@ -63,18 +66,6 @@ class ProjectDependencyDialectLocator implements DialectLocator<InputStream> {
 	}
 
 	final IJavaProject project
-	final ArrayList<IPath> dialectFilePaths = []
-
-	/**
-	 * Constructor, sets which project will be scanned for Thymeleaf dialect
-	 * help XML files.
-	 * 
-	 * @param project
-	 */
-	ProjectDependencyDialectLocator(IJavaProject project) {
-
-		this.project = project
-	}
 
 	/**
 	 * Returns whether or not the given resource is a Thymeleaf dialect help XML
@@ -86,7 +77,7 @@ class ProjectDependencyDialectLocator implements DialectLocator<InputStream> {
 	 */
 	private static boolean isDialectHelpXmlFile(IStorage resource) {
 
-		if (((resource instanceof IJarEntryResource && resource.isFile()) ||
+		if (((resource instanceof IJarEntryResource && resource.file) ||
 			resource instanceof IFile) && resource.name.endsWith('.xml')) {
 			return resource.contents.withStream { resourceStream ->
 				def saxParser = saxParserFactory.newSAXParser()
@@ -102,70 +93,43 @@ class ProjectDependencyDialectLocator implements DialectLocator<InputStream> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	List<InputStream> locateDialects() {
+	List<DialectMetadata> locateDialects() {
 
 		logInfo('Scanning for dialect help files on project dependencies')
-		long start = System.currentTimeMillis()
 
-		ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
-		final ArrayList<InputStream> dialectStreams = new ArrayList<InputStream>()
+		return time('Scanning for dialects') { ->
 
-		try {
 			// Multi-threaded search for dialect files - there are a lot of package
 			// fragments to get through, and the I/O namespace check is a blocker.
-			ArrayList<Future<IStorage>> scannerTasks = new ArrayList<Future<IStorage>>()
+			def executorService = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors())
+			return executorService.executeAndShutdown { ExecutorService executor ->
 
-			for (IPackageFragmentRoot packageFragmentRoot: project.getAllPackageFragmentRoots()) {
-				for (IJavaElement child: packageFragmentRoot.getChildren()) {
-					final IPackageFragment packageFragment = (IPackageFragment)child
-
-					scannerTasks.add(executorService.submit(new Callable<IStorage>() {
-						@Override
-						IStorage call() throws Exception {
-
-							for (Object resource: packageFragment.getNonJavaResources()) {
-								IStorage fileOrJarEntry = (IStorage)resource
+				def scannerTasks = new ArrayList<Future<IStorage>>()
+				project.allPackageFragmentRoots.each { packageFragmentRoot ->
+					packageFragmentRoot.children.each { packageFragment ->
+						scannerTasks << executor.submit({ ->
+							return packageFragment.nonJavaResources.findResult { fileOrJarEntry ->
 								if (isDialectHelpXmlFile(fileOrJarEntry)) {
 									logInfo("Help file found: ${fileOrJarEntry.name}")
-									dialectFilePaths.add(fileOrJarEntry.fullPath)
 									return fileOrJarEntry
 								}
+								return null
 							}
-							return null
-						}
-					}))
-				}
-			}
-
-			// Collate scanner results
-			for (Future<IStorage> scannertask: scannerTasks) {
-				try {
-					IStorage fileorjarentry = scannertask.get()
-					if (fileorjarentry != null) {
-						dialectStreams.add(fileorjarentry.getContents())
+						} as Callable)
 					}
 				}
-				catch (ExecutionException ex) {
-					logError("Unable to execute scanning task", ex)
-				}
-				catch (InterruptedException ex) {
-					logError("Unable to execute scanning task", ex)
+				return scannerTasks.inject([]) { acc, scannerTask ->
+					def dialectHelpXmlFile = scannerTask.get()
+					if (dialectHelpXmlFile) {
+						acc << new DialectMetadata(
+							path: dialectHelpXmlFile.fullPath,
+							stream: dialectHelpXmlFile.contents
+						)
+					}
+					return acc
 				}
 			}
 		}
-		catch (CoreException ex) {
-			// If we get here, the project cannot be read.  Return the empty list.
-			logError("Project ${project.project.name} could not be read", ex)
-		}
-		finally {
-			executorService.shutdown()
-			if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
-				executorService.shutdownNow()
-			}
-		}
-
-		logInfo("Scanning complete.  Execution time: ${System.currentTimeMillis() - start}ms")
-		return dialectStreams
 	}
 
 	/**

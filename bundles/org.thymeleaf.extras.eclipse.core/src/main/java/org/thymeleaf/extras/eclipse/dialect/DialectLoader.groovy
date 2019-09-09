@@ -22,19 +22,18 @@ import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
  * Loads dialect information of the given type, as retrieved from a
  * {@link DialectLocator}.
  * 
- * @param <T> Type of the dialect information to accept.
  * @author Emanuel Rabina
  */
-interface DialectLoader<T> {
+interface DialectLoader {
 
 	/**
 	 * Load all the dialects from the given locator, converting from the XML
 	 * files to the Java representation which other Thymeleaf plugins can work
 	 * with.
 	 * 
-	 * @param locator
-	 * @return List of dialects, one for every dialect file returned by the
-	 * 		   dialect locator.
+	 * @param dialectMetadatas
+	 * @return List of dialects, one for every dialect file represented in the
+	 *   metadata.
 	 */
-	List<Dialect> loadDialects(DialectLocator<T> locator)
+	List<Dialect> loadDialects(List<DialectMetadata> dialectMetadatas)
 }
