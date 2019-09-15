@@ -29,7 +29,7 @@ import groovy.transform.TupleConstructor
 @TupleConstructor(defaults = false)
 class SingleFileDialectLocator implements DialectLocator {
 
-	final IPath path
+	final IPath dialectFilePath
 
 	/**
 	 * {@inheritDoc}
@@ -38,7 +38,7 @@ class SingleFileDialectLocator implements DialectLocator {
 	List<PathAndStream> locate() {
 
 		return [
-			new PathAndStream(path, ResourcesPlugin.workspace.root.getFile(dialectFilePath).contents)
+			new PathAndStream(dialectFilePath, ResourcesPlugin.workspace.root.getFile(dialectFilePath).contents)
 		]
 	}
 }
