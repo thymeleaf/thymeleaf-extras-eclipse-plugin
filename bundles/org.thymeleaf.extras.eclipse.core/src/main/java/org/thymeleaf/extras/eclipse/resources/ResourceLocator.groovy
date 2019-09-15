@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.scanner
+package org.thymeleaf.extras.eclipse.resources
 
 /**
  * Locates certain kinds of resources to be loaded at a later time.
  * 
- * @param <F> The type/format being returned by the locator.
+ * @param <T> The type representing the resource being located.
  * @author Emanuel Rabina
  */
-interface ResourceLocator<F> {
+interface ResourceLocator<T> {
 
 	/**
-	 * Looks for resources and returns a list over those resources that can be
-	 * accepted by a {@link ResourceLoader}.
+	 * Looks for resources within the given project, returning a list of those
+	 * resources that can be accepted by a {@link ResourceLoader}.
 	 * 
-	 * @return List of formats over a resource type.
+	 * @return List of resources.
 	 */
-	List<F> locateResources()
+	List<T> locate()
 }

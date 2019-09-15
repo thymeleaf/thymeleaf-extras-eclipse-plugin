@@ -18,6 +18,7 @@ package org.thymeleaf.extras.eclipse.dialect
 
 import nz.net.ultraq.jaxb.XmlReader
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
+import org.thymeleaf.extras.eclipse.resources.ResourceLoader
 
 /**
  * Loads dialect help/documentation XML files from those returned by a
@@ -25,7 +26,7 @@ import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
  * 
  * @author Emanuel Rabina
  */
-class XmlDialectLoader implements DialectLoader {
+class XmlDialectLoader implements ResourceLoader<PathAndDialect, DialectLocator> {
 
 	private static final XmlReader<Dialect> xmlReader = new XmlReader<>(Dialect)
 
@@ -33,17 +34,17 @@ class XmlDialectLoader implements DialectLoader {
 	 * {@inheritDoc}
 	 */
 	@Override
-	List<Dialect> loadDialects(List<DialectMetadata> dialectMetadatas) {
+	List<PathAndDialect> load(DialectLocator locator) {
 
-		return dialectMetadatas.collect { dialectMetadata ->
-			return dialectMetadata.stream.withStream { stream ->
+		return locator.locate().collect { pathAndStream ->
+			return pathAndStream.stream.withStream { stream ->
 				// Link processors and expression objects/methods with their dialect
 				// TODO: Unnecessary with the XML slurper?
 				def dialect = xmlReader.read(stream)
 				dialect.dialectItems.each { dialectItem ->
 					dialectItem.dialect = dialect
 				}
-				return dialect
+				return new PathAndDialect(pathAndStream.path, dialect)
 			}
 		}
 	}

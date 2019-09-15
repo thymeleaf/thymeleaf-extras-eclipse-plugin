@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.core.expressions;bundle-version="3.6.400",
 Bundle-ActivationPolicy: lazy
 Export-Package: org.thymeleaf.extras.eclipse;uses:="org.osgi.framework,org.eclipse.core.runtime",
  org.thymeleaf.extras.eclipse.builder;uses:="org.eclipse.core.runtime,org.eclipse.core.resources",
- org.thymeleaf.extras.eclipse.dialect;uses:="org.eclipse.core.runtime,org.eclipse.jdt.core",
+ org.thymeleaf.extras.eclipse.dialect;uses:="org.thymeleaf.extras.eclipse.resources",
  org.thymeleaf.extras.eclipse.dialect.cache;
   uses:="org.eclipse.core.runtime,
    org.eclipse.jdt.core,
@@ -24,9 +24,8 @@ Export-Package: org.thymeleaf.extras.eclipse;uses:="org.osgi.framework,org.eclip
    org.thymeleaf.extras.eclipse.dialect",
  org.thymeleaf.extras.eclipse.dialect.xml,
  org.thymeleaf.extras.eclipse.nature;uses:="org.eclipse.core.resources,org.eclipse.core.commands",
- org.thymeleaf.extras.eclipse.scanner,
- org.thymeleaf.extras.eclipse.scanner.cache;uses:="org.eclipse.core.runtime,org.eclipse.jdt.core",
- org.thymeleaf.extras.eclipse.template;uses:="org.eclipse.jdt.core,org.thymeleaf.extras.eclipse.scanner",
+ org.thymeleaf.extras.eclipse.resources;uses:="org.eclipse.core.runtime,org.eclipse.jdt.core",
+ org.thymeleaf.extras.eclipse.template;uses:="org.thymeleaf.extras.eclipse.resources",
  org.thymeleaf.extras.eclipse.template.cache;uses:="org.eclipse.jdt.core",
  org.thymeleaf.extras.eclipse.template.model;uses:="org.attoparser.dom"
 Bundle-ClassPath: .,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.scanner.cache
+package org.thymeleaf.extras.eclipse.resources
 
 import org.eclipse.core.runtime.IPath
 

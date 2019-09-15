@@ -22,34 +22,27 @@ import org.attoparser.dom.DOMMarkupParser
 import org.attoparser.dom.Document
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.runtime.CoreException
-import org.thymeleaf.extras.eclipse.scanner.ResourceLoader
+import org.thymeleaf.extras.eclipse.resources.ResourceLoader
 import org.thymeleaf.extras.eclipse.template.model.Template
-import static org.thymeleaf.extras.eclipse.CorePlugin.*;
 
 /**
  * Creates template metadata for any templates picked out by a template locator.
  * 
  * @author Emanuel Rabina
  */
-class TemplateLoader implements ResourceLoader<IFile, ProjectTemplateLocator, Template> {
+class TemplateLoader implements ResourceLoader<Template, ProjectTemplateLocator> {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	List<Template> loadResources(ProjectTemplateLocator locator) {
+	List<Template> load(ProjectTemplateLocator locator) {
 
-		return locator.locateResources().collect { file ->
-			def fileName = file.name
-			try {
-				return new BufferedReader(new InputStreamReader(file.contents)).withReader { reader ->
-					def parser = new DOMMarkupParser(ParseConfiguration.htmlConfiguration())
-					def document = parser.parse(fileName, reader)
-					return new Template(file.fullPath, document)
-				}
-			}
-			catch (CoreException | IOException | ParseException ex) {
-				logError("An error occured while reading ${fileName}", ex);
+		return locator.locate().collect { file ->
+			return new BufferedReader(new InputStreamReader(file.contents)).withReader { reader ->
+				def parser = new DOMMarkupParser(ParseConfiguration.htmlConfiguration())
+				def document = parser.parse(file.name, reader)
+				return new Template(file.fullPath, document)
 			}
 		}
 	}

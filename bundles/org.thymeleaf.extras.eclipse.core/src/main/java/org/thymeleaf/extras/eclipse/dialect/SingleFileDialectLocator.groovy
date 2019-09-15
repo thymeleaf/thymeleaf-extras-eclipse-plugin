@@ -19,36 +19,26 @@ package org.thymeleaf.extras.eclipse.dialect
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.IPath
 
+import groovy.transform.TupleConstructor
+
 /**
  * A dialect locator target at a single, already-known, dialect file.
  * 
  * @author Emanuel Rabina
  */
+@TupleConstructor(defaults = false)
 class SingleFileDialectLocator implements DialectLocator {
 
-	private final IPath dialectFilePath
-
-	/**
-	 * Constructor, set the dialect file path that this locator will retrieve.
-	 * 
-	 * @param dialectfilepath
-	 */
-	SingleFileDialectLocator(IPath dialectFilePath) {
-
-		this.dialectFilePath = dialectFilePath
-	}
+	final IPath path
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	List<DialectMetadata> locateDialects() {
+	List<PathAndStream> locate() {
 
 		return [
-			new DialectMetadata(
-				path: dialectFilePath,
-				stream: ResourcesPlugin.workspace.root.getFile(dialectFilePath).contents
-			)
+			new PathAndStream(path, ResourcesPlugin.workspace.root.getFile(dialectFilePath).contents)
 		]
 	}
 }

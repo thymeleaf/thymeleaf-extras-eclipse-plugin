@@ -17,18 +17,18 @@
 package org.thymeleaf.extras.eclipse.dialect
 
 import org.eclipse.core.runtime.IPath
+import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
 
-import groovy.transform.MapConstructor
+import groovy.transform.TupleConstructor
 
 /**
- * Information about the dialect, used to communicate the results of a dialect
- * locator for a dialect loader.
+ * Information about a dialect and from where it was located.
  * 
  * @author Emanuel Rabina
  */
-@MapConstructor
-class DialectMetadata {
+@TupleConstructor(defaults = false)
+class PathAndDialect {
 
 	final IPath path
-	final InputStream stream
+	final Dialect dialect
 }

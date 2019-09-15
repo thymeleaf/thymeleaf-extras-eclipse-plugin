@@ -30,7 +30,6 @@ import org.xml.sax.SAXException
 import org.xml.sax.helpers.DefaultHandler
 import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
-import groovy.transform.MapConstructor
 import groovy.transform.TupleConstructor
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -93,7 +92,7 @@ class ProjectDependencyDialectLocator implements DialectLocator {
 	 * {@inheritDoc}
 	 */
 	@Override
-	List<DialectMetadata> locateDialects() {
+	List<PathAndStream> locate() {
 
 		logInfo('Scanning for dialect help files on project dependencies')
 
@@ -121,10 +120,7 @@ class ProjectDependencyDialectLocator implements DialectLocator {
 				return scannerTasks.inject([]) { acc, scannerTask ->
 					def dialectHelpXmlFile = scannerTask.get()
 					if (dialectHelpXmlFile) {
-						acc << new DialectMetadata(
-							path: dialectHelpXmlFile.fullPath,
-							stream: dialectHelpXmlFile.contents
-						)
+						acc << new PathAndStream(dialectHelpXmlFile.fullPath, dialectHelpXmlFile.contents)
 					}
 					return acc
 				}

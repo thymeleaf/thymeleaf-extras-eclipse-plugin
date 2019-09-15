@@ -18,7 +18,7 @@ package org.thymeleaf.extras.eclipse.template.cache
 
 import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.IJavaProject
-import org.thymeleaf.extras.eclipse.scanner.cache.ResourceTree
+import org.thymeleaf.extras.eclipse.resources.ResourceTree
 import org.thymeleaf.extras.eclipse.template.ProjectTemplateLocator
 import org.thymeleaf.extras.eclipse.template.TemplateLoader
 import org.thymeleaf.extras.eclipse.template.model.Fragment

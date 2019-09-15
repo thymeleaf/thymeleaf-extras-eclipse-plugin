@@ -226,14 +226,11 @@ class DialectCache {
 	private static void loadDialectsFromProject(IJavaProject project) {
 
 		if (!dialectTree.containsProject(project)) {
-			def projectDialectLocator = new ProjectDependencyDialectLocator(project)
-			def dialectMetadatas = projectDialectLocator.locateDialects()
-			def dialects = xmlDialectLoader.loadDialects(dialectMetadatas)
-			if (dialects.size() > 0) {
-				dialects.eachWithIndex { dialect, index ->
-					def dialectFilePath = dialectMetadatas.get(index).path
-					dialectTree.addProjectDialect(project, dialectFilePath, processDialectItems(dialect, project))
-					dialectChangeListener.trackDialectFileForChanges(dialectFilePath, project)
+			def pathsAndDialects = xmlDialectLoader.load(new ProjectDependencyDialectLocator(project))
+			if (pathsAndDialects.size() > 0) {
+				pathsAndDialects.eachWithIndex { pathAndDialect, index ->
+					dialectTree.addProjectDialect(project, pathAndDialect.path, processDialectItems(pathAndDialect.dialect, project))
+					dialectChangeListener.trackDialectFileForChanges(pathAndDialect.path, project)
 				}
 			}
 			else {

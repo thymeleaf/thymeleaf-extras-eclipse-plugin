@@ -16,18 +16,12 @@
 
 package org.thymeleaf.extras.eclipse.dialect
 
+import org.thymeleaf.extras.eclipse.resources.ResourceLocator
+
 /**
  * Locates Thymeleaf dialect information to be loaded at some later time.
  * 
  * @author Emanuel Rabina
  */
-interface DialectLocator {
-
-	/**
-	 * Looks for dialects and returns them as some type of list to be consumed
-	 * by a {@link DialectLoader} that can accept that type.
-	 * 
-	 * @return List of dialect metadata describing the located dialect files.
-	 */
-	List<DialectMetadata> locateDialects()
+interface DialectLocator extends ResourceLocator<PathAndStream> {
 }

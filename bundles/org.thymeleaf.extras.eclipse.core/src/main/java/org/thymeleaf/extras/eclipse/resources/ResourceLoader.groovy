@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-package org.thymeleaf.extras.eclipse.scanner
+package org.thymeleaf.extras.eclipse.resources
 
 /**
  * Loads resource information from the resources located by a
  * {@link ResourceLocator}.
  * 
- * @param <L> The type of locator used.
- * @param <F> The format being returned by the locator.
  * @param <T> The type of resource being loaded.
+ * @param <L> The locator being used.
  * @author Emanuel Rabina
  */
-interface ResourceLoader<F, L extends ResourceLocator<F>, T> {
+interface ResourceLoader<T, L extends ResourceLocator> {
 
 	/**
-	 * Loads all of the resources from the given locator.
+	 * Loads all of the resources from the results of a given locator.
 	 * 
 	 * @param locator
 	 * @return List of resource models, built from the underlying resources
 	 *         picked out by the locator.
 	 */
-	List<T> loadResources(L locator)
+	List<T> load(L locator)
 }

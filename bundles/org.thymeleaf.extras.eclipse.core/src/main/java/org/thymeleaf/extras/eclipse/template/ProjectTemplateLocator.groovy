@@ -23,7 +23,8 @@ import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.IJavaProject
-import org.thymeleaf.extras.eclipse.scanner.ResourceLocator
+import org.thymeleaf.extras.eclipse.resources.ResourceLocator
+
 import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
 import groovy.transform.TupleConstructor
@@ -49,7 +50,7 @@ class ProjectTemplateLocator implements ResourceLocator<IFile> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	List<IFile> locateResources() {
+	List<IFile> locate() {
 
 		logInfo("Scanning for Thymeleaf templates in the project")
 
