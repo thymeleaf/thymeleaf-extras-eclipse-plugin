@@ -1,0 +1,5 @@
+root = true
+
+[*.groovy]
+indent_style = tab
+indent_size = 2
