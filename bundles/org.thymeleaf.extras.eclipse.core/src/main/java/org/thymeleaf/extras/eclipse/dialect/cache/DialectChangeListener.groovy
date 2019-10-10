@@ -32,10 +32,14 @@ import static org.thymeleaf.extras.eclipse.CorePlugin.*
 import static org.thymeleaf.extras.eclipse.dialect.cache.DialectItemProcessor.*
 
 import groovy.transform.MapConstructor
+import groovy.transform.TupleConstructor
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import javax.annotation.PreDestroy
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * A resource change listener, acting on changes made to any dialect files,
@@ -43,24 +47,24 @@ import java.util.concurrent.TimeUnit
  * 
  * @author Emanuel Rabina
  */
+@Named
 class DialectChangeListener implements IResourceChangeListener {
 
 	private final ExecutorService resourceChangeExecutor = Executors.newSingleThreadExecutor()
+	private final ConcurrentHashMap<IPath,IProject> dialectFilesToTrack = new ConcurrentHashMap<>()
 
-	// Collection of dialect files that will be watched for updates to keep the cache up-to-date
-	private final ConcurrentHashMap<IPath,IProject> dialectFilePaths = new ConcurrentHashMap<>()
-
-	final DialectTree dialectTree
-	final XmlDialectLoader xmlDialectLoader
+	@Inject
+	private final DialectTree dialectTree
+	@Inject
+	private final XmlDialectLoader xmlDialectLoader
 
 	/**
-	 * @param dialectTree
-	 * @param xmlDialectLoader
+	 * Stops the resource change executor.
 	 */
-	DialectChangeListener(DialectTree dialectTree, XmlDialectLoader xmlDialectLoader) {
+	@PreDestroy
+	void close() {
 
-		this.dialectTree = dialectTree
-		this.xmlDialectLoader = xmlDialectLoader
+		resourceChangeExecutor.shutdownAwaitTermination()
 	}
 
 	/**
@@ -75,7 +79,7 @@ class DialectChangeListener implements IResourceChangeListener {
 
 			// If a dialect file has changed, update the dialect items associated with it
 			case POST_CHANGE:
-				for (def dialectFilePath: dialectFilePaths.keySet()) {
+				for (def dialectFilePath: dialectFilesToTrack.keySet()) {
 					def dialectFileDelta = event.delta.findMember(dialectFilePath)
 					if (dialectFileDelta) {
 						logInfo("Dialect file ${dialectFilePath.lastSegment()} changed, reloading dialect")
@@ -93,27 +97,16 @@ class DialectChangeListener implements IResourceChangeListener {
 			case PRE_CLOSE:
 			case PRE_DELETE:
 				def project = (IProject)event.resource
-				for (def dialectFilePath: dialectFilePaths.keySet()) {
-					def dialectProject = dialectFilePaths.get(dialectFilePath)
+				for (def dialectFilePath: dialectFilesToTrack.keySet()) {
+					def dialectProject = dialectFilesToTrack.get(dialectFilePath)
 					if (project == dialectProject) {
 						logInfo("Project containing dialect file ${dialectFilePath.lastSegment()} has been closed/deleted, removing dialect.")
 						dialectTree.updateDialect(dialectFilePath, null)
-						dialectFilePaths.remove(dialectFilePath)
+						dialectFilesToTrack.remove(dialectFilePath)
 					}
 				}
 				break
 			}
-		}
-	}
-
-	/**
-	 * Stops the resource change executor.
-	 */
-	void shutdown() {
-
-		resourceChangeExecutor.shutdown()
-		if (resourceChangeExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
-			resourceChangeExecutor.shutdownNow()
 		}
 	}
 
@@ -125,6 +118,6 @@ class DialectChangeListener implements IResourceChangeListener {
 	 */
 	void trackDialectFileForChanges(IPath dialectFilePath, IJavaProject project) {
 
-		dialectFilePaths.put(dialectFilePath, project.project)
+		dialectFilesToTrack.put(dialectFilePath, project.project)
 	}
 }

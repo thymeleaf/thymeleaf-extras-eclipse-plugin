@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.OperationCanceledException
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
+import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import static org.eclipse.core.resources.IResource.*
 import static org.thymeleaf.extras.eclipse.CorePlugin.*
@@ -48,6 +49,8 @@ class ThymeleafBuilder extends IncrementalProjectBuilder {
 	private static final String MARKER_ATTRIBUTE_NAME_MESSAGE = 'message'
 
 	private static final Pattern UNDEFINED_ATTRIBUTE_PATTERN = ~/Undefined attribute name \((.*?:.*?)\)\./
+
+	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
 
 	/**
 	 * Remove HTML validation messages that refer to unknown attributes, when
@@ -91,7 +94,7 @@ class ThymeleafBuilder extends IncrementalProjectBuilder {
 	 * @param monitor
 	 * @throws OperationCanceledException If the current action is being cancelled.
 	 */
-	private static void unvalidateDelta(IResourceDelta delta, IJavaProject javaProject, IProgressMonitor monitor) {
+	private void unvalidateDelta(IResourceDelta delta, IJavaProject javaProject, IProgressMonitor monitor) {
 
 		if (monitor.canceled) {
 			throw new OperationCanceledException()
@@ -126,7 +129,7 @@ class ThymeleafBuilder extends IncrementalProjectBuilder {
 	 * @param monitor
 	 * @throws OperationCanceledException If the current action is being cancelled.
 	 */
-	private static void unvalidateMarker(IMarker marker, IJavaProject javaProject, IProgressMonitor monitor) {
+	private void unvalidateMarker(IMarker marker, IJavaProject javaProject, IProgressMonitor monitor) {
 
 		if (monitor.canceled) {
 			throw new OperationCanceledException()
@@ -138,7 +141,7 @@ class ThymeleafBuilder extends IncrementalProjectBuilder {
 			if (matcher.matches()) {
 				logInfo("Checking marker w/ message: ${message}")
 				def processor = matcher.group(1)
-				if (DialectCache.getAttributeProcessor(javaProject, processor)) {
+				if (dialectCache.getAttributeProcessor(javaProject, processor)) {
 					marker.delete()
 				}
 			}
@@ -153,7 +156,7 @@ class ThymeleafBuilder extends IncrementalProjectBuilder {
 	 * @param monitor
 	 * @throws CoreException
 	 */
-	private static void unvalidateProject(IJavaProject javaProject, IProgressMonitor monitor) {
+	private void unvalidateProject(IJavaProject javaProject, IProgressMonitor monitor) {
 
 		def project = javaProject.project
 		logInfo("Checking project: ${project.name}")

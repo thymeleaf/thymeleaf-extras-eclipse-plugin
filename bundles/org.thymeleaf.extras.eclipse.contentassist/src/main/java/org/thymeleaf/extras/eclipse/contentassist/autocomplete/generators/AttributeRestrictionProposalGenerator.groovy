@@ -23,6 +23,7 @@ import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegionList
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
+import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.AttributeRestrictionCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
@@ -37,6 +38,8 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 @SuppressWarnings('restriction')
 class AttributeRestrictionProposalGenerator extends AbstractItemProposalGenerator<AttributeRestrictionCompletionProposal> {
 
+	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
+
 	/**
 	 * Collect attribute restriction suggestions.
 	 * 
@@ -47,7 +50,7 @@ class AttributeRestrictionProposalGenerator extends AbstractItemProposalGenerato
 	 * @param cursorPosition
 	 * @return List of attribute restriction suggestions.
 	 */
-	private static List<AttributeRestrictionCompletionProposal> computeAttributeRestrictionSuggestions(
+	private List<AttributeRestrictionCompletionProposal> computeAttributeRestrictionSuggestions(
 		IDOMNode node, ITextRegion textRegion, IStructuredDocumentRegion documentRegion,
 		IStructuredDocument document, int cursorPosition) {
 
@@ -56,8 +59,7 @@ class AttributeRestrictionProposalGenerator extends AbstractItemProposalGenerato
 		def attributeName = document.get(documentRegion.startOffset + attributeNameTextRegion.start,
 			 attributeNameTextRegion.textLength)
 
-		def attributeProcessor = (AttributeProcessor)DialectCache.getProcessor(
-				findCurrentJavaProject(), findNodeNamespaces(node), attributeName)
+		def attributeProcessor = dialectCache.getProcessor(findCurrentJavaProject(), findNodeNamespaces(node), attributeName)
 		if (attributeProcessor?.isSetRestrictions()) {
 
 			def restrictions = attributeProcessor.restrictions

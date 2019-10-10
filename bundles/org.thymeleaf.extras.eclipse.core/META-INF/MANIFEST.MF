@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.thymeleaf.extras.eclipse.core;singleton:=true
 Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Thymeleaf Project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.eclipse.core.expressions;bundle-version="3.6.400",
+Require-Bundle: org.apache.commons.logging;bundle-version="1.2.0",
+ org.eclipse.core.expressions;bundle-version="3.6.400",
  org.eclipse.core.resources;bundle-version="3.13.400",
  org.eclipse.core.runtime;bundle-version="3.15.300",
  org.eclipse.jdt.core;bundle-version="3.18.0",
@@ -32,8 +33,14 @@ Bundle-ClassPath: .,
  libs/attoparser-2.0.5.RELEASE.jar,
  libs/groovy-3.0.0-beta-3.jar,
  libs/javax.activation-1.2.0.jar,
+ libs/javax.inject-1.jar,
  libs/jaxb-api-2.3.0.jar,
  libs/jaxb-core-2.3.0.jar,
  libs/jaxb-impl-2.3.0.jar,
- libs/jaxb-utilities-2.0.0.jar
+ libs/jaxb-utilities-2.0.0.jar,
+ libs/spring-aop-5.2.0.RELEASE.jar,
+ libs/spring-beans-5.2.0.RELEASE.jar,
+ libs/spring-core-5.2.0.RELEASE.jar,
+ libs/spring-context-5.2.0.RELEASE.jar,
+ libs/spring-expression-5.2.0.RELEASE.jar
 Bundle-Activator: org.thymeleaf.extras.eclipse.CorePlugin

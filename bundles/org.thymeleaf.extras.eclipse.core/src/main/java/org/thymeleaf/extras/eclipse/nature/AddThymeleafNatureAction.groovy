@@ -36,7 +36,7 @@ class AddThymeleafNatureAction extends AbstractHandler {
 	 */
 	@Override
 	Object execute(ExecutionEvent event) {
-	
+
 		def selectedProjects = event.applicationContext.defaultVariable
 		selectedProjects
 			// Projects in the current selection that can receive the Thymeleaf nature

@@ -19,6 +19,8 @@ package org.thymeleaf.extras.eclipse
 import org.eclipse.core.runtime.Plugin
 import org.eclipse.core.runtime.Status
 import org.osgi.framework.BundleContext
+import org.springframework.context.annotation.AnnotationConfigApplicationContext
+import org.thymeleaf.extras.eclipse.CoreConfig
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.template.cache.TemplateCache
 
@@ -33,9 +35,11 @@ class CorePlugin extends Plugin {
 
 	private static CorePlugin plugin
 
+	private SpringContainer springContainer
+
 	/**
 	 * Returns the shared instance of this plugin.
-	 *
+	 * 
 	 * @return This plugin instance.
 	 */
 	static CorePlugin getDefault() {
@@ -45,47 +49,45 @@ class CorePlugin extends Plugin {
 
 	/**
 	 * Logs an error message to the Eclipse logger.
-	 *
+	 * 
 	 * @param message
 	 * @param throwable
 	 */
 	static void logError(String message, Throwable throwable) {
 
-		plugin.getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, throwable));
+		plugin.log.log(new Status(Status.ERROR, PLUGIN_ID, message, throwable))
 	}
 
 	/**
 	 * Logs an information message to the Eclipse logger.
-	 *
+	 * 
 	 * @param message
 	 */
 	static void logInfo(String message) {
 
-		plugin.getLog().log(new Status(Status.INFO, PLUGIN_ID, message));
+		plugin.log.log(new Status(Status.INFO, PLUGIN_ID, message))
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public void start(BundleContext context) {
 
 		super.start(context)
 		plugin = this
 
-		// TODO: Really wish I could use DI here... :'(
-		DialectCache.startup()
-		TemplateCache.startup()
+		springContainer = SpringContainer.instance
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void stop(BundleContext context) throws Exception {
+	public void stop(BundleContext context) {
 
-		DialectCache.shutdown()
-		TemplateCache.shutdown()
+		springContainer.close()
+
 		plugin = null
 		super.stop(context)
 	}

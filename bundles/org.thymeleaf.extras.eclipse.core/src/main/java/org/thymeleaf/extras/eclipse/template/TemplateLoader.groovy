@@ -16,6 +16,7 @@
 
 package org.thymeleaf.extras.eclipse.template
 
+import javax.inject.Named
 import org.attoparser.ParseException
 import org.attoparser.config.ParseConfiguration
 import org.attoparser.dom.DOMMarkupParser
@@ -30,6 +31,7 @@ import org.thymeleaf.extras.eclipse.template.model.Template
  * 
  * @author Emanuel Rabina
  */
+@Named
 class TemplateLoader implements ResourceLoader<Template, ProjectTemplateLocator> {
 
 	/**

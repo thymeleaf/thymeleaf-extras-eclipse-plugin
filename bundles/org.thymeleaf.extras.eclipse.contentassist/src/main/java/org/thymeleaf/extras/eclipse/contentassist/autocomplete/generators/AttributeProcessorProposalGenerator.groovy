@@ -23,6 +23,7 @@ import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegionList
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
+import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.AttributeProcessorCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
@@ -39,6 +40,8 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.fin
 @SuppressWarnings('restriction')
 class AttributeProcessorProposalGenerator extends AbstractItemProposalGenerator<AttributeProcessorCompletionProposal> {
 
+	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
+
 	/**
 	 * Collect attribute processor suggestions.
 	 * 
@@ -47,12 +50,12 @@ class AttributeProcessorProposalGenerator extends AbstractItemProposalGenerator<
 	 * @param cursorPosition
 	 * @return List of attribute processor suggestions.
 	 */
-	private static List<AttributeProcessorCompletionProposal> computeAttributeProcessorSuggestions(
+	private List<AttributeProcessorCompletionProposal> computeAttributeProcessorSuggestions(
 		IDOMNode node, IStructuredDocument document, int cursorPosition) {
 
 		def pattern = findProcessorNamePattern(document, cursorPosition)
 
-		def processors = DialectCache.getAttributeProcessors(findCurrentJavaProject(), findNodeNamespaces(node), pattern)
+		def processors = dialectCache.getAttributeProcessors(findCurrentJavaProject(), findNodeNamespaces(node), pattern)
 		if (!processors.empty) {
 			def proposals = new ArrayList<AttributeProcessorCompletionProposal>()
 			def existingAttributes = node.attributes

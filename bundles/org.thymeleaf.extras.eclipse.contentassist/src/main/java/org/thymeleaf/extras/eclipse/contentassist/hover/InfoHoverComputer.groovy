@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Shell
 import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils
 import org.eclipse.wst.sse.ui.internal.derived.HTMLTextPresenter
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
+import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor
@@ -42,6 +43,8 @@ import java.util.regex.Pattern
  */
 @SuppressWarnings("restriction")
 class InfoHoverComputer extends AbstractComputer implements ITextHover, ITextHoverExtension {
+
+	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
 
 	/**
 	 * {@inheritDoc}
@@ -73,7 +76,7 @@ class InfoHoverComputer extends AbstractComputer implements ITextHover, ITextHov
 			def surroundingWord = textViewer.document.get(cursorPosition, hoverRegion.length)
 
 			if (surroundingWord ==~ /[\w:-]*/) {
-				def processor = DialectCache.getProcessor(findCurrentJavaProject(), findNodeNamespaces(node), surroundingWord)
+				def processor = dialectCache.getProcessor(findCurrentJavaProject(), findNodeNamespaces(node), surroundingWord)
 				return processor?.documentation?.value
 			}
 

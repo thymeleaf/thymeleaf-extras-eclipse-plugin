@@ -23,6 +23,7 @@ import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentReg
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
+import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.ExpressionObjectMethodCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
@@ -36,6 +37,8 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.fin
 @SuppressWarnings('restriction')
 class ExpressionObjectProposalGenerator extends AbstractItemProposalGenerator<ExpressionObjectMethodCompletionProposal> {
 
+	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
+	
 	/**
 	 * Collect expression object method suggestions.
 	 * 
@@ -44,11 +47,11 @@ class ExpressionObjectProposalGenerator extends AbstractItemProposalGenerator<Ex
 	 * @param cursorPosition
 	 * @return List of expression object method suggestions
 	 */
-	private static List<ExpressionObjectMethodCompletionProposal> computeExpressionObjectMethodSuggestions(
+	private List<ExpressionObjectMethodCompletionProposal> computeExpressionObjectMethodSuggestions(
 		IDOMNode node, IStructuredDocument document, int cursorPosition) {
 
 		def pattern = findExpressionObjectMethodNamePattern(document, cursorPosition)
-		return DialectCache.getExpressionObjectMethods(findCurrentJavaProject(), findNodeNamespaces(node), pattern)
+		return dialectCache.getExpressionObjectMethods(findCurrentJavaProject(), findNodeNamespaces(node), pattern)
 			.collect { expressionObject ->
 				return new ExpressionObjectMethodCompletionProposal(expressionObject, pattern.length(), cursorPosition)
 			}

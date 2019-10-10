@@ -102,7 +102,7 @@ class ContentAssistPlugin extends AbstractUIPlugin {
 	 */
 	static void logError(String message, Throwable throwable) {
 
-		plugin.getLog().log(new Status(Status.ERROR, PLUGIN_ID, message, throwable))
+		plugin.log.log(new Status(Status.ERROR, PLUGIN_ID, message, throwable))
 	}
 
 	/**
@@ -112,7 +112,7 @@ class ContentAssistPlugin extends AbstractUIPlugin {
 	 */
 	static void logInfo(String message) {
 
-		plugin.getLog().log(new Status(Status.INFO, PLUGIN_ID, message))
+		plugin.log.log(new Status(Status.INFO, PLUGIN_ID, message))
 	}
 
 	/**

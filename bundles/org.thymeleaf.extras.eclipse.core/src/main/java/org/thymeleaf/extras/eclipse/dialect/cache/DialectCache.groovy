@@ -31,6 +31,10 @@ import org.thymeleaf.extras.eclipse.nature.ThymeleafNature
 import static org.eclipse.core.resources.IResourceChangeEvent.*
 import static org.thymeleaf.extras.eclipse.dialect.cache.DialectItemProcessor.*
 
+import javax.annotation.PostConstruct
+import javax.annotation.PreDestroy
+import javax.inject.Inject
+import javax.inject.Named
 import javax.xml.namespace.QName
 
 /**
@@ -39,15 +43,34 @@ import javax.xml.namespace.QName
  * 
  * @author Emanuel Rabina
  */
+@Named
 class DialectCache {
 
-	private static XmlDialectLoader xmlDialectLoader = new XmlDialectLoader()
+	@Inject
+	private final XmlDialectLoader xmlDialectLoader
+	@Inject
+	private final DialectTree dialectTree
+	@Inject
+	private DialectChangeListener dialectChangeListener
 
-	// Tree structure of all dialects in the user's workspace
-	private static DialectTree dialectTree
+	/**
+	 * Initialize the cache.
+	 */
+	@PostConstruct
+	void init() {
 
-	// Resource listener for changes to dialect projects and files
-	private static DialectChangeListener dialectChangeListener
+		ResourcesPlugin.workspace.addResourceChangeListener(dialectChangeListener, POST_CHANGE | PRE_CLOSE | PRE_DELETE)
+	}
+
+	/**
+	 * Shutdown method of the cache, cleans up any processes that need
+	 * cleaning-up.
+	 */
+	@PreDestroy
+	void close() {
+
+		ResourcesPlugin.workspace.removeResourceChangeListener(dialectChangeListener)
+	}
 
 	/**
 	 * Checks if the dialect is in the list of given namespaces.
@@ -58,7 +81,7 @@ class DialectCache {
 	 * 		   is namespace strict) are listed in the <tt>namespaces</tt>
 	 * 		   collection.
 	 */
-	private static boolean dialectInNamespace(Dialect dialect, List<QName> namespaces) {
+	private boolean dialectInNamespace(Dialect dialect, List<QName> namespaces) {
 
 		return namespaces.any { namespace ->
 			return dialect.prefix === namespace.prefix && 
@@ -73,7 +96,7 @@ class DialectCache {
 	 * @param name
 	 * @return <tt>true</tt> if the name matches the expression object name.
 	 */
-	private static boolean expressionObjectMethodMatchesName(ExpressionObjectMethod method, String name) {
+	private boolean expressionObjectMethodMatchesName(ExpressionObjectMethod method, String name) {
 
 		return name == method.fullName
 	}
@@ -87,7 +110,7 @@ class DialectCache {
 	 * @return <tt>true</tt> if the pattern matches against the expression
 	 * 		   object name.
 	 */
-	private static boolean expressionObjectMethodMatchesPattern(ExpressionObjectMethod method, String pattern) {
+	private boolean expressionObjectMethodMatchesPattern(ExpressionObjectMethod method, String pattern) {
 
 		return pattern && method.fullName.startsWith(pattern)
 	}
@@ -101,7 +124,7 @@ class DialectCache {
 	 * @return Attribute processor with the given name, or <tt>null</tt> if no
 	 * 		   processor could be found.
 	 */
-	static Processor getAttributeProcessor(IJavaProject project, String processorName) {
+	Processor getAttributeProcessor(IJavaProject project, String processorName) {
 
 		loadDialectsFromProject(project)
 
@@ -120,7 +143,7 @@ class DialectCache {
 	 * @param pattern    Start-of-string pattern to match.
 	 * @return List of all matching attribute processors.
 	 */
-	static List<AttributeProcessor> getAttributeProcessors(IJavaProject project, List<QName> namespaces, String pattern) {
+	List<AttributeProcessor> getAttributeProcessors(IJavaProject project, List<QName> namespaces, String pattern) {
 
 		loadDialectsFromProject(project)
 
@@ -140,7 +163,7 @@ class DialectCache {
 	 * @param pattern	   Start-of-string pattern to match.
 	 * @return List of all matching element processors
 	 */
-	static List<ElementProcessor> getElementProcessors(IJavaProject project, List<QName> namespaces, String pattern) {
+	List<ElementProcessor> getElementProcessors(IJavaProject project, List<QName> namespaces, String pattern) {
 
 		loadDialectsFromProject(project)
 
@@ -160,7 +183,7 @@ class DialectCache {
 	 * @return Expression object with the given name, or <tt>null</tt> if no
 	 * 		   expression object matches.
 	 */
-	static ExpressionObjectMethod getExpressionObjectMethod(IJavaProject project,
+	ExpressionObjectMethod getExpressionObjectMethod(IJavaProject project,
 		List<QName> namespaces, String methodname) {
 
 		loadDialectsFromProject(project)
@@ -181,7 +204,7 @@ class DialectCache {
 	 * @param pattern    Start-of-string pattern to match.
 	 * @return List of all matching expression object methods.
 	 */
-	static List<ExpressionObjectMethod> getExpressionObjectMethods(IJavaProject project,
+	List<ExpressionObjectMethod> getExpressionObjectMethods(IJavaProject project,
 		List<QName> namespaces, String pattern) {
 
 		loadDialectsFromProject(project)
@@ -202,7 +225,7 @@ class DialectCache {
 	 * @return Processor for the given prefix and name, or <tt>null</tt> if no
 	 * 		   processor matches.
 	 */
-	static Processor getProcessor(IJavaProject project, List<QName> namespaces, String processorName) {
+	Processor getProcessor(IJavaProject project, List<QName> namespaces, String processorName) {
 
 		loadDialectsFromProject(project)
 
@@ -223,7 +246,7 @@ class DialectCache {
 	 */
 	// TODO: Is it possible to make this use @Lazy so it's not being called from
 	//       all the other methods?
-	private static void loadDialectsFromProject(IJavaProject project) {
+	private void loadDialectsFromProject(IJavaProject project) {
 
 		if (!dialectTree.containsProject(project)) {
 			def pathsAndDialects = xmlDialectLoader.load(new ProjectDependencyDialectLocator(project))
@@ -247,7 +270,7 @@ class DialectCache {
 	 * @param name
 	 * @return <tt>true</tt> if the name matches the full processor name.
 	 */
-	private static boolean processorMatchesName(Processor processor, String name) {
+	private boolean processorMatchesName(Processor processor, String name) {
 
 		return processor.fullName == name ||
 			(processor instanceof AttributeProcessor && processor.fullDataName == name)
@@ -262,31 +285,10 @@ class DialectCache {
 	 * @return <tt>true</tt> if the pattern matches against the processor prefix
 	 * 		   and name.
 	 */
-	private static boolean processorMatchesPattern(Processor processor, String pattern) {
+	private boolean processorMatchesPattern(Processor processor, String pattern) {
 
 		return processor.fullName.startsWith(pattern) ||
 			(processor instanceof AttributeProcessor && processor.fullDataName.startsWith(pattern))
-	}
-
-	/**
-	 * Shutdown method of the cache, cleans up any processes that need
-	 * cleaning-up.
-	 */
-	static void shutdown() {
-
-		ResourcesPlugin.workspace.removeResourceChangeListener(dialectChangeListener)
-		dialectChangeListener.shutdown()
-	}
-
-	/**
-	 * Initialize the cache.
-	 */
-	static void startup() {
-
-		dialectTree = new DialectTree()
-		dialectChangeListener = new DialectChangeListener(dialectTree, xmlDialectLoader)
-		ResourcesPlugin.workspace.addResourceChangeListener(dialectChangeListener,
-				POST_CHANGE | PRE_CLOSE | PRE_DELETE)
 	}
 
 	/**
@@ -295,7 +297,7 @@ class DialectCache {
 	 * @param project
 	 * @return <tt>true</tt> if the project has the Thymeleaf nature.
 	 */
-	private static boolean thymeleafNatureEnabled(IJavaProject project) {
+	private boolean thymeleafNatureEnabled(IJavaProject project) {
 
 		return project.project.hasNature(ThymeleafNature.THYMELEAF_NATURE_ID)
 	}

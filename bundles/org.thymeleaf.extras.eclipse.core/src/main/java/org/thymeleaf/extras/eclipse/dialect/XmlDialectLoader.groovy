@@ -17,8 +17,11 @@
 package org.thymeleaf.extras.eclipse.dialect
 
 import nz.net.ultraq.jaxb.XmlReader
+
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
 import org.thymeleaf.extras.eclipse.resources.ResourceLoader
+
+import javax.inject.Named
 
 /**
  * Loads dialect help/documentation XML files from those returned by a
@@ -26,6 +29,7 @@ import org.thymeleaf.extras.eclipse.resources.ResourceLoader
  * 
  * @author Emanuel Rabina
  */
+@Named
 class XmlDialectLoader implements ResourceLoader<PathAndDialect, DialectLocator> {
 
 	private static final XmlReader<Dialect> xmlReader = new XmlReader<>(Dialect)

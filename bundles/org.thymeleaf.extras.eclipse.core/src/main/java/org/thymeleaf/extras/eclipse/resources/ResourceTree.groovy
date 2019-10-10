@@ -16,6 +16,7 @@
 
 package org.thymeleaf.extras.eclipse.resources
 
+import javax.inject.Named
 import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.IJavaProject
 
@@ -26,6 +27,7 @@ import org.eclipse.jdt.core.IJavaProject
  * @param <T> The resource being mapped against a project.
  * @author Emanuel Rabina
  */
+@Named
 class ResourceTree<T> {
 
 	private HashMap<IJavaProject,ResourceProject<T>> projects = [:]

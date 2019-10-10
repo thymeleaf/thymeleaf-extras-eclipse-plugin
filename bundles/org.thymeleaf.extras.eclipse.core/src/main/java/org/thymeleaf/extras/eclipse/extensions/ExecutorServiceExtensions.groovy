@@ -43,10 +43,20 @@ class ExecutorServiceExtensions {
 			return closure(self)
 		}
 		finally {
-			self.shutdown()
-			if (!self.awaitTermination(5, TimeUnit.SECONDS)) {
-				self.shutdownNow()
-			}
+			self.shutdownAwaitTermination()
+		}
+	}
+
+	/**
+	 * Initiate a shutdown, waiting 5 seconds before forcing termination.
+	 * 
+	 * @param self
+	 */
+	static void shutdownAwaitTermination(ExecutorService self) {
+
+		self.shutdown()
+		if (!self.awaitTermination(5, TimeUnit.SECONDS)) {
+			self.shutdownNow()
 		}
 	}
 }

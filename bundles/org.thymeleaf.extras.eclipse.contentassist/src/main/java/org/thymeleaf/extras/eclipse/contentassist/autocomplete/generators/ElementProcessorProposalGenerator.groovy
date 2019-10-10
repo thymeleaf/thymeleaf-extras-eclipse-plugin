@@ -23,6 +23,7 @@ import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegionList
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
+import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.ElementProcessorCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor
@@ -36,6 +37,8 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 @SuppressWarnings('restriction')
 class ElementProcessorProposalGenerator extends AbstractItemProposalGenerator<ElementProcessorCompletionProposal> {
 
+	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
+
 	/**
 	 * Collect element processor suggestions.
 	 * 
@@ -44,11 +47,11 @@ class ElementProcessorProposalGenerator extends AbstractItemProposalGenerator<El
 	 * @param cursorPosition
 	 * @return List of element processor suggestions.
 	 */
-	private static List<ElementProcessorCompletionProposal> computeElementProcessorSuggestions(
+	private List<ElementProcessorCompletionProposal> computeElementProcessorSuggestions(
 		IDOMNode node, IStructuredDocument document, int cursorPosition) {
 
 		def pattern = findProcessorNamePattern(document, cursorPosition)
-		return DialectCache.getElementProcessors(findCurrentJavaProject(), findNodeNamespaces(node), pattern)
+		return dialectCache.getElementProcessors(findCurrentJavaProject(), findNodeNamespaces(node), pattern)
 			.collect { processor ->
 				return new ElementProcessorCompletionProposal(processor, pattern.length(), cursorPosition)
 			}
