@@ -29,7 +29,6 @@ import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor
 import org.thymeleaf.extras.eclipse.nature.ThymeleafNature
 import static org.eclipse.core.resources.IResourceChangeEvent.*
-import static org.thymeleaf.extras.eclipse.dialect.cache.DialectItemProcessor.*
 
 import javax.annotation.PostConstruct
 import javax.annotation.PreDestroy
@@ -51,7 +50,9 @@ class DialectCache {
 	@Inject
 	private final DialectTree dialectTree
 	@Inject
-	private DialectChangeListener dialectChangeListener
+	private final DialectChangeListener dialectChangeListener
+	@Inject
+	private final DialectItemProcessor dialectItemProcessor
 
 	/**
 	 * Initialize the cache.
@@ -252,7 +253,8 @@ class DialectCache {
 			def pathsAndDialects = xmlDialectLoader.load(new ProjectDependencyDialectLocator(project))
 			if (pathsAndDialects.size() > 0) {
 				pathsAndDialects.eachWithIndex { pathAndDialect, index ->
-					dialectTree.addProjectDialect(project, pathAndDialect.path, processDialectItems(pathAndDialect.dialect, project))
+					dialectTree.addProjectDialect(project, pathAndDialect.path,
+						dialectItemProcessor.processDialectItems(pathAndDialect.dialect, project))
 					dialectChangeListener.trackDialectFileForChanges(pathAndDialect.path, project)
 				}
 			}

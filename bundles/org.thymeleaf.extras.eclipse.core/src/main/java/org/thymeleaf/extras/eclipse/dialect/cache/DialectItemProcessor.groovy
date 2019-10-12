@@ -16,6 +16,7 @@
 
 package org.thymeleaf.extras.eclipse.dialect.cache
 
+import javax.inject.Named
 import org.eclipse.core.runtime.NullProgressMonitor
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.IMethod
@@ -28,13 +29,13 @@ import org.thymeleaf.extras.eclipse.dialect.xml.Documentation
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObject
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor
-import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
 /**
  * Creates a content-assist ready dialect item from a dialect file definition.
  * 
  * @author Emanuel Rabina
  */
+@Named
 class DialectItemProcessor {
 
 	/**
@@ -128,7 +129,7 @@ class DialectItemProcessor {
 	 * @return List of dialect items, already processed to include all the
 	 *   necessary documentation to be a part of the content assist system.
 	 */
-	static List<DialectItem> processDialectItems(Dialect dialect, IJavaProject project) {
+	List<DialectItem> processDialectItems(Dialect dialect, IJavaProject project) {
 
 		return dialect.dialectItems.inject([]) { acc, dialectItem ->
 			if (dialectItem instanceof Processor) {

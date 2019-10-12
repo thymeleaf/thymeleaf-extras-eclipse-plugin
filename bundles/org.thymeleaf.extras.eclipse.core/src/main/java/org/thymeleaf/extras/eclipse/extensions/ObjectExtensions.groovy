@@ -16,7 +16,8 @@
 
 package org.thymeleaf.extras.eclipse.extensions
 
-import static org.thymeleaf.extras.eclipse.CorePlugin.logInfo
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Extensions to the main Object!
@@ -24,6 +25,8 @@ import static org.thymeleaf.extras.eclipse.CorePlugin.logInfo
  * @author Emanuel Rabina
  */
 class ObjectExtensions {
+
+	private static final Logger logger = LoggerFactory.getLogger(ObjectExtensions)
 
 	/**
 	 * Capture and log the time it takes to perform the given closure.
@@ -37,7 +40,8 @@ class ObjectExtensions {
 
 		def start = System.currentTimeMillis()
 		def result = closure()
-		logInfo("${actionName} complete.  Execution time: ${System.currentTimeMillis() - start}ms")
+		def finish = System.currentTimeMillis()
+		logger.info("${actionName} complete.  Execution time: ${finish - start}ms")
 		return result
 	}
 }

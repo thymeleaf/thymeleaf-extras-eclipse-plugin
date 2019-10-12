@@ -16,7 +16,8 @@
 
 package org.thymeleaf.extras.eclipse.template.model
 
-import static org.thymeleaf.extras.eclipse.CorePlugin.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import java.util.regex.Pattern
 
@@ -28,6 +29,8 @@ import java.util.regex.Pattern
 class Fragment {
 
 	private static final Pattern FRAGMENT_SPEC_PATTERN = ~/(.*?)(\(.*\))/
+
+	private static final Logger logger = LoggerFactory.getLogger(Fragment)
 
 	final String name
 	final String[] arguments
@@ -47,7 +50,7 @@ class Fragment {
 			}
 		}
 		else {
-			logInfo("Fragment spec \"${fragmentSpec}\" doesn\'t conform to fragment signature pattern")
+			logger.info("Fragment spec \"${fragmentSpec}\" doesn\'t conform to fragment signature pattern")
 		}
 	}
 }

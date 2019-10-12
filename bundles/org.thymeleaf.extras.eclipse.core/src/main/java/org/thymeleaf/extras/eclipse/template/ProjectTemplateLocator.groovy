@@ -23,9 +23,9 @@ import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResource
 import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.IJavaProject
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.thymeleaf.extras.eclipse.resources.ResourceLocator
-
-import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
 import groovy.transform.TupleConstructor
 import java.util.concurrent.Callable
@@ -44,6 +44,8 @@ import java.util.concurrent.TimeUnit
 @TupleConstructor(defaults = false)
 class ProjectTemplateLocator implements ResourceLocator<IFile> {
 
+	private static final Logger logger = LoggerFactory.getLogger(ProjectTemplateLocator)
+
 	final IJavaProject project
 
 	/**
@@ -52,7 +54,7 @@ class ProjectTemplateLocator implements ResourceLocator<IFile> {
 	@Override
 	List<IFile> locate() {
 
-		logInfo("Scanning for Thymeleaf templates in the project")
+		logger.info("Scanning for Thymeleaf templates in the project")
 
 		return time('Scanning for templates') { ->
 

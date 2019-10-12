@@ -48,27 +48,6 @@ class CorePlugin extends Plugin {
 	}
 
 	/**
-	 * Logs an error message to the Eclipse logger.
-	 * 
-	 * @param message
-	 * @param throwable
-	 */
-	static void logError(String message, Throwable throwable) {
-
-		plugin.log.log(new Status(Status.ERROR, PLUGIN_ID, message, throwable))
-	}
-
-	/**
-	 * Logs an information message to the Eclipse logger.
-	 * 
-	 * @param message
-	 */
-	static void logInfo(String message) {
-
-		plugin.log.log(new Status(Status.INFO, PLUGIN_ID, message))
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override

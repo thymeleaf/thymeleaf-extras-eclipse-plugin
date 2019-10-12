@@ -25,10 +25,11 @@ import org.eclipse.jdt.core.IJavaElement
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.IPackageFragment
 import org.eclipse.jdt.core.IPackageFragmentRoot
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.xml.sax.Attributes
 import org.xml.sax.SAXException
 import org.xml.sax.helpers.DefaultHandler
-import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
 import groovy.transform.TupleConstructor
 import java.util.concurrent.Callable
@@ -55,6 +56,8 @@ class ProjectDependencyDialectLocator implements DialectLocator {
 			"http://apache.org/xml/features/nonvalidating/load-external-dtd"
 
 	private static final String DIALECT_EXTRAS_NAMESPACE = "http://www.thymeleaf.org/extras/dialect"
+
+	private static final Logger logger = LoggerFactory.getLogger(ProjectDependencyDialectLocator)
 
 	private static final SAXParserFactory saxParserFactory
 	static {
@@ -94,7 +97,7 @@ class ProjectDependencyDialectLocator implements DialectLocator {
 	@Override
 	List<PathAndStream> locate() {
 
-		logInfo('Scanning for dialect help files on project dependencies')
+		logger.info('Scanning for dialect help files on project dependencies')
 
 		return time('Scanning for dialects') { ->
 
@@ -109,7 +112,7 @@ class ProjectDependencyDialectLocator implements DialectLocator {
 						scannerTasks << executor.submit({ ->
 							return packageFragment.nonJavaResources.findResult { fileOrJarEntry ->
 								if (isDialectHelpXmlFile(fileOrJarEntry)) {
-									logInfo("Help file found: ${fileOrJarEntry.name}")
+									logger.info("Help file found: ${fileOrJarEntry.name}")
 									return fileOrJarEntry
 								}
 								return null

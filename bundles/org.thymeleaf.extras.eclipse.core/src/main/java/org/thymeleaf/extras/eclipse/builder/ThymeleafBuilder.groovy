@@ -28,10 +28,11 @@ import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.core.runtime.OperationCanceledException
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import static org.eclipse.core.resources.IResource.*
-import static org.thymeleaf.extras.eclipse.CorePlugin.*
 
 import java.util.regex.Pattern
 
@@ -50,6 +51,8 @@ class ThymeleafBuilder extends IncrementalProjectBuilder {
 
 	private static final Pattern UNDEFINED_ATTRIBUTE_PATTERN = ~/Undefined attribute name \((.*?:.*?)\)\./
 
+	private static final Logger logger = LoggerFactory.getLogger(ThymeleafBuilder)
+
 	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
 
 	/**
@@ -64,7 +67,7 @@ class ThymeleafBuilder extends IncrementalProjectBuilder {
 	@Override
 	protected IProject[] build(int kind, Map<String,String> args, IProgressMonitor monitor) {
 
-		logInfo('Unvalidating HTML files for Thymeleaf attribute processors.  Build kind: ' + (
+		logger.info('Unvalidating HTML files for Thymeleaf attribute processors.  Build kind: ' + (
 				kind == INCREMENTAL_BUILD ? 'incremental' :
 				kind == AUTO_BUILD ? 'auto' :
 				kind == CLEAN_BUILD ? 'clean' :
@@ -106,7 +109,7 @@ class ThymeleafBuilder extends IncrementalProjectBuilder {
 		// Check markers of HTML resources
 		def fileExtension = resourcePath.fileExtension
 		if (fileExtension?.equals(FILE_EXTENSION_HTML)) {
-			logInfo("Unvalidating resource: ${resourcePath}")
+			logger.info("Unvalidating resource: ${resourcePath}")
 			resource.findMarkers(HTML_VALIDATION_MARKER, true, DEPTH_ZERO).each { marker ->
 				unvalidateMarker(marker, javaProject, monitor)
 			}
@@ -139,7 +142,7 @@ class ThymeleafBuilder extends IncrementalProjectBuilder {
 		if (message) {
 			def matcher = UNDEFINED_ATTRIBUTE_PATTERN.matcher(message)
 			if (matcher.matches()) {
-				logInfo("Checking marker w/ message: ${message}")
+				logger.info("Checking marker w/ message: ${message}")
 				def processor = matcher.group(1)
 				if (dialectCache.getAttributeProcessor(javaProject, processor)) {
 					marker.delete()
@@ -159,7 +162,7 @@ class ThymeleafBuilder extends IncrementalProjectBuilder {
 	private void unvalidateProject(IJavaProject javaProject, IProgressMonitor monitor) {
 
 		def project = javaProject.project
-		logInfo("Checking project: ${project.name}")
+		logger.info("Checking project: ${project.name}")
 
 		project.findMarkers(HTML_VALIDATION_MARKER, true, DEPTH_INFINITE).each { marker ->
 			unvalidateMarker(marker, javaProject, monitor)

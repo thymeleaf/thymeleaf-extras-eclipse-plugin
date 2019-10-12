@@ -23,13 +23,13 @@ import org.eclipse.core.resources.IResourceDelta
 import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.thymeleaf.extras.eclipse.dialect.SingleFileDialectLocator
 import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
 import static org.eclipse.core.resources.IResourceChangeEvent.*
-import static org.thymeleaf.extras.eclipse.CorePlugin.*
-import static org.thymeleaf.extras.eclipse.dialect.cache.DialectItemProcessor.*
 
 import groovy.transform.MapConstructor
 import groovy.transform.TupleConstructor
@@ -50,9 +50,13 @@ import javax.inject.Named
 @Named
 class DialectChangeListener implements IResourceChangeListener {
 
+	private static final Logger logger = LoggerFactory.getLogger(DialectChangeListener)
+
 	private final ExecutorService resourceChangeExecutor = Executors.newSingleThreadExecutor()
 	private final ConcurrentHashMap<IPath,IProject> dialectFilesToTrack = new ConcurrentHashMap<>()
 
+	@Inject
+	private final DialectItemProcessor dialectItemProcessor
 	@Inject
 	private final DialectTree dialectTree
 	@Inject
@@ -82,12 +86,12 @@ class DialectChangeListener implements IResourceChangeListener {
 				for (def dialectFilePath: dialectFilesToTrack.keySet()) {
 					def dialectFileDelta = event.delta.findMember(dialectFilePath)
 					if (dialectFileDelta) {
-						logInfo("Dialect file ${dialectFilePath.lastSegment()} changed, reloading dialect")
+						logger.info("Dialect file ${dialectFilePath.lastSegment()} changed, reloading dialect")
 						def javaProject = JavaCore.create(dialectFileDelta.resource.project)
 
 						def locator = new SingleFileDialectLocator(dialectFilePath)
-						def updateDialect = xmlDialectLoader.loadDialects(locator.locateDialects())
-						def updatedDialectItems = processDialectItems(updateDialect.first(), javaProject)
+						def updateDialect = xmlDialectLoader.load(locator.locate())
+						def updatedDialectItems = dialectItemProcessor.processDialectItems(updateDialect.first(), javaProject)
 						dialectTree.updateDialect(dialectFilePath, updatedDialectItems)
 					}
 				}
@@ -100,7 +104,7 @@ class DialectChangeListener implements IResourceChangeListener {
 				for (def dialectFilePath: dialectFilesToTrack.keySet()) {
 					def dialectProject = dialectFilesToTrack.get(dialectFilePath)
 					if (project == dialectProject) {
-						logInfo("Project containing dialect file ${dialectFilePath.lastSegment()} has been closed/deleted, removing dialect.")
+						logger.info("Project containing dialect file ${dialectFilePath.lastSegment()} has been closed/deleted, removing dialect.")
 						dialectTree.updateDialect(dialectFilePath, null)
 						dialectFilesToTrack.remove(dialectFilePath)
 					}
