@@ -20,7 +20,7 @@ import org.eclipse.jface.text.BadLocationException
 import org.eclipse.jface.text.IDocument
 import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.graphics.Point
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
+import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 
 /**
  * A completion proposal for Thymeleaf attribute processors that can take only
@@ -31,7 +31,7 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 class AttributeRestrictionCompletionProposal extends AbstractCompletionProposal {
 
 	final String displayString
-	final Image image = getDefault().imageRegistry.get(IMAGE_ATTRIBUTE_RESTRICTION_VALUE)
+	final Image image = ContentAssistPlugin.default.imageRegistry.get(ContentAssistPlugin.IMAGE_ATTRIBUTE_RESTRICTION_VALUE)
 	private final int offsetStart
 	private final int offsetLength
 

@@ -22,8 +22,8 @@ import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.graphics.Point
 import org.eclipse.wst.html.ui.internal.HTMLUIPlugin
 import org.eclipse.wst.html.ui.internal.preferences.HTMLUIPreferenceNames
+import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 
 /**
  * A completion proposal for Thymeleaf element processors.
@@ -34,7 +34,7 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 class ElementProcessorCompletionProposal extends AbstractCompletionProposal {
 
 	final String displayString
-	final Image image = getDefault().imageRegistry.get(IMAGE_ELEMENT_PROCESSOR)
+	final Image image = ContentAssistPlugin.default.imageRegistry.get(ContentAssistPlugin.IMAGE_ELEMENT_PROCESSOR)
 	private final boolean addEndTag = HTMLUIPlugin.default.preferenceStore.getBoolean(HTMLUIPreferenceNames.TYPING_COMPLETE_ELEMENTS)
 
 	/**
@@ -60,9 +60,9 @@ class ElementProcessorCompletionProposal extends AbstractCompletionProposal {
 	@Override
 	protected void applyImpl(IDocument document, char trigger, int offset) {
 
-		def replacement = replacementString.substring(offset - cursorPosition) + '>'
+		def replacement = "${replacementString.substring(offset - cursorPosition)}>"
 		if (addEndTag) {
-			replacement += '</' + fullProcessorName + '>'
+			replacement += "</${displayString}>"
 		}
 		document.replace(offset, 0, replacement)
 	}

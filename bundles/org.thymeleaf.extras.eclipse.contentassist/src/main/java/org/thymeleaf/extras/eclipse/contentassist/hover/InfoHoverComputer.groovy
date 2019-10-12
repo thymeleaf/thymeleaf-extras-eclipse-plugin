@@ -30,9 +30,9 @@ import org.eclipse.wst.sse.ui.internal.derived.HTMLTextPresenter
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer
+import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 
 import java.util.regex.Pattern
 
@@ -76,7 +76,7 @@ class InfoHoverComputer extends AbstractComputer implements ITextHover, ITextHov
 			def surroundingWord = textViewer.document.get(cursorPosition, hoverRegion.length)
 
 			if (surroundingWord ==~ /[\w:-]*/) {
-				def processor = dialectCache.getProcessor(findCurrentJavaProject(), findNodeNamespaces(node), surroundingWord)
+				def processor = dialectCache.getProcessor(ContentAssistPlugin.findCurrentJavaProject(), findNodeNamespaces(node), surroundingWord)
 				return processor?.documentation?.value
 			}
 

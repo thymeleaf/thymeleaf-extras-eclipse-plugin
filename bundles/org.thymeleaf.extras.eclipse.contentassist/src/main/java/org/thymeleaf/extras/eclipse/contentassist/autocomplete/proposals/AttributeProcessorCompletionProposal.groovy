@@ -20,8 +20,8 @@ import org.eclipse.jface.text.BadLocationException
 import org.eclipse.jface.text.IDocument
 import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.graphics.Point
+import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 
 /**
  * A completion proposal for Thymeleaf attribute processors.
@@ -31,7 +31,7 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 class AttributeProcessorCompletionProposal extends AbstractCompletionProposal {
 
 	final String displayString
-	final Image image = getDefault().imageRegistry.get(IMAGE_ATTRIBUTE_PROCESSOR)
+	final Image image = ContentAssistPlugin.default.imageRegistry.get(ContentAssistPlugin.IMAGE_ATTRIBUTE_PROCESSOR)
 
 	/**
 	 * Constructor, creates a completion proposal for a Thymeleaf attribute

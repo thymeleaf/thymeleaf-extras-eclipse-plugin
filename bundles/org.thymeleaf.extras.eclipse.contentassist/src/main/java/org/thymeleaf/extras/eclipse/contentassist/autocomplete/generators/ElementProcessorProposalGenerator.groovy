@@ -24,10 +24,10 @@ import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegionList
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
 import org.thymeleaf.extras.eclipse.SpringContainer
+import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.ElementProcessorCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 
 /**
  * Proposal generator for Thymeleaf element processors.
@@ -51,7 +51,7 @@ class ElementProcessorProposalGenerator extends AbstractItemProposalGenerator<El
 		IDOMNode node, IStructuredDocument document, int cursorPosition) {
 
 		def pattern = findProcessorNamePattern(document, cursorPosition)
-		return dialectCache.getElementProcessors(findCurrentJavaProject(), findNodeNamespaces(node), pattern)
+		return dialectCache.getElementProcessors(ContentAssistPlugin.findCurrentJavaProject(), findNodeNamespaces(node), pattern)
 			.collect { processor ->
 				return new ElementProcessorCompletionProposal(processor, pattern.length(), cursorPosition)
 			}

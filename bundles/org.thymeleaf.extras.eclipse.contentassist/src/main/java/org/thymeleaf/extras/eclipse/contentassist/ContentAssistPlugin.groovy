@@ -49,8 +49,6 @@ class ContentAssistPlugin extends AbstractUIPlugin {
 	static final String IMAGE_ELEMENT_PROCESSOR           = 'element-processor'
 	static final String IMAGE_EXPRESSION_OBJECT_METHOD    = 'expression-object-method'
 
-	static final String AUTO_PROPOSE_PREF = 'autoProposeOn'
-
 	private static ContentAssistPlugin plugin
 
 	/**
@@ -92,27 +90,6 @@ class ContentAssistPlugin extends AbstractUIPlugin {
 		reg.put(IMAGE_ATTRIBUTE_RESTRICTION_VALUE, imageDescriptorFromPlugin(PLUGIN_ID, 'icons/Attribute-Restriction-Value.png'))
 		reg.put(IMAGE_ELEMENT_PROCESSOR,           imageDescriptorFromPlugin(PLUGIN_ID, 'icons/Element-Processor.png'))
 		reg.put(IMAGE_EXPRESSION_OBJECT_METHOD,    imageDescriptorFromPlugin(PLUGIN_ID, 'icons/Expression-Object-Method.png'))
-	}
-
-	/**
-	 * Logs an error message to the Eclipse logger.
-	 * 
-	 * @param message
-	 * @param throwable
-	 */
-	static void logError(String message, Throwable throwable) {
-
-		plugin.log.log(new Status(Status.ERROR, PLUGIN_ID, message, throwable))
-	}
-
-	/**
-	 * Logs an information message to the Eclipse logger.
-	 * 
-	 * @param message
-	 */
-	static void logInfo(String message) {
-
-		plugin.log.log(new Status(Status.INFO, PLUGIN_ID, message))
 	}
 
 	/**

@@ -24,13 +24,13 @@ import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegionList
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
 import org.thymeleaf.extras.eclipse.SpringContainer
+import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.AttributeProcessorCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeRestrictions
 import org.w3c.dom.NamedNodeMap
 import org.w3c.dom.Node
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.findCurrentJavaProject
 
 /**
  * Proposal generator for Thymeleaf attribute processors.
@@ -55,7 +55,7 @@ class AttributeProcessorProposalGenerator extends AbstractItemProposalGenerator<
 
 		def pattern = findProcessorNamePattern(document, cursorPosition)
 
-		def processors = dialectCache.getAttributeProcessors(findCurrentJavaProject(), findNodeNamespaces(node), pattern)
+		def processors = dialectCache.getAttributeProcessors(ContentAssistPlugin.findCurrentJavaProject(), findNodeNamespaces(node), pattern)
 		if (!processors.empty) {
 			def proposals = new ArrayList<AttributeProcessorCompletionProposal>()
 			def existingAttributes = node.attributes

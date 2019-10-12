@@ -24,10 +24,10 @@ import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
 import org.thymeleaf.extras.eclipse.SpringContainer
+import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.ExpressionObjectMethodCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.findCurrentJavaProject
 
 /**
  * Proposal generator for Thymeleaf expression objects.
@@ -51,7 +51,7 @@ class ExpressionObjectProposalGenerator extends AbstractItemProposalGenerator<Ex
 		IDOMNode node, IStructuredDocument document, int cursorPosition) {
 
 		def pattern = findExpressionObjectMethodNamePattern(document, cursorPosition)
-		return dialectCache.getExpressionObjectMethods(findCurrentJavaProject(), findNodeNamespaces(node), pattern)
+		return dialectCache.getExpressionObjectMethods(ContentAssistPlugin.findCurrentJavaProject(), findNodeNamespaces(node), pattern)
 			.collect { expressionObject ->
 				return new ExpressionObjectMethodCompletionProposal(expressionObject, pattern.length(), cursorPosition)
 			}

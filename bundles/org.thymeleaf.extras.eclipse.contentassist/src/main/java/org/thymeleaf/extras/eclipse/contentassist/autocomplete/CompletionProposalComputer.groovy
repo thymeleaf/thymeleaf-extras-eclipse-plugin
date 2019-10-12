@@ -33,7 +33,6 @@ import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.Attrib
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.AttributeRestrictionProposalGenerator
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.ElementProcessorProposalGenerator
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.ExpressionObjectProposalGenerator
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 
 /**
  * Auto-completion proposal generator for Thymeleaf processors and expression
@@ -50,6 +49,8 @@ class CompletionProposalComputer extends AbstractComputer implements ICompletion
 		new AttributeRestrictionProposalGenerator(),
 		new ExpressionObjectProposalGenerator()
 	]
+
+	final String errorMessage = null
 
 	/**
 	 * {@inheritDoc}
@@ -82,15 +83,6 @@ class CompletionProposalComputer extends AbstractComputer implements ICompletion
 	List computeContextInformation(CompletionProposalInvocationContext context, IProgressMonitor monitor) {
 
 		return Collections.EMPTY_LIST
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	String getErrorMessage() {
-
-		return null
 	}
 
 	/**

@@ -26,7 +26,6 @@ import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeRestrictions
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
 import org.thymeleaf.extras.eclipse.dialect.xml.Documentation
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 
 /**
  * Common code for all processor and expression object completion proposals.

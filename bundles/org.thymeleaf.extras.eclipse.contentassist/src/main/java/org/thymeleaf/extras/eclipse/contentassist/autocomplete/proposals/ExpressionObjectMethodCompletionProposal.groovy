@@ -20,8 +20,8 @@ import org.eclipse.jface.text.BadLocationException
 import org.eclipse.jface.text.IDocument
 import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.graphics.Point
+import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 
 /**
  * A completion proposal for Thymeleaf expression object methods.
@@ -31,7 +31,7 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 class ExpressionObjectMethodCompletionProposal extends AbstractCompletionProposal {
 
 	final String displayString
-	final Image image = getDefault().imageRegistry.get(IMAGE_EXPRESSION_OBJECT_METHOD)
+	final Image image = ContentAssistPlugin.getDefault().imageRegistry.get(ContentAssistPlugin.IMAGE_EXPRESSION_OBJECT_METHOD)
 	private final boolean javaBeanProperty
 
 	/**

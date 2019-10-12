@@ -18,7 +18,6 @@ package org.thymeleaf.extras.eclipse.contentassist
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer
 import org.eclipse.jface.preference.IPreferenceStore
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 
 /**
  * Initializes preferences for this plugin.
@@ -27,13 +26,15 @@ import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
  */
 class ContentAssistPreferenceInitializer extends AbstractPreferenceInitializer {
 
+	private static final String AUTO_PROPOSE_PREF = 'autoProposeOn'
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	void initializeDefaultPreferences() {
 
-		def preferences = getDefault().preferenceStore
+		def preferences = ContentAssistPlugin.default.preferenceStore
 		preferences.setDefault(AUTO_PROPOSE_PREF, true)
 	}
 }

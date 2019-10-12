@@ -24,11 +24,11 @@ import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegionList
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
 import org.thymeleaf.extras.eclipse.SpringContainer
+import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.AttributeRestrictionCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeRestrictions
-import static org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin.*
 
 /**
  * Proposal generator for Thymeleaf attribute restrictions.
@@ -59,7 +59,7 @@ class AttributeRestrictionProposalGenerator extends AbstractItemProposalGenerato
 		def attributeName = document.get(documentRegion.startOffset + attributeNameTextRegion.start,
 			 attributeNameTextRegion.textLength)
 
-		def attributeProcessor = dialectCache.getProcessor(findCurrentJavaProject(), findNodeNamespaces(node), attributeName)
+		def attributeProcessor = dialectCache.getProcessor(ContentAssistPlugin.findCurrentJavaProject(), findNodeNamespaces(node), attributeName)
 		if (attributeProcessor?.isSetRestrictions()) {
 
 			def restrictions = attributeProcessor.restrictions
