@@ -155,9 +155,8 @@ class ThymeleafBuilder extends IncrementalProjectBuilder {
 	 * Traverse the resources of a project, searching for resource markers to
 	 * remove.
 	 * 
-	 * @param javaproject
+	 * @param javaProject
 	 * @param monitor
-	 * @throws CoreException
 	 */
 	private void unvalidateProject(IJavaProject javaProject, IProgressMonitor monitor) {
 
