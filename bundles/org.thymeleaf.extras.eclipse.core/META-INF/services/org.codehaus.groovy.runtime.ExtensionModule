@@ -1,5 +1,4 @@
 moduleName = thymeleaf-extras-eclipse-plugin-extensions
 moduleVersion = ${version}
 extensionClasses = org.thymeleaf.extras.eclipse.extensions.ExecutorServiceExtensions,\
-                   org.thymeleaf.extras.eclipse.extensions.ObjectExtensions,\
                    org.thymeleaf.extras.eclipse.extensions.MapExtensions

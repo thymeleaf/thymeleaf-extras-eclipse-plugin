@@ -28,6 +28,9 @@ project.ext.contentassistPluginDir = 'bundles/org.thymeleaf.extras.eclipse.conte
 
 repositories {
 	mavenCentral()
+	maven {
+		url 'https://oss.sonatype.org/content/repositories/snapshots/'
+	}
 }
 
 /**
@@ -43,11 +46,14 @@ dependencies {
 	core (
 		'nz.net.ultraq.jaxb:jaxb-utilities:2.0.0',
 		'org.attoparser:attoparser:2.0.5.RELEASE',
-		'org.codehaus.groovy:groovy:3.0.0-beta-3',
+		'org.codehaus.groovy:groovy:3.0.0-rc-2',
 		'org.springframework:spring-context:5.2.0.RELEASE'
 	)
+	core('nz.net.ultraq.extensions:profiling-extensions:0.1.0-SNAPSHOT') {
+		transitive = false
+	}
 	contentassist (
-		'org.codehaus.groovy:groovy:3.0.0-beta-3'
+		'org.codehaus.groovy:groovy:3.0.0-rc-2'
 	)
 }
 
