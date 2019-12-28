@@ -26,7 +26,7 @@ import org.eclipse.jface.preference.IPreferenceStore
  */
 class ContentAssistPreferenceInitializer extends AbstractPreferenceInitializer {
 
-	private static final String AUTO_PROPOSE_PREF = 'autoProposeOn'
+	static final String AUTO_PROPOSE_PREF = 'autoProposeOn'
 
 	/**
 	 * {@inheritDoc}

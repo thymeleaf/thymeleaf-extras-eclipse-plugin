@@ -104,7 +104,7 @@ class ContentAssistPlugin extends AbstractUIPlugin {
 		// Add the # character to the list of activation characters, then track if
 		// it is ever removed by the user so that we know not to put it back again
 		// automatically.
-		if (plugin.preferenceStore.getBoolean(AUTO_PROPOSE_PREF)) {
+		if (plugin.preferenceStore.getBoolean(ContentAssistPreferenceInitializer.AUTO_PROPOSE_PREF)) {
 			def htmlUiPrefs = HTMLUIPlugin.getDefault().preferenceStore
 
 			htmlUiPrefs.setValue(HTMLUIPreferenceNames.AUTO_PROPOSE_CODE,
@@ -114,7 +114,7 @@ class ContentAssistPlugin extends AbstractUIPlugin {
 				if (event.property == HTMLUIPreferenceNames.AUTO_PROPOSE_CODE) {
 					if (((String)event.getOldValue()).contains('#') &&
 					   !((String)event.getNewValue()).contains('#')) {
-						plugin.preferenceStore.setValue(AUTO_PROPOSE_PREF, false)
+						plugin.preferenceStore.setValue(ContentAssistPreferenceInitializer.AUTO_PROPOSE_PREF, false)
 					}
 				}
 			})
