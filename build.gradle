@@ -43,7 +43,8 @@ dependencies {
 	core (
 		'nz.net.ultraq.jaxb:jaxb-utilities:2.0.0',
 		'org.attoparser:attoparser:2.0.5.RELEASE',
-		'org.codehaus.groovy:groovy:3.0.0-beta-3'
+		'org.codehaus.groovy:groovy:3.0.0-beta-3',
+		'org.springframework:spring-context:5.2.0.RELEASE'
 	)
 	contentassist (
 		'org.codehaus.groovy:groovy:3.0.0-beta-3'
