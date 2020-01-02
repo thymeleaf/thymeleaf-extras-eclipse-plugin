@@ -1,3 +1,0 @@
-moduleName = thymeleaf-extras-eclipse-plugin-extensions
-moduleVersion = ${version}
-extensionClasses = org.thymeleaf.extras.eclipse.extensions.ExecutorServiceExtensions
