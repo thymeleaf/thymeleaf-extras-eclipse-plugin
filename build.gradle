@@ -49,7 +49,10 @@ dependencies {
 		'org.codehaus.groovy:groovy:3.0.0-rc-2',
 		'org.springframework:spring-context:5.2.0.RELEASE'
 	)
-	core('nz.net.ultraq.extensions:profiling-extensions:0.1.0-SNAPSHOT') {
+	core('nz.net.ultraq.extensions:groovy-extensions:0.1.0-SNAPSHOT') {
+		transitive = false
+	}
+	core('nz.net.ultraq.extensions:profiling-extensions:0.3.0') {
 		transitive = false
 	}
 	contentassist (
