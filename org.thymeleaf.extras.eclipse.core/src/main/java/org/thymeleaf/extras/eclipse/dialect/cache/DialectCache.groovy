@@ -85,7 +85,7 @@ class DialectCache {
 	private boolean dialectInNamespace(Dialect dialect, List<QName> namespaces) {
 
 		return namespaces.any { namespace ->
-			return dialect.prefix === namespace.prefix && 
+			return dialect.prefix == namespace.prefix && 
 				(!dialect.namespaceStrict || dialect.namespaceUri == namespace.namespaceURI)
 		}
 	}
