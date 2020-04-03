@@ -91,7 +91,7 @@
 	</pluginRepositories>
 
 	<properties>
-		<tycho.version>1.4.0</tycho.version>
+		<tycho.version>1.6.0</tycho.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<thymeleaf.plugin-name>thymeleaf-extras-eclipse-plugin</thymeleaf.plugin-name>
@@ -148,12 +148,12 @@
 					<dependency>
 						<groupId>org.codehaus.groovy</groupId>
 						<artifactId>groovy-eclipse-compiler</artifactId>
-						<version>2.9.3-01</version>
+						<version>3.6.0-03</version>
 					</dependency>
 					<dependency>
 						<groupId>org.codehaus.groovy</groupId>
 						<artifactId>groovy-eclipse-batch</artifactId>
-						<version>2.4.17-01</version>
+						<version>3.0.2-02</version>
 					</dependency>
 				</dependencies>
 			</plugin>

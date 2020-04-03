@@ -39,4 +39,4 @@ Export-Package: org.thymeleaf.extras.eclipse.contentassist;
    org.eclipse.jface.text",
  org.thymeleaf.extras.eclipse.contentassist.hover;uses:="org.thymeleaf.extras.eclipse.contentassist,org.eclipse.jface.text"
 Bundle-ClassPath: .,
- libs/groovy-3.0.0-rc-2.jar
+ libs/groovy-3.0.2.jar
