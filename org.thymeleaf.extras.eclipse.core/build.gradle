@@ -1,0 +1,80 @@
+/* 
+ * Copyright 2020, The Thymeleaf Project (http://www.thymeleaf.org/)
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+plugins {
+	id 'groovy'
+	id 'com.diffplug.eclipse.buildproperties' version '3.21.0'
+	id 'com.diffplug.eclipse.excludebuildfolder' version '3.21.0'
+	id 'com.diffplug.eclipse.projectdeps' version '3.21.0'
+	id 'com.diffplug.osgi.bndmanifest' version '3.21.0'
+	id 'com.diffplug.p2.asmaven' version '3.21.0'
+}
+//apply from: 'https://raw.githubusercontent.com/ultraq/gradle-support/2.2.0/gradle-support.gradle'
+
+def p2Deps = [
+	[iu: 'org.apache.commons.logging'],
+	[iu: 'org.eclipse.core.expressions'],
+	[iu: 'org.eclipse.core.resources'],
+	[iu: 'org.eclipse.core.runtime'],
+	[iu: 'org.eclipse.jdt.core'],
+	[iu: 'org.eclipse.jdt.ui'],
+	[iu: 'org.eclipse.osgi.compatibility.state'],
+	[iu: 'org.eclipse.ui'],
+	[iu: 'org.eclipse.wst.xml.core', version: '1.2.200'],
+	[iu: 'org.slf4j.api']
+]
+
+p2AsMaven {
+	group 'eclipse', {
+		repoEclipse '4.13'
+		repo 'https://download.eclipse.org/releases/latest/'
+		p2Deps.each { dep ->
+			iu dep.iu
+		}
+	}
+}
+
+dependencies {
+	p2Deps.each { dep ->
+		implementation "eclipse:${dep.iu}:${dep.version ?: '+'}"
+	}
+//	implementation 'eclipse:org.apache.commons.logging:+',
+//	implementation 'eclipse:org.eclipse.core.expressions:+',
+//	implementation 'eclipse:org.eclipse.core.resources:+',
+//	implementation 'eclipse:org.eclipse.core.runtime:+',
+//	implementation 'eclipse:org.eclipse.jdt.core:+',
+//	implementation 'eclipse:org.eclipse.jdt.ui:+',
+//	implementation 'eclipse:org.eclipse.ui:+',
+//	implementation 'eclipse:org.eclipse.wst.xml.core:1.2.200',
+//	implementation 'eclipse:org.slf4j.api:+'
+
+	implementation(
+		'nz.net.ultraq.jaxb:jaxb-utilities:2.0.0',
+		'org.attoparser:attoparser:2.0.5.RELEASE',
+		'org.codehaus.groovy:groovy:3.0.0-rc-2',
+		'org.springframework:spring-context:5.2.0.RELEASE'
+	)
+	implementation('nz.net.ultraq.extensions:groovy-extensions:0.3.0') {
+		transitive = false
+	}
+	implementation('nz.net.ultraq.extensions:profiling-extensions:0.4.0') {
+		transitive = false
+	}
+}
+
+osgiBndManifest {
+	copyTo 'src/main/resources/META-INF/MANIFEST.MF'
+}

@@ -1,12 +1,8 @@
-
-# Build directories
 /.gradle
-target
-
-# Binaries
-libs
-
-# Eclipse stuff
+/.idea
 .settings
 .classpath
 .project
+build/
+libs
+target

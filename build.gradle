@@ -1,12 +1,12 @@
-/*
+/* 
  * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,80 +14,30 @@
  * limitations under the License.
  */
 
-/**
- * Gradle build script to perform a variety of support tasks for the Thymeleaf
- * Extras Eclipse Plugin project.
- * 
- * @author Emanuel Rabina
- */
-
 apply from: 'https://raw.githubusercontent.com/ultraq/gradle-support/2.1.0/jaxb.gradle'
 
-project.ext.corePluginDir = 'bundles/org.thymeleaf.extras.eclipse.core'
-project.ext.contentassistPluginDir = 'bundles/org.thymeleaf.extras.eclipse.contentassist'
-
-repositories {
-	mavenCentral()
-	maven {
-		url 'https://oss.sonatype.org/content/repositories/snapshots/'
-	}
+allprojects {
+	group = 'org.thymeleaf.extras.eclipse'
+	version = '3.0.0-SNAPSHOT'
 }
 
-/**
- * Create the depdendency graphs for each of the plugins.  This is used for the
- * 'downloadDependencies' task so it can copy all necessary JARs into each
- * project, saving us having to store those JARs in source control (like we used
- * to, since this is an OSGi environment, not a Maven one). 
- */
-configurations.create('core')
-configurations.create('contentassist')
-
-dependencies {
-	core (
-		'nz.net.ultraq.jaxb:jaxb-utilities:2.0.0',
-		'org.attoparser:attoparser:2.0.5.RELEASE',
-		'org.codehaus.groovy:groovy:3.0.0-rc-2',
-		'org.springframework:spring-context:5.2.0.RELEASE'
-	)
-	core('nz.net.ultraq.extensions:groovy-extensions:0.3.0') {
-		transitive = false
-	}
-	core('nz.net.ultraq.extensions:profiling-extensions:0.4.0') {
-		transitive = false
-	}
-	contentassist (
-		'org.codehaus.groovy:groovy:3.0.0-rc-2'
-	)
-}
-
-/**
- * Download the dependencies for each plugin and place them into their
- * respective libs directories. 
- */
-task downloadDependencies(
-	description: 'Download Maven dependencies into the libs directory for each plugin') {
-
-	copy {
-		from configurations.core
-		into "${project.corePluginDir}/libs"
-	}
-	copy {
-		from configurations.contentassist
-		into "${project.contentassistPluginDir}/libs"
-	}
+subprojects {
+	apply plugin: 'eclipse'
 }
 
 /**
  * Configure the XJC task to generate Java classes from the dialect help schema
  * in the core plugin.
  */
-xjc {
-	schemaDir = "${project.corePluginDir}/schemas"
-	outputDir = "${project.corePluginDir}/src/main/java"
-	classes = [
-		'**/dialect/xml/*.java'
-	]
-	args = [
-		'-Xinject-code'
-	]
-}
+//def corePluginDir = 'bundles/org.thymeleaf.extras.eclipse.core'
+//def contentassistPluginDir = 'bundles/org.thymeleaf.extras.eclipse.contentassist'
+//xjc {
+//	schemaDir = "${corePluginDir}/schemas"
+//	outputDir = "${corePluginDir}/src/main/java"
+//	classes = [
+//		'**/dialect/xml/*.java'
+//	]
+//	args = [
+//		'-Xinject-code'
+//	]
+//}
