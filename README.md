@@ -6,21 +6,16 @@ A plugin for the Eclipse IDE to add content assist features for the Thymeleaf
 standard dialect processors and expression utility objects, using the Eclipse
 Web Tools Platform HTML source editor.
 
- - Current version: 2.1.2
- - Released: 4 March 2016
-
-The 2.1.x versions of the Eclipse plugin are for Thymeleaf 2.1.  Check out the
-[2.0-master branch](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/tree/2.0-master)
-for a version that supports Thymeleaf 2.0.
+ - Current version: 3.0.0
+ - Released: 27 May 2020
 
 
 Minimum Requirements
 --------------------
 
- - Java 6
- - Thymeleaf 2.1.0
- - Eclipse Indigo SR2 (3.7.2) w/ Web Tools Platform 3.3.2 (ie: the Java EE
-   Developer bundle)
+ - Java 8
+ - Eclipse IDE for Enterprise Java Developers 2019-06
+ - An Eclipse project with Thymeleaf 3
 
 
 Installation
@@ -46,7 +41,7 @@ Content assist features are only available for dialects which have supplied
 special dialect metadata files in their JARs.  thymeleaf, thymeleaf-spring,
 thymeleaf-extras-springsecurity, and thymeleaf-extras-tiles2 projects already
 have such files.  Other dialects, however, are up to the discretion of their
-developer(s).  If you're developing a Thymeleaf dialect and would like to take
+developers.  If you're developing a Thymeleaf dialect and would like to take
 advantage of content assist for your own dialect, read the section on
 [adding content assist for your dialect](#adding-content-assist-for-your-dialect).
 
