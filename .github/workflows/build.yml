@@ -13,3 +13,4 @@ jobs:
           java-version: ${{ matrix.java }}
       - run: |
           ./gradlew downloadDependencies
+          mvn clean verify
