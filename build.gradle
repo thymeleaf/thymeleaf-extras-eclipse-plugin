@@ -44,6 +44,8 @@ configurations.create('contentassist')
 
 dependencies {
 	core(
+		'javax.annotation:javax.annotation-api:1.3.2',
+		'javax.inject:javax.inject:1',
 		'nz.net.ultraq.jaxb:jaxb-utilities:2.0.0',
 		'org.attoparser:attoparser:2.0.5.RELEASE',
 		'org.codehaus.groovy:groovy:3.0.2',
