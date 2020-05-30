@@ -82,6 +82,11 @@
 			<url>http://download.eclipse.org/releases/2019-06/</url>
 			<layout>p2</layout>
 		</repository>
+		<repository>
+			<id>eclipse</id>
+			<url>https://download.eclipse.org/eclipse/updates/4.12</url>
+			<layout>p2</layout>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -91,11 +96,11 @@
 	</pluginRepositories>
 
 	<properties>
-		<tycho.version>1.6.0</tycho.version>
+		<tycho.version>1.7.0</tycho.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<thymeleaf.plugin-name>thymeleaf-extras-eclipse-plugin</thymeleaf.plugin-name>
-		<thymeleaf.plugin-update-site>http://www.thymeleaf.org/eclipse-plugin-update-site/</thymeleaf.plugin-update-site>
+		<thymeleaf.plugin-update-site>https://dl.bintray.com/thymeleaf/downloads/${thymeleaf.plugin-name}/${project.version}/update-site/</thymeleaf.plugin-update-site>
 	</properties>
 
 	<build>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.thymeleaf.extras.eclipse.contentassist.feature_0.0.0.jar" id="org.thymeleaf.extras.eclipse.contentassist.feature" version="0.0.0">
+   <feature url="org.thymeleaf.extras.eclipse.contentassist.feature_0.0.0.jar" id="org.thymeleaf.extras.eclipse.contentassist.feature" version="0.0.0">
       <category name="org.thymeleaf.extras.eclipse"/>
    </feature>
-   <feature url="features/org.thymeleaf.extras.eclipse.contentassist.feature.source_0.0.0.jar" id="org.thymeleaf.extras.eclipse.contentassist.feature.source" version="0.0.0">
+   <feature url="org.thymeleaf.extras.eclipse.contentassist.feature.source_0.0.0.jar" id="org.thymeleaf.extras.eclipse.contentassist.feature.source" version="0.0.0">
       <category name="org.thymeleaf.extras.eclipse"/>
    </feature>
    <category-def name="org.thymeleaf.extras.eclipse" label="Thymeleaf Eclipse Plugin">
