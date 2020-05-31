@@ -31,31 +31,52 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            allPopups="true"
-            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-         <menu
+            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+         <command
+               commandId="org.thymeleaf.extras.eclipse.menus.AddThymeleafNature"
                icon="icons/Thymeleaf.png"
-               id="org.thymeleaf.extras.eclipse.menus.ThymeleafMenuGroup"
-               label="Thymeleaf">
+               label="Add Thymeleaf Nature"
+               style="push">
+            <visibleWhen>
+               <iterate ifEmpty="false">
+                  <adapt type="org.eclipse.core.resources.IProject">
+                     <not>
+                        <test
+                           forcePluginActivation="true"
+                           property="org.eclipse.core.resources.projectNature"
+                           value="org.thymeleaf.extras.eclipse.core.ThymeleafNature">
+                        </test>
+                     </not>
+                  </adapt>
+               </iterate>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+          allPopups="true"
+          locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+             icon="icons/Thymeleaf.png"
+             id="org.thymeleaf.extras.eclipse.menus.ThymeleafMenuGroup"
+             label="Thymeleaf">
             <visibleWhen>
                <iterate ifEmpty="false">
                   <adapt type="org.eclipse.core.resources.IProject">
                      <test
-                           property="org.eclipse.core.resources.open"
-                           value="true">
+                         property="org.eclipse.core.resources.open"
+                         value="true">
+                     </test>
+                     <test
+                           property="org.eclipse.core.resources.projectNature"
+                           value="org.thymeleaf.extras.eclipse.core.ThymeleafNature">
                      </test>
                   </adapt>
                </iterate>
             </visibleWhen>
             <command
-                  commandId="org.thymeleaf.extras.eclipse.menus.AddThymeleafNature"
-                  label="Add Thymeleaf Nature"
-                  style="push">
-            </command>
-            <command
-                  commandId="org.thymeleaf.extras.eclipse.menus.RemoveThymeleafNature"
-                  label="Remove Thymeleaf Nature"
-                  style="push">
+                commandId="org.thymeleaf.extras.eclipse.menus.RemoveThymeleafNature"
+                label="Remove Thymeleaf Nature"
+                style="push">
             </command>
          </menu>
       </menuContribution>
