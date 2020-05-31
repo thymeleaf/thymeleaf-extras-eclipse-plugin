@@ -26,12 +26,12 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
 						<configuration>
-							<tasks>
+							<target>
 								<mkdir dir="${repository.update-site}"/>
 								<copy file="${project.basedir}/p2.index" todir="${repository.update-site}"/>
 								<copy todir="${repository.update-site}">
@@ -39,7 +39,7 @@
 								</copy>
 								<copy file="${project.build.directory}/${project.artifactId}-${project.version}.zip"
 									tofile="${repository}/${thymeleaf.plugin-name}-${project.version}.zip"/>
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>

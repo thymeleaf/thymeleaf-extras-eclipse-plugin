@@ -25,12 +25,12 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
 						<configuration>
-							<tasks>
+							<target>
 								<mkdir dir="${composite-repository}"/>
 								<copy todir="${composite-repository}">
 									<fileset dir="${project.basedir}">
@@ -43,7 +43,7 @@
 									</filterset>
 								</copy>
 								<replace dir="${composite-repository}" token="-SNAPSHOT"/>
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
