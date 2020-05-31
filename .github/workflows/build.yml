@@ -11,6 +11,7 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java }}
-      - run: |
+      - name: Build plugin
+        run: |
           ./gradlew downloadDependencies
           mvn clean verify
