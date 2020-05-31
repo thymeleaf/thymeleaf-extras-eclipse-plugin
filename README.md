@@ -2,12 +2,12 @@
 Thymeleaf - Eclipse Plugin module
 =================================
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/thymeleaf/thymeleaf-extras-eclipse-plugin/Build)
+![Eclipse Marketplace](https://img.shields.io/eclipse-marketplace/v/thymeleaf-plugin-eclipse)
+
 A plugin for the Eclipse IDE to add content assist features for the Thymeleaf
 standard dialect processors and expression utility objects, using the Eclipse
 Web Tools Platform HTML source editor.
-
- - Current version: 3.0.0
- - Released: 27 May 2020
 
 
 Minimum Requirements
