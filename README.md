@@ -9,6 +9,8 @@ A plugin for the Eclipse IDE to add content assist features for the Thymeleaf
 standard dialect processors and expression utility objects, using the Eclipse
 Web Tools Platform HTML source editor.
 
+![Autocompletion demo](autocomplete.gif)
+
 
 Minimum Requirements
 --------------------
