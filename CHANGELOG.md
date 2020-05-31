@@ -2,6 +2,15 @@
 Changelog
 =========
 
+### 3.0.0
+ - Update plugin dependencies to fix an incompatibility with Java 9+.  Plugin is
+   now built and run against all Java LTS versions as of this release (Java 8,
+   11, and 14)
+   ([#84](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/91),
+   [#91](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/91))
+ - Minimum required Java version is now 8
+ - Minimum required Eclipse version is now 2019-06
+
 ### 2.1.2
  - Fixed content assist not working over a list of tags in the restrictions
    element, ([#68](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/68)),
