@@ -16,16 +16,13 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals
 
-import org.eclipse.jface.text.BadLocationException
 import org.eclipse.jface.text.IDocument
 import org.eclipse.jface.text.contentassist.ContextInformation
 import org.eclipse.jface.text.contentassist.ICompletionProposal
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension
 import org.eclipse.jface.text.contentassist.IContextInformation
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
-import org.thymeleaf.extras.eclipse.dialect.xml.AttributeRestrictions
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
-import org.thymeleaf.extras.eclipse.dialect.xml.Documentation
 
 /**
  * Common code for all processor and expression object completion proposals.

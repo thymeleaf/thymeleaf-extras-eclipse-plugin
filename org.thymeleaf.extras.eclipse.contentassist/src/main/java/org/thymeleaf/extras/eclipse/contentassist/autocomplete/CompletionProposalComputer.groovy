@@ -17,16 +17,9 @@
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete
 
 import org.eclipse.core.runtime.IProgressMonitor
-import org.eclipse.jface.text.BadLocationException
-import org.eclipse.jface.text.ITextViewer
-import org.eclipse.jface.text.contentassist.ICompletionProposal
-import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
-import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
-import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
 import org.eclipse.wst.sse.ui.contentassist.CompletionProposalInvocationContext
 import org.eclipse.wst.sse.ui.contentassist.ICompletionProposalComputer
 import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.AbstractItemProposalGenerator
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.AttributeProcessorProposalGenerator

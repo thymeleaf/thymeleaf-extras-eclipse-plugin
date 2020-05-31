@@ -18,7 +18,6 @@ package org.thymeleaf.extras.eclipse.contentassist
 
 import org.w3c.dom.Attr
 import org.w3c.dom.Element
-import org.w3c.dom.NamedNodeMap
 import org.w3c.dom.Node
 
 import javax.xml.namespace.QName

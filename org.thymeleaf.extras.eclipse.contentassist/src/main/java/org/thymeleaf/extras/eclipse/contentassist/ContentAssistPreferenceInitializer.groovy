@@ -17,7 +17,6 @@
 package org.thymeleaf.extras.eclipse.contentassist
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer
-import org.eclipse.jface.preference.IPreferenceStore
 
 /**
  * Initializes preferences for this plugin.

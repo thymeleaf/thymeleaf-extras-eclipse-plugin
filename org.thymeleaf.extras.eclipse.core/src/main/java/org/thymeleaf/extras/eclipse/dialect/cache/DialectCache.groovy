@@ -17,7 +17,6 @@
 package org.thymeleaf.extras.eclipse.dialect.cache
 
 import org.eclipse.core.resources.ResourcesPlugin
-import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.IJavaProject
 import org.thymeleaf.extras.eclipse.dialect.ProjectDependencyDialectLocator
 import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader

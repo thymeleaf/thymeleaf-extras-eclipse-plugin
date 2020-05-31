@@ -16,20 +16,12 @@
 
 package org.thymeleaf.extras.eclipse.dialect.cache
 
-import javax.inject.Named
 import org.eclipse.core.runtime.NullProgressMonitor
 import org.eclipse.jdt.core.IJavaProject
-import org.eclipse.jdt.core.IMethod
-import org.eclipse.jdt.core.IType
-import org.eclipse.jdt.core.JavaModelException
 import org.eclipse.jdt.ui.JavadocContentAccess
-import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
-import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
-import org.thymeleaf.extras.eclipse.dialect.xml.Documentation
-import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObject
-import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
-import org.thymeleaf.extras.eclipse.dialect.xml.Processor
+import org.thymeleaf.extras.eclipse.dialect.xml.*
 
+import javax.inject.Named 
 /**
  * Creates a content-assist ready dialect item from a dialect file definition.
  * 

@@ -16,16 +16,12 @@
 
 package org.thymeleaf.extras.eclipse.template
 
-import javax.inject.Named
-import org.attoparser.ParseException
 import org.attoparser.config.ParseConfiguration
 import org.attoparser.dom.DOMMarkupParser
-import org.attoparser.dom.Document
-import org.eclipse.core.resources.IFile
-import org.eclipse.core.runtime.CoreException
 import org.thymeleaf.extras.eclipse.resources.ResourceLoader
 import org.thymeleaf.extras.eclipse.template.model.Template
 
+import javax.inject.Named 
 /**
  * Creates template metadata for any templates picked out by a template locator.
  * 

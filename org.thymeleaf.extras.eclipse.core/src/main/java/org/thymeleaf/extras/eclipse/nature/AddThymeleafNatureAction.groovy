@@ -18,12 +18,8 @@ package org.thymeleaf.extras.eclipse.nature
 
 import org.eclipse.core.commands.AbstractHandler
 import org.eclipse.core.commands.ExecutionEvent
-import org.eclipse.core.expressions.IEvaluationContext
 import org.eclipse.core.resources.IProject
-import org.eclipse.core.resources.IProjectDescription
-import org.eclipse.core.runtime.CoreException
-import org.eclipse.jdt.core.IJavaProject
-
+import org.eclipse.jdt.core.IJavaProject 
 /**
  * Adds a Thymeleaf nature to selected projects.
  * 

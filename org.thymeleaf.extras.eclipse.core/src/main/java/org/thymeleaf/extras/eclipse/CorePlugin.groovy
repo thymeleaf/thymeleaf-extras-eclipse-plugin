@@ -17,12 +17,7 @@
 package org.thymeleaf.extras.eclipse
 
 import org.eclipse.core.runtime.Plugin
-import org.eclipse.core.runtime.Status
 import org.osgi.framework.BundleContext
-import org.springframework.context.annotation.AnnotationConfigApplicationContext
-import org.thymeleaf.extras.eclipse.CoreConfig
-import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
-import org.thymeleaf.extras.eclipse.template.cache.TemplateCache
 
 /**
  * Plugin activator class for the Thymeleaf core module.

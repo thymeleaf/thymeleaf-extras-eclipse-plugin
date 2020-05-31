@@ -19,7 +19,6 @@ package org.thymeleaf.extras.eclipse.dialect.cache
 import org.eclipse.core.resources.IProject
 import org.eclipse.core.resources.IResourceChangeEvent
 import org.eclipse.core.resources.IResourceChangeListener
-import org.eclipse.core.resources.IResourceDelta
 import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
@@ -27,16 +26,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.thymeleaf.extras.eclipse.dialect.SingleFileDialectLocator
 import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader
-import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
-import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
 import static org.eclipse.core.resources.IResourceChangeEvent.*
 
-import groovy.transform.MapConstructor
-import groovy.transform.TupleConstructor
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import javax.annotation.PreDestroy
 import javax.inject.Inject
 import javax.inject.Named

@@ -18,18 +18,21 @@
    </license>
 
    <requires>
+      <import plugin="javax.activation" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="javax.annotation" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="javax.inject" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.logging" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.13.400" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.15.300" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.core" version="3.18.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.18.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface.text" version="3.15.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.113.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.ide" version="3.15.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.wst.html.ui" version="1.1.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.wst.sse.core" version="1.2.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.wst.sse.ui" version="1.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.wst.xml.core" version="1.2.200" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.expressions" version="3.6.400" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.ui" version="3.18.0" match="greaterOrEqual"/>
+      <import plugin="org.slf4j.api" version="1.7.2" match="greaterOrEqual"/>
    </requires>
 
    <plugin

@@ -16,7 +16,6 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.hover
 
-import org.eclipse.jface.text.BadLocationException
 import org.eclipse.jface.text.DefaultInformationControl
 import org.eclipse.jface.text.IInformationControl
 import org.eclipse.jface.text.IInformationControlCreator
@@ -32,9 +31,6 @@ import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer
 import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
-import org.thymeleaf.extras.eclipse.dialect.xml.Processor
-
-import java.util.regex.Pattern
 
 /**
  * Documentation-on-hover creator for Thymeleaf processors.

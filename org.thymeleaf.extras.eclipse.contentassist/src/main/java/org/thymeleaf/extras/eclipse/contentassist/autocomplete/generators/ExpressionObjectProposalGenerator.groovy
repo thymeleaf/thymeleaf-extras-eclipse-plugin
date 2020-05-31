@@ -16,7 +16,6 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators
 
-import org.eclipse.jface.text.BadLocationException
 import org.eclipse.jface.text.IDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
@@ -27,7 +26,6 @@ import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.ExpressionObjectMethodCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
-import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
 
 /**
  * Proposal generator for Thymeleaf expression objects.

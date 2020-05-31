@@ -18,30 +18,19 @@ package org.thymeleaf.extras.eclipse.dialect
 
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IStorage
-import org.eclipse.core.runtime.CoreException
-import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.IJarEntryResource
-import org.eclipse.jdt.core.IJavaElement
 import org.eclipse.jdt.core.IJavaProject
-import org.eclipse.jdt.core.IPackageFragment
-import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.xml.sax.Attributes
-import org.xml.sax.SAXException
 import org.xml.sax.helpers.DefaultHandler
 
 import groovy.transform.TupleConstructor
 import java.util.concurrent.Callable
-import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
-import javax.xml.parsers.ParserConfigurationException
-import javax.xml.parsers.SAXParser
-import javax.xml.parsers.SAXParserFactory
-
+import javax.xml.parsers.SAXParserFactory 
 /**
  * Locates Thymeleaf dialect XML help files from a project's dependencies.
  * 

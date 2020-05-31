@@ -16,7 +16,6 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators
 
-import org.eclipse.jface.text.BadLocationException
 import org.eclipse.jface.text.IDocument
 import org.eclipse.jface.text.contentassist.ICompletionProposal
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument

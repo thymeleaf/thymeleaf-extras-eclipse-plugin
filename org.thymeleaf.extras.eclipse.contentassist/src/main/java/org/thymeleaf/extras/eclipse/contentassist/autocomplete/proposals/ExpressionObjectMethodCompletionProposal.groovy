@@ -16,7 +16,6 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals
 
-import org.eclipse.jface.text.BadLocationException
 import org.eclipse.jface.text.IDocument
 import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.graphics.Point

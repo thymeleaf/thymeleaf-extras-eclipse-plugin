@@ -16,18 +16,9 @@
 
 package org.thymeleaf.extras.eclipse.contentassist
 
-import org.eclipse.core.resources.IFile
-import org.eclipse.core.resources.IProject
-import org.eclipse.core.runtime.CoreException
-import org.eclipse.core.runtime.Status
 import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
-import org.eclipse.jface.preference.IPreferenceStore
 import org.eclipse.jface.resource.ImageRegistry
-import org.eclipse.jface.util.IPropertyChangeListener
-import org.eclipse.jface.util.PropertyChangeEvent
-import org.eclipse.ui.IEditorPart
-import org.eclipse.ui.IFileEditorInput
 import org.eclipse.ui.plugin.AbstractUIPlugin
 import org.eclipse.wst.html.ui.internal.HTMLUIPlugin
 import org.eclipse.wst.html.ui.internal.preferences.HTMLUIPreferenceNames

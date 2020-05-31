@@ -18,7 +18,6 @@ package org.thymeleaf.extras.eclipse.template.cache
 
 import javax.inject.Inject
 import javax.inject.Named
-import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.IJavaProject
 import org.thymeleaf.extras.eclipse.resources.ResourceTree
 import org.thymeleaf.extras.eclipse.template.ProjectTemplateLocator

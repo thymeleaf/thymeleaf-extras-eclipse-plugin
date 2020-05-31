@@ -20,8 +20,6 @@ import org.eclipse.core.resources.IContainer
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IFolder
 import org.eclipse.core.resources.IProject
-import org.eclipse.core.resources.IResource
-import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.IJavaProject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -29,12 +27,9 @@ import org.thymeleaf.extras.eclipse.resources.ResourceLocator
 
 import groovy.transform.TupleConstructor
 import java.util.concurrent.Callable
-import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
-
+import java.util.concurrent.Future 
 /**
  * Locates Thymeleaf templates in the current project.  Basically, all HTML
  * files.

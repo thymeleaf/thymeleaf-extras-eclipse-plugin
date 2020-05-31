@@ -19,7 +19,6 @@ package org.thymeleaf.extras.eclipse.dialect.cache
 import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.IJavaProject
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
-import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod

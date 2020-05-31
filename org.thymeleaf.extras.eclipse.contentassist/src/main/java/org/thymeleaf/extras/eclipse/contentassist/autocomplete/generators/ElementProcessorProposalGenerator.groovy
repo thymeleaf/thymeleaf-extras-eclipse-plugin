@@ -16,18 +16,15 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators
 
-import org.eclipse.jface.text.BadLocationException
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
-import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegionList
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
 import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.ElementProcessorCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
-import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor
 
 /**
  * Proposal generator for Thymeleaf element processors.
