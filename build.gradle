@@ -21,10 +21,10 @@
  * @author Emanuel Rabina
  */
 
-apply from: 'https://raw.githubusercontent.com/ultraq/gradle-support/2.1.0/jaxb.gradle'
+apply from: 'https://raw.githubusercontent.com/ultraq/gradle-support/3.4.0/jaxb.gradle'
 
-project.ext.corePluginDir = 'org.thymeleaf.extras.eclipse.core'
-project.ext.contentassistPluginDir = 'org.thymeleaf.extras.eclipse.contentassist'
+def corePluginDir = 'org.thymeleaf.extras.eclipse.core'
+def contentassistPluginDir = 'org.thymeleaf.extras.eclipse.contentassist'
 
 repositories {
 	mavenCentral()
@@ -45,18 +45,14 @@ configurations.create('contentassist')
 dependencies {
 	core(
 		'nz.net.ultraq.jaxb:jaxb-utilities:2.0.0',
+		'nz.net.ultraq.extensions:groovy-extensions:1.1.0',
+		'nz.net.ultraq.extensions:profiling-extensions:0.6.1',
 		'org.attoparser:attoparser:2.0.5.RELEASE',
-		'org.codehaus.groovy:groovy:3.0.2',
+		'org.codehaus.groovy:groovy:3.0.8',
 		'org.springframework:spring-context:5.2.0.RELEASE'
 	)
-	core('nz.net.ultraq.extensions:groovy-extensions:0.3.0') {
-		transitive = false
-	}
-	core('nz.net.ultraq.extensions:profiling-extensions:0.4.0') {
-		transitive = false
-	}
 	contentassist(
-		'org.codehaus.groovy:groovy:3.0.2'
+		'org.codehaus.groovy:groovy:3.0.8'
 	)
 }
 
@@ -69,11 +65,11 @@ task downloadDependencies(
 
 	copy {
 		from configurations.core
-		into "${project.corePluginDir}/libs"
+		into "${corePluginDir}/libs"
 	}
 	copy {
 		from configurations.contentassist
-		into "${project.contentassistPluginDir}/libs"
+		into "${contentassistPluginDir}/libs"
 	}
 }
 
@@ -82,8 +78,8 @@ task downloadDependencies(
  * in the core plugin.
  */
 xjc {
-	schemaDir = "${project.corePluginDir}/schemas"
-	outputDir = "${project.corePluginDir}/src/main/java"
+	schemaDir = "${corePluginDir}/schemas"
+	outputDir = "${corePluginDir}/src/main/java"
 	classes = [
 		'**/dialect/xml/*.java'
 	]
