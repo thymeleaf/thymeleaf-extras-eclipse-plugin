@@ -88,7 +88,7 @@ class ProjectDependencyDialectLocator implements DialectLocator {
 
 		logger.info('Scanning for dialect help files on project dependencies')
 
-		return time('Scanning for dialects') { ->
+		return time('Scanning for dialects', logger) { ->
 
 			// Multi-threaded search for dialect files - there are a lot of package
 			// fragments to get through, and the I/O namespace check is a blocker.

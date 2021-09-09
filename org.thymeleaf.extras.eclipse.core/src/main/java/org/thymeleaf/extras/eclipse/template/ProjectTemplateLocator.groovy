@@ -51,7 +51,7 @@ class ProjectTemplateLocator implements ResourceLocator<IFile> {
 
 		logger.info("Scanning for Thymeleaf templates in the project")
 
-		return time('Scanning for templates') { ->
+		return time('Scanning for templates', logger) { ->
 
 			// Multi-threaded search for template files - there can be a lot of files
 			// to get through.
