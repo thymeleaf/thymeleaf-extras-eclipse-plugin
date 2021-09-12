@@ -26,12 +26,12 @@ Minimum Requirements
 Installation
 ------------
 
-This plugin is available on the [Eclipse Marketplace](http://marketplace.eclipse.org/content/thymeleaf-plugin-eclipse).
+This plugin is available on the [Eclipse Marketplace](https://marketplace.eclipse.org/content/thymeleaf-plugin-eclipse).
 Searching for "thymeleaf" in the marketplace website or client from Eclipse
 will bring up this plugin for installation.
 
 Alternatively, you can install this plugin using the update site URL:
-http://www.thymeleaf.org/eclipse-plugin-update-site/
+https://www.thymeleaf.org/eclipse-plugin-update-site/
 
 Or, download a ZIP archive of the plugin from the
 [releases](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/releases)
@@ -88,7 +88,7 @@ Adding content assist for your dialect
 
 The content assist features are driven by metadata about a dialect, currently
 done using XML files, conforming to a schema that lives at
-[http://www.thymeleaf.org/xsd/thymeleaf-extras-dialect-2.1.xsd](http://www.thymeleaf.org/xsd/thymeleaf-extras-dialect-2.1.xsd).
+[https://www.thymeleaf.org/xsd/thymeleaf-extras-dialect-2.1.xsd](https://www.thymeleaf.org/xsd/thymeleaf-extras-dialect-2.1.xsd).
 
 When content assist is invoked, this plugin will look for XML files in the
 classpath of the current project whose XML namespace is `http://www.thymeleaf.org/extras/dialect`.
