@@ -105,7 +105,7 @@ class DialectTree {
 	 */
 	List<ElementProcessor> getElementProcessorsForProject(IJavaProject project) {
 
-		return projectAttributeProcessors.getOrCreate(project) { ->
+		return projectElementProcessors.getOrCreate(project) { ->
 			return dialectProjects[project].elementProcessors.sort(false, dialectItemSorter)
 		}
 	}

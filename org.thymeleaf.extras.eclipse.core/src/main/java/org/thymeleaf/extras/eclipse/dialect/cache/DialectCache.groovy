@@ -167,7 +167,7 @@ class DialectCache {
 
 		loadDialectsFromProject(project)
 
-		dialectTree.getElementProcessorsForProject(project).findAll { processor ->
+		return dialectTree.getElementProcessorsForProject(project).findAll { processor ->
 			return (thymeleafNatureEnabled(project) || dialectInNamespace(processor.dialect, namespaces)) &&
 				processorMatchesPattern(processor, pattern)
 		}
