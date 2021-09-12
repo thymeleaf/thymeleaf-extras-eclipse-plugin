@@ -3,6 +3,7 @@
 .settings/
 /2.1.2
 /3.0.0
+/3.0.1
 libs/
 target/
 .classpath
