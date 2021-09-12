@@ -82,9 +82,9 @@ class AttributeRestrictionProposalGenerator extends AbstractItemProposalGenerato
 		ITextRegion textRegion, IStructuredDocumentRegion documentRegion, IStructuredDocument document,
 		int cursorPosition) {
 
-		return makeAttributeRestrictionSuggestions(node, textRegion) ?
-				computeAttributeRestrictionSuggestions(node, textRegion, documentRegion, document, cursorPosition) :
-				Collections.EMPTY_LIST
+		return textRegion && makeAttributeRestrictionSuggestions(node, textRegion) ?
+			computeAttributeRestrictionSuggestions(node, textRegion, documentRegion, document, cursorPosition) :
+			Collections.EMPTY_LIST
 	}
 
 	/**

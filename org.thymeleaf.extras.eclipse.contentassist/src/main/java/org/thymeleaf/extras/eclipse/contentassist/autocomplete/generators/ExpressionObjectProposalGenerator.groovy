@@ -98,6 +98,6 @@ class ExpressionObjectProposalGenerator extends AbstractItemProposalGenerator<Ex
 	 */
 	private static boolean makeExpressionObjectMethodSuggestions(IDOMNode node, ITextRegion textRegion) {
 
-		return node.nodeType == IDOMNode.ELEMENT_NODE && textRegion.type == DOMRegionContext.XML_TAG_ATTRIBUTE_VALUE
+		return node.nodeType == IDOMNode.ELEMENT_NODE && textRegion?.type == DOMRegionContext.XML_TAG_ATTRIBUTE_VALUE
 	}
 }

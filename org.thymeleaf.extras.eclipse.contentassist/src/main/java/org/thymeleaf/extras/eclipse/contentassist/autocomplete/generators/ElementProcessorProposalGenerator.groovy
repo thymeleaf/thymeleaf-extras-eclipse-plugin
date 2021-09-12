@@ -94,11 +94,17 @@ class ElementProcessorProposalGenerator extends AbstractItemProposalGenerator<El
 		// If we're in an element node, then the previous text region should be an
 		// opening XML tag
 		case IDOMNode.ELEMENT_NODE:
-			def textRegionList = documentRegion.regions
-			def currentRegionIndex = textRegionList.indexOf(textRegion)
-			def previousRegion = textRegionList.get(currentRegionIndex - 1)
-			return (previousRegion.type == DOMRegionContext.XML_TAG_OPEN) &&
-				!Character.isWhitespace(document.getChar(cursorPosition - 1))
+			if (textRegion) {
+				def textRegions = documentRegion.regions
+				def currentTextRegionIndex = textRegions.indexOf(textRegion)
+				if (currentTextRegionIndex > 1) {
+					def previousRegion = textRegions.get(currentTextRegionIndex - 1)
+					return (previousRegion.type == DOMRegionContext.XML_TAG_OPEN) &&
+						!Character.isWhitespace(document.getChar(cursorPosition - 1))
+				}
+	
+			}
+			break
 		}
 
 		return false

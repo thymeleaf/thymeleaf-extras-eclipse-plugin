@@ -153,11 +153,11 @@ class AttributeProcessorProposalGenerator extends AbstractItemProposalGenerator<
 	 */
 	@Override
 	List<AttributeProcessorCompletionProposal> generateProposals(IDOMNode node,
-		ITextRegion textregion, IStructuredDocumentRegion documentregion,
-		IStructuredDocument document, int cursorposition) {
+		ITextRegion textRegion, IStructuredDocumentRegion documentRegion,
+		IStructuredDocument document, int cursorPosition) {
 
-		return makeAttributeProcessorSuggestions(node, textregion, documentregion, document, cursorposition) ?
-				computeAttributeProcessorSuggestions(node, document, cursorposition) :
+		return makeAttributeProcessorSuggestions(node, textRegion, documentRegion, document, cursorPosition) ?
+				computeAttributeProcessorSuggestions(node, document, cursorPosition) :
 				Collections.EMPTY_LIST
 	}
 
@@ -180,13 +180,20 @@ class AttributeProcessorProposalGenerator extends AbstractItemProposalGenerator<
 			if (Character.isWhitespace(document.getChar(cursorPosition - 1))) {
 				return true
 			}
-			if (textRegion.type == DOMRegionContext.XML_TAG_ATTRIBUTE_NAME) {
-				return true
-			}
-			def textRegionList = documentRegion.regions
-			def previousRegion = textRegionList.get(textRegionList.indexOf(textRegion) - 1)
-			if (previousRegion.type == DOMRegionContext.XML_TAG_ATTRIBUTE_NAME) {
-				return true
+			if (textRegion) {
+				if (textRegion.type == DOMRegionContext.XML_TAG_ATTRIBUTE_NAME) {
+					return true
+				}
+				def textRegions = documentRegion.regions
+				def currentTextRegionIndex = textRegions.indexOf(textRegion)
+				if (currentTextRegionIndex > 0) {
+					def previousRegion = textRegions.get(currentTextRegionIndex - 1)
+					if (previousRegion.type == DOMRegionContext.XML_TAG_ATTRIBUTE_NAME) {
+						return true
+					}
+		
+				}
+	
 			}
 		}
 		return false
