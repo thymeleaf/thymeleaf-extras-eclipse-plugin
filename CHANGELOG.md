@@ -2,6 +2,15 @@
 Changelog
 =========
 
+### 3.0.1
+ - Bundle all JARs to fix plugin startup issues around missing
+   `javax.activation` dependency.  That JAR is normally included in the
+   "Eclipse IDE for Enterprise and Java Web Developers" bundle, but other
+   installations might not have it despite meeting other prerequisites (like
+   Spring Tool Suite)
+   ([#99](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/99),
+   [#100](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/100))
+
 ### 3.0.0
  - Update plugin dependencies to fix an incompatibility with Java 9+.  Plugin is
    now built and run against all Java LTS versions as of this release (Java 8,
