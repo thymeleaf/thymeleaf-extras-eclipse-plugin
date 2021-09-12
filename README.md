@@ -16,8 +16,11 @@ Minimum Requirements
 --------------------
 
  - Java 8
- - Eclipse IDE for Enterprise Java Developers 2019-06
- - An Eclipse project with Thymeleaf 3
+ - An Eclipse IDE based on 2019-06 or newer.  Has been tested with the 
+   Enterprise and Java Web Developers bundle from the Eclipse installer and
+   Spring Tool Suite 4.7.1 (newer versions of Spring Tool Suite will not work
+   as they have changed the HTML editor that this plugin relies on)
+ - A Thymeleaf 3 project
 
 
 Installation
@@ -30,8 +33,9 @@ will bring up this plugin for installation.
 Alternatively, you can install this plugin using the update site URL:
 http://www.thymeleaf.org/eclipse-plugin-update-site/
 
-Or, download a ZIP archive of the plugin from Bintray:
-https://bintray.com/thymeleaf/downloads/thymeleaf-extras-eclipse-plugin/
+Or, download a ZIP archive of the plugin from the
+[releases](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/releases)
+pages.
 
 
 Features
