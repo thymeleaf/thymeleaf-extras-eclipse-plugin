@@ -2,8 +2,8 @@
 Thymeleaf - Eclipse Plugin module
 =================================
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/thymeleaf/thymeleaf-extras-eclipse-plugin/Build)
-![Eclipse Marketplace](https://img.shields.io/eclipse-marketplace/v/thymeleaf-plugin-eclipse)
+[![Build Status](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/actions)
+[![Eclipse Marketplace](https://img.shields.io/eclipse-marketplace/v/thymeleaf-plugin-eclipse)](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/actions)
 
 A plugin for the Eclipse IDE to add content assist features for the Thymeleaf
 standard dialect processors and expression utility objects, using the Eclipse
