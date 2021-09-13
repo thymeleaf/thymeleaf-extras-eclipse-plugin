@@ -46,11 +46,10 @@ class CorePlugin extends Plugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void start(BundleContext context) {
+	void start(BundleContext context) {
 
 		super.start(context)
 		plugin = this
-
 		springContainer = SpringContainer.instance
 	}
 
@@ -58,10 +57,9 @@ class CorePlugin extends Plugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void stop(BundleContext context) {
+	void stop(BundleContext context) {
 
 		springContainer.close()
-
 		plugin = null
 		super.stop(context)
 	}
