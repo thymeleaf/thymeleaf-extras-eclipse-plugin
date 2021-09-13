@@ -99,8 +99,7 @@
 		<tycho.version>1.7.0</tycho.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-		<thymeleaf.plugin-name>thymeleaf-extras-eclipse-plugin</thymeleaf.plugin-name>
-		<thymeleaf.plugin-update-site>https://dl.bintray.com/thymeleaf/downloads/${thymeleaf.plugin-name}/${project.version}/update-site/</thymeleaf.plugin-update-site>
+		<thymeleaf.plugin-update-site>https://raw.githubusercontent.com/thymeleaf/thymeleaf-extras-eclipse-plugin/update-site/${project.version}/</thymeleaf.plugin-update-site>
 	</properties>
 
 	<build>

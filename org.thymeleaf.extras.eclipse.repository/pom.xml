@@ -38,7 +38,7 @@
 									<fileset dir="${project.build.directory}/repository" includes="**/*"/>
 								</copy>
 								<copy file="${project.build.directory}/${project.artifactId}-${project.version}.zip"
-									tofile="${repository}/${thymeleaf.plugin-name}-${project.version}.zip"/>
+									tofile="${repository}/thymeleaf-extras-eclipse-plugin-${project.version}.zip"/>
 							</target>
 						</configuration>
 						<goals>
