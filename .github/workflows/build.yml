@@ -14,4 +14,4 @@ jobs:
       - name: Build plugin
         run: |
           ./gradlew downloadDependencies
-          mvn clean verify
+          mvn verify
