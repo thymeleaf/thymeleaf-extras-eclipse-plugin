@@ -35,7 +35,7 @@ import javax.inject.Inject
  * 
  * @author Emanuel Rabina
  */
-@SpringJUnitConfig(TestConfig)
+@SpringJUnitConfig(TestConfig.class)
 class DialectCacheTests {
 
 	@Configuration
