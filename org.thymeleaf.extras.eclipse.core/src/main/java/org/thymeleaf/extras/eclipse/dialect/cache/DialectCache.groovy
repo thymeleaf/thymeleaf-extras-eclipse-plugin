@@ -16,7 +16,7 @@
 
 package org.thymeleaf.extras.eclipse.dialect.cache
 
-import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.core.resources.IWorkspace
 import org.eclipse.jdt.core.IJavaProject
 import org.thymeleaf.extras.eclipse.dialect.ProjectDependencyDialectLocator
 import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader
@@ -45,6 +45,8 @@ import javax.xml.namespace.QName
 class DialectCache {
 
 	@Inject
+	private final IWorkspace workspace
+	@Inject
 	private final XmlDialectLoader xmlDialectLoader
 	@Inject
 	private final DialectTree dialectTree
@@ -59,7 +61,7 @@ class DialectCache {
 	@PostConstruct
 	void init() {
 
-		ResourcesPlugin.workspace.addResourceChangeListener(dialectChangeListener, POST_CHANGE | PRE_CLOSE | PRE_DELETE)
+		workspace.addResourceChangeListener(dialectChangeListener, POST_CHANGE | PRE_CLOSE | PRE_DELETE)
 	}
 
 	/**
@@ -69,7 +71,7 @@ class DialectCache {
 	@PreDestroy
 	void close() {
 
-		ResourcesPlugin.workspace.removeResourceChangeListener(dialectChangeListener)
+		workspace.removeResourceChangeListener(dialectChangeListener)
 	}
 
 	/**

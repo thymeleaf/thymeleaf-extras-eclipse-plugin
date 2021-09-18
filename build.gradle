@@ -24,13 +24,11 @@
 apply from: 'https://raw.githubusercontent.com/ultraq/gradle-support/3.4.0/jaxb.gradle'
 
 def corePluginDir = 'org.thymeleaf.extras.eclipse.core'
+def coreTestPluginDir = 'org.thymeleaf.extras.eclipse.core.test'
 def contentassistPluginDir = 'org.thymeleaf.extras.eclipse.contentassist'
 
 repositories {
 	mavenCentral()
-	maven {
-		url 'https://oss.sonatype.org/content/repositories/snapshots/'
-	}
 }
 
 /**
@@ -40,16 +38,24 @@ repositories {
  * to, since this is an OSGi environment, not a Maven one). 
  */
 configurations.create('core')
+configurations.create('coreTest')
 configurations.create('contentassist')
 
 dependencies {
 	core(
+		'javax.inject:javax.inject:1',
 		'nz.net.ultraq.jaxb:jaxb-utilities:2.0.0',
 		'nz.net.ultraq.extensions:groovy-extensions:1.1.0',
 		'nz.net.ultraq.extensions:profiling-extensions:0.6.1',
 		'org.attoparser:attoparser:2.0.5.RELEASE',
 		'org.codehaus.groovy:groovy:3.0.8',
 		'org.springframework:spring-context:5.2.0.RELEASE'
+	)
+	// coreTest is a fragment of core, so don't need to include those dependencies here
+	coreTest(
+		'org.junit.jupiter:junit-jupiter-engine:5.6.3',
+		'org.mockito:mockito-core:3.12.4',
+		'org.springframework:spring-test:5.2.0.RELEASE'
 	)
 	contentassist(
 		'org.codehaus.groovy:groovy:3.0.8'
@@ -66,6 +72,10 @@ task downloadDependencies(
 	copy {
 		from configurations.core
 		into "${corePluginDir}/libs"
+	}
+	copy {
+		from configurations.coreTest
+		into "${coreTestPluginDir}/libs"
 	}
 	copy {
 		from configurations.contentassist

@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Thymeleaf Core tests
+Bundle-SymbolicName: org.thymeleaf.extras.eclipse.core.test
+Bundle-Version: 3.1.0.qualifier
+Bundle-Vendor: Thymeleaf Project
+Fragment-Host: org.thymeleaf.extras.eclipse.core;bundle-version="3.1.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-ClassPath: .,
+ libs/apiguardian-api-1.1.0.jar,
+ libs/byte-buddy-1.11.13.jar,
+ libs/byte-buddy-agent-1.11.13.jar,
+ libs/junit-jupiter-api-5.6.3.jar,
+ libs/junit-jupiter-engine-5.6.3.jar,
+ libs/junit-platform-commons-1.6.3.jar,
+ libs/junit-platform-engine-1.6.3.jar,
+ libs/mockito-core-3.12.4.jar,
+ libs/objenesis-3.2.jar,
+ libs/opentest4j-1.2.0.jar,
+ libs/spring-core-5.2.0.RELEASE.jar,
+ libs/spring-jcl-5.2.0.RELEASE.jar,
+ libs/spring-test-5.2.0.RELEASE.jar
