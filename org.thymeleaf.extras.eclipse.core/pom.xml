@@ -19,19 +19,34 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+		<dependency>
+			<groupId>nz.net.ultraq.jaxb</groupId>
+			<artifactId>jaxb-utilities</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>nz.net.ultraq.extensions</groupId>
+			<artifactId>groovy-extensions</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>nz.net.ultraq.extensions</groupId>
+			<artifactId>profiling-extensions</artifactId>
+			<version>0.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.attoparser</groupId>
+			<artifactId>attoparser</artifactId>
+			<version>2.0.5.RELEASE</version>
+		</dependency>
+		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy</artifactId>
 			<version>3.0.8</version>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.7.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>3.12.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -40,8 +55,27 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.2.0.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.7.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>3.12.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>5.2.0.RELEASE</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
