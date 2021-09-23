@@ -47,7 +47,7 @@ dependencies {
 		'nz.net.ultraq.extensions:groovy-extensions:1.1.0',
 		'nz.net.ultraq.extensions:profiling-extensions:0.6.1',
 		'org.attoparser:attoparser:2.0.5.RELEASE',
-		'org.codehaus.groovy:groovy:3.0.8',
+		'org.codehaus.groovy:groovy:3.0.9',
 		'org.springframework:spring-context:5.2.0.RELEASE',
 
 		// For unit tests
@@ -56,7 +56,7 @@ dependencies {
 		'org.springframework:spring-test:5.2.0.RELEASE'
 	)
 	contentassist(
-		'org.codehaus.groovy:groovy:3.0.8'
+		'org.codehaus.groovy:groovy:3.0.9'
 	)
 }
 
