@@ -20,7 +20,9 @@
  * 
  * @author Emanuel Rabina
  */
-
+plugins {
+	id 'java-library'
+}
 apply from: 'https://raw.githubusercontent.com/ultraq/gradle-support/3.4.0/jaxb.gradle'
 
 def corePluginDir = 'org.thymeleaf.extras.eclipse.core'
@@ -43,8 +45,10 @@ configurations.create('core')
 configurations.create('contentassist')
 
 configurations.all {
-	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-	resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+	resolutionStrategy {
+		cacheChangingModulesFor 0, 'seconds'
+		cacheDynamicVersionsFor 0, 'seconds'
+	}
 }
 
 dependencies {
@@ -59,8 +63,7 @@ dependencies {
 		'org.springframework:spring-context:5.2.0.RELEASE',
 
 		// For unit tests
-		'org.junit.jupiter:junit-jupiter-engine:5.7.2',
-		'org.junit.jupiter:junit-jupiter-params:5.7.2',
+		'org.junit.jupiter:junit-jupiter:5.7.2',
 		'org.mockito:mockito-core:3.12.4',
 		'org.springframework:spring-test:5.2.0.RELEASE'
 	)
