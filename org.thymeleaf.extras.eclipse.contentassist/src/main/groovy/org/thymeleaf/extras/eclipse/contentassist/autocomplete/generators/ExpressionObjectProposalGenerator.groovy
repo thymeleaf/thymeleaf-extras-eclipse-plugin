@@ -16,7 +16,6 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators
 
-import org.eclipse.jface.text.IDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
@@ -48,35 +47,13 @@ class ExpressionObjectProposalGenerator extends AbstractItemProposalGenerator<Ex
 	private List<ExpressionObjectMethodCompletionProposal> computeExpressionObjectMethodSuggestions(
 		IDOMNode node, IStructuredDocument document, int cursorPosition) {
 
-		def pattern = findExpressionObjectMethodNamePattern(document, cursorPosition)
+		def pattern = document.findExpressionObjectMethodNamePattern(cursorPosition)
 		return dialectCache.getExpressionObjectMethods(ContentAssistPlugin.findCurrentJavaProject(), findNodeNamespaces(node), pattern)
 			.collect { expressionObject ->
 				return new ExpressionObjectMethodCompletionProposal(expressionObject, pattern.length(), cursorPosition)
 			}
 	}
 
-	/**
-	 * Return the expression object method name pattern before the cursor
-	 * position.
-	 * 
-	 * @param document
-	 * @param cursorPosition
-	 * @return The text entered up to the document offset, if the text could
-	 *   constitute an expression object method name.
-	 */
-	private static String findExpressionObjectMethodNamePattern(IDocument document, int cursorPosition) {
-
-		def position = cursorPosition
-		def length = 0
-		while (--position > 0 && isExpressionObjectMethodChar(document.getChar(position))) {
-			length++
-		}
-		return document.get(position + 1, length)
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	List<ExpressionObjectMethodCompletionProposal> generateProposals(IDOMNode node,
 		ITextRegion textRegion, IStructuredDocumentRegion documentRegion, IStructuredDocument document,

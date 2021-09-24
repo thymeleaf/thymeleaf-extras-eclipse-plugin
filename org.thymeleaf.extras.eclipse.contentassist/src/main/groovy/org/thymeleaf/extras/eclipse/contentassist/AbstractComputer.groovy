@@ -56,17 +56,4 @@ abstract class AbstractComputer {
 
 		return namespaces
 	}
-
-	/**
-	 * Returns whether or not the given character is a valid expression object
-	 * method name character.
-	 * 
-	 * @param c
-	 * @return <tt>true</tt> if <tt>char</tt> is an alphanumeric character, or
-	 * 		   one of the following symbols: <tt># .</tt>
-	 */
-	protected static boolean isExpressionObjectMethodChar(char c) {
-
-		return Character.isLetterOrDigit(c) || c == '#' || c =='.'
-	}
 }

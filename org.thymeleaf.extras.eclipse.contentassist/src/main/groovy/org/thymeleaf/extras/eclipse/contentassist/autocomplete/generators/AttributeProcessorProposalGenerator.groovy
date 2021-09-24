@@ -16,7 +16,6 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators
 
-import org.eclipse.jface.text.BadLocationException
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
@@ -41,6 +40,40 @@ class AttributeProcessorProposalGenerator extends AbstractItemProposalGenerator<
 	private final DialectCache dialectCache
 
 	/**
+	 * Check if attribute processor suggestions can be made.
+	 * 
+	 * @param node
+	 * @param textRegion
+	 * @param documentRegion
+	 * @param document
+	 * @param cursorPosition
+	 * @return {@code true} if attribute processor suggestions can be made.
+	 */
+	private static boolean canMakeProposals(IDOMNode node, ITextRegion textRegion,
+		IStructuredDocumentRegion documentRegion, IStructuredDocument document, int cursorPosition) {
+
+		if (node.nodeType == IDOMNode.ELEMENT_NODE) {
+			if (Character.isWhitespace(document.getChar(cursorPosition - 1))) {
+				return true
+			}
+			if (textRegion) {
+				if (textRegion.type == DOMRegionContext.XML_TAG_ATTRIBUTE_NAME) {
+					return true
+				}
+				def textRegions = documentRegion.regions
+				def currentTextRegionIndex = textRegions.indexOf(textRegion)
+				if (currentTextRegionIndex > 0) {
+					def previousRegion = textRegions.get(currentTextRegionIndex - 1)
+					if (previousRegion.type == DOMRegionContext.XML_TAG_ATTRIBUTE_NAME) {
+						return true
+					}
+				}
+			}
+		}
+		return false
+	}
+
+	/**
 	 * Collect attribute processor suggestions.
 	 * 
 	 * @param node
@@ -51,7 +84,7 @@ class AttributeProcessorProposalGenerator extends AbstractItemProposalGenerator<
 	private List<AttributeProcessorCompletionProposal> computeAttributeProcessorSuggestions(
 		IDOMNode node, IStructuredDocument document, int cursorPosition) {
 
-		def pattern = findProcessorNamePattern(document, cursorPosition)
+		def pattern = document.findProcessorNamePattern(cursorPosition)
 
 		def processors = dialectCache.getAttributeProcessors(ContentAssistPlugin.findCurrentJavaProject(), findNodeNamespaces(node), pattern)
 		if (!processors.empty) {
@@ -151,47 +184,10 @@ class AttributeProcessorProposalGenerator extends AbstractItemProposalGenerator<
 		ITextRegion textRegion, IStructuredDocumentRegion documentRegion,
 		IStructuredDocument document, int cursorPosition) {
 
-		return makeAttributeProcessorSuggestions(node, textRegion, documentRegion, document, cursorPosition) ?
-				computeAttributeProcessorSuggestions(node, document, cursorPosition) :
-				Collections.EMPTY_LIST
-	}
-
-	/**
-	 * Check if, given everything, attribute processor suggestions should be
-	 * made.
-	 * 
-	 * @param node
-	 * @param textRegion
-	 * @param documentRegion
-	 * @param document
-	 * @param cursorPosition
-	 * @return <tt>true</tt> if attribute processor suggestions should be made.
-	 * @throws BadLocationException
-	 */
-	private static boolean makeAttributeProcessorSuggestions(IDOMNode node, ITextRegion textRegion,
-		IStructuredDocumentRegion documentRegion, IStructuredDocument document, int cursorPosition) {
-
-		if (node.nodeType == IDOMNode.ELEMENT_NODE) {
-			if (Character.isWhitespace(document.getChar(cursorPosition - 1))) {
-				return true
-			}
-			if (textRegion) {
-				if (textRegion.type == DOMRegionContext.XML_TAG_ATTRIBUTE_NAME) {
-					return true
-				}
-				def textRegions = documentRegion.regions
-				def currentTextRegionIndex = textRegions.indexOf(textRegion)
-				if (currentTextRegionIndex > 0) {
-					def previousRegion = textRegions.get(currentTextRegionIndex - 1)
-					if (previousRegion.type == DOMRegionContext.XML_TAG_ATTRIBUTE_NAME) {
-						return true
-					}
-		
-				}
-	
-			}
+		if (canMakeProposals(node, textRegion, documentRegion, document, cursorPosition)) {
+			return computeAttributeProcessorSuggestions(node, document, cursorPosition)
 		}
-		return false
+		return []
 	}
 
 	/**
