@@ -15,6 +15,9 @@
  */
 package org.thymeleaf.extras.eclipse
 
+import org.eclipse.core.resources.IWorkspace
+import org.eclipse.core.resources.ResourcesPlugin
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 
@@ -26,4 +29,9 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 @ComponentScan(basePackages = 'org.thymeleaf.extras.eclipse')
 class CoreConfig {
+
+	@Bean
+	IWorkspace workspace() {
+		return ResourcesPlugin.workspace
+	}
 }

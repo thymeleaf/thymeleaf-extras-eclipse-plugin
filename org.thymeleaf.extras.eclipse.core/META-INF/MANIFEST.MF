@@ -5,16 +5,11 @@ Bundle-SymbolicName: org.thymeleaf.extras.eclipse.core;singleton:=true
 Bundle-Version: 3.1.0.qualifier
 Bundle-Vendor: Thymeleaf Project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: javax.activation;bundle-version="1.1.0",
- javax.annotation;bundle-version="1.2.0",
- javax.inject;bundle-version="1.0.0",
- org.apache.commons.logging;bundle-version="1.2.0",
- org.eclipse.core.resources;bundle-version="3.13.400",
+Require-Bundle: org.eclipse.core.resources;bundle-version="3.13.400",
  org.eclipse.core.runtime;bundle-version="3.15.300",
  org.eclipse.jdt.core;bundle-version="3.18.0",
  org.eclipse.jdt.ui;bundle-version="3.18.0",
- org.eclipse.ui;bundle-version="3.113.0",
- org.slf4j.api;bundle-version="1.7.2"
+ org.eclipse.ui;bundle-version="3.113.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.thymeleaf.extras.eclipse;uses:="org.osgi.framework,org.eclipse.core.runtime",
  org.thymeleaf.extras.eclipse.builder;uses:="org.eclipse.core.runtime,org.eclipse.core.resources",
@@ -32,14 +27,26 @@ Export-Package: org.thymeleaf.extras.eclipse;uses:="org.osgi.framework,org.eclip
  org.thymeleaf.extras.eclipse.template.cache;uses:="org.eclipse.jdt.core",
  org.thymeleaf.extras.eclipse.template.model;uses:="org.attoparser.dom"
 Bundle-ClassPath: .,
+ libs/apiguardian-api-1.1.0.jar,
  libs/attoparser-2.0.5.RELEASE.jar,
- libs/groovy-3.0.8.jar,
+ libs/byte-buddy-1.11.13.jar,
+ libs/byte-buddy-agent-1.11.13.jar,
+ libs/groovy-3.0.9.jar,
  libs/groovy-extensions-1.1.0.jar,
- libs/javax.activation-1.2.0.jar,
- libs/jaxb-api-2.3.0.jar,
- libs/jaxb-core-2.3.0.jar,
- libs/jaxb-impl-2.3.0.jar,
- libs/jaxb-utilities-2.0.0.jar,
+ libs/jakarta.activation-2.0.1.jar,
+ libs/jakarta.xml.bind-api-3.0.1.jar,
+ libs/javax.annotation-api-1.3.2.jar,
+ libs/javax.inject-1.jar,
+ libs/jaxb-core-3.0.1.jar,
+ libs/jaxb-impl-3.0.1.jar,
+ libs/jaxb-utilities-2.1.0-SNAPSHOT.jar,
+ libs/junit-jupiter-api-5.7.2.jar,
+ libs/junit-jupiter-engine-5.7.2.jar,
+ libs/junit-platform-commons-1.7.2.jar,
+ libs/junit-platform-engine-1.7.2.jar,
+ libs/mockito-core-3.12.4.jar,
+ libs/objenesis-3.2.jar,
+ libs/opentest4j-1.2.0.jar,
  libs/profiling-extensions-0.6.1.jar,
  libs/slf4j-api-1.7.32.jar,
  libs/spring-aop-5.2.0.RELEASE.jar,
@@ -47,5 +54,6 @@ Bundle-ClassPath: .,
  libs/spring-context-5.2.0.RELEASE.jar,
  libs/spring-core-5.2.0.RELEASE.jar,
  libs/spring-expression-5.2.0.RELEASE.jar,
- libs/spring-jcl-5.2.0.RELEASE.jar
+ libs/spring-jcl-5.2.0.RELEASE.jar,
+ libs/spring-test-5.2.0.RELEASE.jar
 Bundle-Activator: org.thymeleaf.extras.eclipse.CorePlugin

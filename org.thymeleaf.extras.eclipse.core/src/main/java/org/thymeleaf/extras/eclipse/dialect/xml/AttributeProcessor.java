@@ -8,9 +8,10 @@
 
 package org.thymeleaf.extras.eclipse.dialect.xml;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
 
 
 /**
@@ -76,7 +77,7 @@ public class AttributeProcessor
         return (this.restrictions!= null);
     }
     
-	@javax.xml.bind.annotation.XmlTransient
+	@XmlTransient
 	private String fulldataname;
 
 	/**

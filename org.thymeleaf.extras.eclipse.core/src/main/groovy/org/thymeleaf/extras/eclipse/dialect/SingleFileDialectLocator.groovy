@@ -16,10 +16,11 @@
 
 package org.thymeleaf.extras.eclipse.dialect
 
-import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.core.resources.IWorkspace
 import org.eclipse.core.runtime.IPath
 
 import groovy.transform.TupleConstructor
+import javax.inject.Inject
 
 /**
  * A dialect locator target at a single, already-known, dialect file.
@@ -28,6 +29,9 @@ import groovy.transform.TupleConstructor
  */
 @TupleConstructor(defaults = false)
 class SingleFileDialectLocator implements DialectLocator {
+
+	@Inject
+	private final IWorkspace workspace
 
 	final IPath dialectFilePath
 
@@ -38,7 +42,7 @@ class SingleFileDialectLocator implements DialectLocator {
 	List<PathAndStream> locate() {
 
 		return [
-			new PathAndStream(dialectFilePath, ResourcesPlugin.workspace.root.getFile(dialectFilePath).contents)
+			new PathAndStream(dialectFilePath, workspace.root.getFile(dialectFilePath).contents)
 		]
 	}
 }

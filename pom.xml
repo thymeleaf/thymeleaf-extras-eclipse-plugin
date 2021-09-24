@@ -73,9 +73,6 @@
 		<url>https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues</url>
 	</issueManagement>
 
-	<prerequisites>
-		<maven>3.0</maven>
-	</prerequisites>
 	<repositories>
 		<repository>
 			<id>2019-06</id>
@@ -87,23 +84,43 @@
 			<url>https://download.eclipse.org/eclipse/updates/4.12</url>
 			<layout>p2</layout>
 		</repository>
+		<repository>
+			<id>maven-central-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</repository>
 	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>sonatype-public</id>
-			<url>https://repository.sonatype.org/content/groups/sonatype-public-grid</url>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<properties>
-		<tycho.version>1.7.0</tycho.version>
+		<tycho.version>2.4.0</tycho.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<thymeleaf.plugin-update-site>https://raw.githubusercontent.com/thymeleaf/thymeleaf-extras-eclipse-plugin/update-site/${project.version}/</thymeleaf.plugin-update-site>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>enforce-maven</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>3.6.3</version>
+								</requireMavenVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
@@ -139,27 +156,33 @@
 				<artifactId>tycho-versions-plugin</artifactId>
 				<version>${tycho.version}</version>
 			</plugin>
- 			<plugin>
+			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-compiler-plugin</artifactId>
 				<version>${tycho.version}</version>
 				<configuration>
-					<compilerId>groovy-eclipse-compiler</compilerId>
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.codehaus.groovy</groupId>
-						<artifactId>groovy-eclipse-compiler</artifactId>
-						<version>3.7.0</version>
-					</dependency>
-					<dependency>
-						<groupId>org.codehaus.groovy</groupId>
-						<artifactId>groovy-eclipse-batch</artifactId>
-						<version>3.0.8-01</version>
-					</dependency>
-				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.gmavenplus</groupId>
+				<artifactId>gmavenplus-plugin</artifactId>
+				<version>1.12.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>addSources</goal>
+							<goal>addTestSources</goal>
+							<goal>generateStubs</goal>
+							<goal>compile</goal>
+							<goal>generateTestStubs</goal>
+							<goal>compileTests</goal>
+							<goal>removeStubs</goal>
+							<goal>removeTestStubs</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
@@ -188,18 +211,10 @@
 							<goal>plugin-source</goal>
 						</goals>
 					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho.extras</groupId>
-				<artifactId>tycho-source-feature-plugin</artifactId>
-				<version>${tycho.version}</version>
-				<executions>
 					<execution>
-						<id>source-feature</id>
-						<phase>package</phase>
+						<id>feature-source</id>
 						<goals>
-							<goal>source-feature</goal>
+							<goal>feature-source</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -210,7 +225,7 @@
 				<version>${tycho.version}</version>
 				<executions>
 					<execution>
-						<id>attached-p2-metadata</id>
+						<id>attach-p2-metadata</id>
 						<phase>package</phase>
 						<goals>
 							<goal>p2-metadata</goal>
