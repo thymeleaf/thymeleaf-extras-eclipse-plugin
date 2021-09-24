@@ -84,6 +84,10 @@
 			<url>https://download.eclipse.org/eclipse/updates/4.12</url>
 			<layout>p2</layout>
 		</repository>
+		<repository>
+			<id>maven-central-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</repository>
 	</repositories>
 
 	<properties>
