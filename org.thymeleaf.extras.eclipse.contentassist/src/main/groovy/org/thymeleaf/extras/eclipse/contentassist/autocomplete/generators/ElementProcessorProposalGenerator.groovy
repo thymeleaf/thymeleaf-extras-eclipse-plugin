@@ -21,19 +21,21 @@ import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentReg
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
-import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.ElementProcessorCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
+
+import javax.inject.Inject
 
 /**
  * Proposal generator for Thymeleaf element processors.
  * 
  * @author Emanuel Rabina
  */
-class ElementProcessorProposalGenerator extends AbstractItemProposalGenerator<ElementProcessorCompletionProposal> {
+class ElementProcessorProposalGenerator implements ProposalGenerator<ElementProcessorCompletionProposal> {
 
-	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
+	@Inject
+	private final DialectCache dialectCache
 
 	/**
 	 * Collect element processor suggestions.

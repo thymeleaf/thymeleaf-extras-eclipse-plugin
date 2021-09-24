@@ -21,7 +21,6 @@ import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
-import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer
 
 /**
  * Class for generating Eclipse autocompletion proposals.
@@ -29,7 +28,7 @@ import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer
  * @author Emanuel Rabina
  * @param <P> The type of item proposal being generated.
  */
-abstract class AbstractItemProposalGenerator<P extends ICompletionProposal> extends AbstractComputer {
+interface ProposalGenerator<P extends ICompletionProposal> {
 
 	/**
 	 * Generate the autocomplete proposals.
@@ -41,7 +40,6 @@ abstract class AbstractItemProposalGenerator<P extends ICompletionProposal> exte
 	 * @param cursorPosition
 	 * @return List of autocomplete proposals.
 	 */
-	abstract List<P> generateProposals(IDOMNode node, ITextRegion textRegion,
-			IStructuredDocumentRegion documentRegion, IStructuredDocument document,
-			int cursorPosition)
+	List<P> generateProposals(IDOMNode node, ITextRegion textRegion, IStructuredDocumentRegion documentRegion,
+		IStructuredDocument document, int cursorPosition)
 }

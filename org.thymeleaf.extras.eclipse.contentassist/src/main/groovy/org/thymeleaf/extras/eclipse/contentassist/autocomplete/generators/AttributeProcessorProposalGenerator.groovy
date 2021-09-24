@@ -34,7 +34,7 @@ import javax.inject.Inject
  * 
  * @author Emanuel Rabina
  */
-class AttributeProcessorProposalGenerator extends AbstractItemProposalGenerator<AttributeProcessorCompletionProposal> {
+class AttributeProcessorProposalGenerator implements ProposalGenerator<AttributeProcessorCompletionProposal> {
 
 	@Inject
 	private final DialectCache dialectCache

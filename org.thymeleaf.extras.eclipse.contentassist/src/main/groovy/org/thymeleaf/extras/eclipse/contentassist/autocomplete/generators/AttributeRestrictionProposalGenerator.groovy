@@ -21,19 +21,21 @@ import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentReg
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
-import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.AttributeRestrictionCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
+
+import javax.inject.Inject
 
 /**
  * Proposal generator for Thymeleaf attribute restrictions.
  * 
  * @author Emanuel Rabina
  */
-class AttributeRestrictionProposalGenerator extends AbstractItemProposalGenerator<AttributeRestrictionCompletionProposal> {
+class AttributeRestrictionProposalGenerator implements ProposalGenerator<AttributeRestrictionCompletionProposal> {
 
-	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
+	@Inject
+	private final DialectCache dialectCache
 
 	/**
 	 * Collect attribute restriction suggestions.

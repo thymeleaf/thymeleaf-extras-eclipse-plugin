@@ -28,7 +28,6 @@ import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils
 import org.eclipse.wst.sse.ui.internal.derived.HTMLTextPresenter
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.thymeleaf.extras.eclipse.SpringContainer
-import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer
 import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 
@@ -37,13 +36,30 @@ import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
  * 
  * @author Emanuel Rabina
  */
-class InfoHoverComputer extends AbstractComputer implements ITextHover, ITextHoverExtension {
+class InfoHoverComputer implements ITextHover, ITextHoverExtension {
 
-	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
+	private final DialectCache dialectCache
 
 	/**
-	 * {@inheritDoc}
+	 * Constructor, used by Eclipse to create an instance of this class so
+	 * defaults to using the dialect cache via direct access to the Spring
+	 * container instance.
 	 */
+	InfoHoverComputer() {
+
+		this(SpringContainer.instance.getBean(DialectCache))
+	}
+
+	/**
+	 * Constructor, create a new hover computer with the specified dialect cache.
+	 * 
+	 * @param dialectCache
+	 */
+	InfoHoverComputer(DialectCache dialectCache) {
+
+		this.dialectCache = dialectCache
+	}
+
 	@Override
 	IInformationControlCreator getHoverControlCreator() {
 
@@ -89,6 +105,10 @@ class InfoHoverComputer extends AbstractComputer implements ITextHover, ITextHov
 
 	/**
 	 * Override so as to use the default hover region.
+	 * 
+	 * @param textViewer
+	 * @param offset
+	 * @return {@code null}
 	 */
 	@Override
 	IRegion getHoverRegion(ITextViewer textViewer, int offset) {

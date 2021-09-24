@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.wst.sse.ui.contentassist.CompletionProposalInvocationContext
 import org.eclipse.wst.sse.ui.contentassist.ICompletionProposalComputer
 import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils
-import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer
-import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.AbstractItemProposalGenerator
+import org.thymeleaf.extras.eclipse.SpringContainer
+import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.ProposalGenerator
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.AttributeProcessorProposalGenerator
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.AttributeRestrictionProposalGenerator
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.ElementProcessorProposalGenerator
@@ -33,9 +33,9 @@ import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.Expres
  * 
  * @author Emanuel Rabina
  */
-class CompletionProposalComputer extends AbstractComputer implements ICompletionProposalComputer {
+class CompletionProposalComputer implements ICompletionProposalComputer {
 
-	private final List<AbstractItemProposalGenerator> proposalGenerators
+	private final List<ProposalGenerator> proposalGenerators
 
 	final String errorMessage = null
 
@@ -47,10 +47,10 @@ class CompletionProposalComputer extends AbstractComputer implements ICompletion
 	CompletionProposalComputer() {
 
 		this(
-			new ElementProcessorProposalGenerator(),
-			new AttributeProcessorProposalGenerator(),
-			new AttributeRestrictionProposalGenerator(),
-			new ExpressionObjectProposalGenerator()
+			SpringContainer.instance.getBean(ElementProcessorProposalGenerator),
+			SpringContainer.instance.getBean(AttributeProcessorProposalGenerator),
+			SpringContainer.instance.getBean(AttributeRestrictionProposalGenerator),
+			SpringContainer.instance.getBean(ExpressionObjectProposalGenerator)
 		)
 	}
 
