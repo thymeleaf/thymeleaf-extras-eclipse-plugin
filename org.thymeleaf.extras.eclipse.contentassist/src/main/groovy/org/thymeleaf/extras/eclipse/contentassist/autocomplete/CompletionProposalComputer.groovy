@@ -33,21 +33,51 @@ import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.Expres
  * 
  * @author Emanuel Rabina
  */
-@SuppressWarnings("restriction")
 class CompletionProposalComputer extends AbstractComputer implements ICompletionProposalComputer {
 
-	private static List<AbstractItemProposalGenerator> proposalGenerators = [
-		new ElementProcessorProposalGenerator(),
-		new AttributeProcessorProposalGenerator(),
-		new AttributeRestrictionProposalGenerator(),
-		new ExpressionObjectProposalGenerator()
-	]
+	private final List<AbstractItemProposalGenerator> proposalGenerators
 
 	final String errorMessage = null
 
 	/**
-	 * {@inheritDoc}
+	 * Constructor, used by Eclipse to create an instance of this class, so
+	 * defaults to using the real proposal generators for generating autocomplete
+	 * results.
 	 */
+	CompletionProposalComputer() {
+
+		this(
+			new ElementProcessorProposalGenerator(),
+			new AttributeProcessorProposalGenerator(),
+			new AttributeRestrictionProposalGenerator(),
+			new ExpressionObjectProposalGenerator()
+		)
+	}
+
+	/**
+	 * Constructor, create a new proposal computer using the given proposal
+	 * generators.
+	 * 
+	 * @param elementProcessorProposalGenerator
+	 * @param attributeProcessorProposalGenerator
+	 * @param attributeRestrictionProposalGenerator
+	 * @param expressionObjectProposalGenerator
+	 */
+	CompletionProposalComputer(
+		ElementProcessorProposalGenerator elementProcessorProposalGenerator,
+		AttributeProcessorProposalGenerator attributeProcessorProposalGenerator,
+		AttributeRestrictionProposalGenerator attributeRestrictionProposalGenerator,
+		ExpressionObjectProposalGenerator expressionObjectProposalGenerator
+	) {
+
+		proposalGenerators = [
+		  elementProcessorProposalGenerator,
+			attributeProcessorProposalGenerator,
+			attributeRestrictionProposalGenerator,
+			expressionObjectProposalGenerator
+		]
+	}
+
 	@Override
 	List computeCompletionProposals(CompletionProposalInvocationContext context, IProgressMonitor monitor) {
 
@@ -57,21 +87,17 @@ class CompletionProposalComputer extends AbstractComputer implements ICompletion
 
 		def node = ContentAssistUtils.getNodeAt(viewer, cursorPosition)
 		def documentRegion = ContentAssistUtils.getStructuredDocumentRegion(viewer, cursorPosition)
-		def textRegion = documentRegion.getRegionAtCharacterOffset(cursorPosition)
+		if (documentRegion) {
+			def textRegion = documentRegion.getRegionAtCharacterOffset(cursorPosition)
 
-		// Create proposals from the generators given to us by the computers
-		// TODO: Can this part be made multi-threaded?  Is there any benefit
-		//       in making it so?  Probably need to have some kind of
-		//       ordering on returned proposals so that the results list is
-		//       predictable.
-		return proposalGenerators.inject([]) { acc, proposalGenerator ->
-			return acc + proposalGenerator.generateProposals(node, textRegion, documentRegion, document, cursorPosition)
+			// Create proposals from the generators given to us by the computers
+			return proposalGenerators.inject([]) { acc, proposalGenerator ->
+				return acc + proposalGenerator.generateProposals(node, textRegion, documentRegion, document, cursorPosition)
+			}
 		}
+		return Collections.EMPTY_LIST
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	List computeContextInformation(CompletionProposalInvocationContext context, IProgressMonitor monitor) {
 

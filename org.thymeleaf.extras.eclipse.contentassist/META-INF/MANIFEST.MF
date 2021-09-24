@@ -38,4 +38,22 @@ Export-Package: org.thymeleaf.extras.eclipse.contentassist;
    org.eclipse.jface.text",
  org.thymeleaf.extras.eclipse.contentassist.hover;uses:="org.thymeleaf.extras.eclipse.contentassist,org.eclipse.jface.text"
 Bundle-ClassPath: .,
- libs/groovy-3.0.9.jar
+ libs/apiguardian-api-1.1.0.jar,
+ libs/byte-buddy-1.11.13.jar,
+ libs/byte-buddy-agent-1.11.13.jar,
+ libs/groovy-3.0.9.jar,
+ libs/javax.inject-1.jar,
+ libs/junit-jupiter-api-5.7.2.jar,
+ libs/junit-jupiter-engine-5.7.2.jar,
+ libs/junit-platform-commons-1.7.2.jar,
+ libs/junit-platform-engine-1.7.2.jar,
+ libs/mockito-core-3.12.4.jar,
+ libs/objenesis-3.2.jar,
+ libs/opentest4j-1.2.0.jar,
+ libs/spring-aop-5.2.0.RELEASE.jar,
+ libs/spring-beans-5.2.0.RELEASE.jar,
+ libs/spring-context-5.2.0.RELEASE.jar,
+ libs/spring-core-5.2.0.RELEASE.jar,
+ libs/spring-expression-5.2.0.RELEASE.jar,
+ libs/spring-jcl-5.2.0.RELEASE.jar,
+ libs/spring-test-5.2.0.RELEASE.jar

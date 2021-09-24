@@ -20,27 +20,25 @@ import org.eclipse.jface.text.BadLocationException
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
-import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegionList
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
-import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.AttributeProcessorCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
-import org.thymeleaf.extras.eclipse.dialect.xml.AttributeRestrictions
 import org.w3c.dom.NamedNodeMap
-import org.w3c.dom.Node
+
+import javax.inject.Inject
 
 /**
  * Proposal generator for Thymeleaf attribute processors.
  * 
  * @author Emanuel Rabina
  */
-@SuppressWarnings('restriction')
 class AttributeProcessorProposalGenerator extends AbstractItemProposalGenerator<AttributeProcessorCompletionProposal> {
 
-	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
+	@Inject
+	private final DialectCache dialectCache
 
 	/**
 	 * Collect attribute processor suggestions.
@@ -148,9 +146,6 @@ class AttributeProcessorProposalGenerator extends AbstractItemProposalGenerator<
 		return proposals
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	List<AttributeProcessorCompletionProposal> generateProposals(IDOMNode node,
 		ITextRegion textRegion, IStructuredDocumentRegion documentRegion,

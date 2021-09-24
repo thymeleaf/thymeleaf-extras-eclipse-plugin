@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
+import org.thymeleaf.extras.eclipse.CoreConfig
 import static org.junit.jupiter.api.Assertions.*
 import static org.mockito.Mockito.*
 
@@ -34,19 +35,14 @@ import javax.inject.Inject
  * 
  * @author Emanuel Rabina
  */
-@SpringJUnitConfig(TestConfig.class)
+@SpringJUnitConfig(classes = [CoreConfig, TestConfig])
 class DialectCacheTests {
 
 	@Configuration
-	@ComponentScan('org.thymeleaf.extras.eclipse')
 	static class TestConfig {
 		@Bean
 		IWorkspace workspace() {
 			return mock(IWorkspace)
-		}
-		@Bean
-		DialectCache dialectCache() {
-			return new DialectCache()
 		}
 	}
 

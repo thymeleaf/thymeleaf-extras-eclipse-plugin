@@ -30,7 +30,6 @@ import org.thymeleaf.extras.eclipse.contentassist.AbstractComputer
  * @author Emanuel Rabina
  * @param <P> The type of item proposal being generated.
  */
-@SuppressWarnings('restriction')
 abstract class AbstractItemProposalGenerator<P extends ICompletionProposal> extends AbstractComputer {
 
 	/**
