@@ -19,7 +19,6 @@ package org.thymeleaf.extras.eclipse.contentassist.autocomplete
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.wst.sse.ui.contentassist.CompletionProposalInvocationContext
 import org.eclipse.wst.sse.ui.contentassist.ICompletionProposalComputer
-import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils
 import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.ProposalGenerator
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators.AttributeProcessorProposalGenerator
@@ -82,17 +81,18 @@ class CompletionProposalComputer implements ICompletionProposalComputer {
 	List computeCompletionProposals(CompletionProposalInvocationContext context, IProgressMonitor monitor) {
 
 		def viewer = context.viewer
-		def document = context.document
-		def cursorPosition = context.invocationOffset
+		if (viewer) {
+			def cursorPosition = context.invocationOffset
+			def documentRegion = viewer.getStructuredDocumentRegion(cursorPosition)
+			if (documentRegion) {
+				def node = viewer.getNodeAt(cursorPosition)
+				def textRegion = documentRegion.getRegionAtCharacterOffset(cursorPosition)
+				def document = context.document
 
-		def node = ContentAssistUtils.getNodeAt(viewer, cursorPosition)
-		def documentRegion = ContentAssistUtils.getStructuredDocumentRegion(viewer, cursorPosition)
-		if (documentRegion) {
-			def textRegion = documentRegion.getRegionAtCharacterOffset(cursorPosition)
-
-			// Create proposals from the generators given to us by the computers
-			return proposalGenerators.inject([]) { acc, proposalGenerator ->
-				return acc + proposalGenerator.generateProposals(node, textRegion, documentRegion, document, cursorPosition)
+				// Create proposals from the generators given to us by the computers
+				return proposalGenerators.inject([]) { acc, proposalGenerator ->
+					return acc + proposalGenerator.generateProposals(node, textRegion, documentRegion, document, cursorPosition)
+				}
 			}
 		}
 		return Collections.EMPTY_LIST

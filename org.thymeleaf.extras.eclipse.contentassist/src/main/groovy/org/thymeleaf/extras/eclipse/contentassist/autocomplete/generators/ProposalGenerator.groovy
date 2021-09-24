@@ -16,11 +16,11 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators
 
+import org.eclipse.jface.text.IDocument
 import org.eclipse.jface.text.contentassist.ICompletionProposal
-import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
+import org.w3c.dom.Node
 
 /**
  * Class for generating Eclipse autocompletion proposals.
@@ -40,6 +40,6 @@ interface ProposalGenerator<P extends ICompletionProposal> {
 	 * @param cursorPosition
 	 * @return List of autocomplete proposals.
 	 */
-	List<P> generateProposals(IDOMNode node, ITextRegion textRegion, IStructuredDocumentRegion documentRegion,
-		IStructuredDocument document, int cursorPosition)
+	List<P> generateProposals(Node node, ITextRegion textRegion, IStructuredDocumentRegion documentRegion,
+		IDocument document, int cursorPosition)
 }

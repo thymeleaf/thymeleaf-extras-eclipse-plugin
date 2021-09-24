@@ -17,6 +17,7 @@
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete
 
 import org.eclipse.core.runtime.IProgressMonitor
+import org.eclipse.jface.text.ITextViewer
 import org.eclipse.wst.sse.ui.contentassist.CompletionProposalInvocationContext
 import org.junit.jupiter.api.Test
 import org.springframework.context.annotation.Bean
@@ -59,8 +60,13 @@ class CompletionProposalComputerTests {
 	@Test
 	void computeCompletionProposalsAggregatesResults() {
 
+//		def mockTextViewer = mock(ITextViewer)
+//		when(mockTextViewer.getNodeAt(anyInt())).thenReturn(null)
+		def mockCompletionProposalInvocationContext = mock(CompletionProposalInvocationContext)
+//		when(mockCompletionProposalInvocationContext.getViewer()).thenReturn(null)
+
 		def results = completionProposalComputer.computeCompletionProposals(
-			mock(CompletionProposalInvocationContext), mock(IProgressMonitor))
+			mockCompletionProposalInvocationContext, mock(IProgressMonitor))
 		assertEquals(results, [])
 	}
 }

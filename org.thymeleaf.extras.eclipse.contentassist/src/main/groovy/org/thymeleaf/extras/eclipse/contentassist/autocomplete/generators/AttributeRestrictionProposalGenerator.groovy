@@ -16,14 +16,13 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators
 
-import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
+import org.eclipse.jface.text.IDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
-import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
 import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.AttributeRestrictionCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
+import org.w3c.dom.Node
 
 import javax.inject.Inject
 
@@ -47,9 +46,8 @@ class AttributeRestrictionProposalGenerator implements ProposalGenerator<Attribu
 	 * @param cursorPosition
 	 * @return List of attribute restriction suggestions.
 	 */
-	private List<AttributeRestrictionCompletionProposal> computeAttributeRestrictionSuggestions(
-		IDOMNode node, ITextRegion textRegion, IStructuredDocumentRegion documentRegion,
-		IStructuredDocument document, int cursorPosition) {
+	private List<AttributeRestrictionCompletionProposal> computeAttributeRestrictionSuggestions(Node node,
+		ITextRegion textRegion, IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
 		def textRegions = documentRegion.regions
 		def attributeNameTextRegion = textRegions.get(textRegions.indexOf(textRegion) - 2)
@@ -79,11 +77,10 @@ class AttributeRestrictionProposalGenerator implements ProposalGenerator<Attribu
 	 * {@inheritDoc}
 	 */
 	@Override
-	List<AttributeRestrictionCompletionProposal> generateProposals(IDOMNode node,
-		ITextRegion textRegion, IStructuredDocumentRegion documentRegion, IStructuredDocument document,
-		int cursorPosition) {
+	List<AttributeRestrictionCompletionProposal> generateProposals(Node node, ITextRegion textRegion,
+		IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
-		return textRegion && makeAttributeRestrictionSuggestions(node, textRegion) ?
+		return makeAttributeRestrictionSuggestions(node, textRegion) ?
 			computeAttributeRestrictionSuggestions(node, textRegion, documentRegion, document, cursorPosition) :
 			Collections.EMPTY_LIST
 	}
@@ -96,8 +93,8 @@ class AttributeRestrictionProposalGenerator implements ProposalGenerator<Attribu
 	 * @param textRegion
 	 * @return <tt>true</tt> if attribute processor suggestions should be made.
 	 */
-	private static boolean makeAttributeRestrictionSuggestions(IDOMNode node, ITextRegion textRegion) {
+	private static boolean makeAttributeRestrictionSuggestions(Node node, ITextRegion textRegion) {
 
-		return node.nodeType == IDOMNode.ELEMENT_NODE && textRegion.type == DOMRegionContext.XML_TAG_ATTRIBUTE_VALUE
+		return node.elementNode && textRegion?.xmlAttribute
 	}
 }

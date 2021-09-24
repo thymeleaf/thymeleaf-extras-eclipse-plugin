@@ -18,6 +18,7 @@ package org.thymeleaf.extras.eclipse.contentassist.extensions
 
 import org.w3c.dom.Element
 import org.w3c.dom.Node
+import static org.w3c.dom.Node.*
 
 import javax.xml.namespace.QName
 
@@ -53,5 +54,27 @@ class NodeExtensions {
 		}
 
 		return namespaces
+	}
+
+	/**
+	 * Return whether this is an element node.
+	 * 
+	 * @param self
+	 * @return
+	 */
+	static boolean isElementNode(Node self) {
+
+		return self.nodeType == ELEMENT_NODE
+	}
+
+	/**
+	 * Return whether this is a text node.
+	 * 
+	 * @oaram self
+	 * @return
+	 */
+	static boolean isTextNode(Node self) {
+
+		return self.nodeType == TEXT_NODE
 	}
 }

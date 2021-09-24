@@ -2,4 +2,6 @@ moduleName = thymeleaf-extras-eclipse-plugin-contentassist-extensions
 moduleVersion = 3.1.0-SNAPSHOT
 extensionClasses = org.thymeleaf.extras.eclipse.contentassist.extensions.CharacterExtensions,\
                    org.thymeleaf.extras.eclipse.contentassist.extensions.IDocumentExtensions,\
-                   org.thymeleaf.extras.eclipse.contentassist.extensions.NodeExtensions
+                   org.thymeleaf.extras.eclipse.contentassist.extensions.NodeExtensions,\
+                   org.thymeleaf.extras.eclipse.contentassist.extensions.ITextRegionExtensions,\
+                   org.thymeleaf.extras.eclipse.contentassist.extensions.ITextViewerExtensions

@@ -16,14 +16,14 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators
 
-import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
+import org.eclipse.jface.text.IDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
 import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.ElementProcessorCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
+import org.w3c.dom.Node
 
 import javax.inject.Inject
 
@@ -45,8 +45,8 @@ class ElementProcessorProposalGenerator implements ProposalGenerator<ElementProc
 	 * @param cursorPosition
 	 * @return List of element processor suggestions.
 	 */
-	private List<ElementProcessorCompletionProposal> computeElementProcessorSuggestions(
-		IDOMNode node, IStructuredDocument document, int cursorPosition) {
+	private List<ElementProcessorCompletionProposal> computeElementProcessorSuggestions(Node node, IDocument document,
+		int cursorPosition) {
 
 		def pattern = document.findProcessorNamePattern(cursorPosition)
 		return dialectCache.getElementProcessors(ContentAssistPlugin.findCurrentJavaProject(), node.knownNamespaces, pattern)
@@ -56,9 +56,8 @@ class ElementProcessorProposalGenerator implements ProposalGenerator<ElementProc
 	}
 
 	@Override
-	List<ElementProcessorCompletionProposal> generateProposals(IDOMNode node,
-		ITextRegion textRegion, IStructuredDocumentRegion documentRegion,
-		IStructuredDocument document, int cursorPosition) {
+	List<ElementProcessorCompletionProposal> generateProposals(Node node, ITextRegion textRegion,
+		IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
 		return makeElementProcessorSuggestions(node, textRegion, documentRegion, document, cursorPosition) ?
 				computeElementProcessorSuggestions(node, document, cursorPosition) :
@@ -75,34 +74,31 @@ class ElementProcessorProposalGenerator implements ProposalGenerator<ElementProc
 	 * @param cursorposition
 	 * @return <tt>true</tt> if element processor suggestions should be made.
 	 */
-	private static boolean makeElementProcessorSuggestions(IDOMNode node, ITextRegion textRegion,
-		IStructuredDocumentRegion documentRegion, IStructuredDocument document, int cursorPosition) {
-
-		switch (node.nodeType) {
+	private static boolean makeElementProcessorSuggestions(Node node, ITextRegion textRegion,
+		IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
 		// If we're in a text node, then the first non-whitespace character before
 		// the cursor in the document should be an opening bracket
-		case IDOMNode.TEXT_NODE:
+		if (node.textNode) {
 			def position = cursorPosition - 1
-			while (position >= 0 && Character.isWhitespace(document.getChar(position))) {
+			while (position >= 0 && document.getChar(position).whitespace) {
 				position--
 			}
 			return document.getChar(position) == '<'
+		}
 
 		// If we're in an element node, then the previous text region should be an
 		// opening XML tag
-		case IDOMNode.ELEMENT_NODE:
+		if (node.elementNode) {
 			if (textRegion) {
 				def textRegions = documentRegion.regions
 				def currentTextRegionIndex = textRegions.indexOf(textRegion)
 				if (currentTextRegionIndex > 1) {
 					def previousRegion = textRegions.get(currentTextRegionIndex - 1)
 					return (previousRegion.type == DOMRegionContext.XML_TAG_OPEN) &&
-						!Character.isWhitespace(document.getChar(cursorPosition - 1))
+						!document.getChar(cursorPosition - 1).whitespace
 				}
-	
 			}
-			break
 		}
 
 		return false

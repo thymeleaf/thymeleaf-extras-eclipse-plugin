@@ -16,16 +16,15 @@
 
 package org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators
 
-import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
+import org.eclipse.jface.text.IDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
-import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
 import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals.AttributeProcessorCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
 import org.w3c.dom.NamedNodeMap
+import org.w3c.dom.Node
 
 import javax.inject.Inject
 
@@ -49,22 +48,22 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 	 * @param cursorPosition
 	 * @return {@code true} if attribute processor suggestions can be made.
 	 */
-	private static boolean canMakeProposals(IDOMNode node, ITextRegion textRegion,
-		IStructuredDocumentRegion documentRegion, IStructuredDocument document, int cursorPosition) {
+	private static boolean canMakeProposals(Node node, ITextRegion textRegion, IStructuredDocumentRegion documentRegion,
+		IDocument document, int cursorPosition) {
 
-		if (node.nodeType == IDOMNode.ELEMENT_NODE) {
-			if (Character.isWhitespace(document.getChar(cursorPosition - 1))) {
+		if (node.elementNode) {
+			if (document.getChar(cursorPosition - 1).whitespace) {
 				return true
 			}
 			if (textRegion) {
-				if (textRegion.type == DOMRegionContext.XML_TAG_ATTRIBUTE_NAME) {
+				if (textRegion.xmlAttribute) {
 					return true
 				}
 				def textRegions = documentRegion.regions
 				def currentTextRegionIndex = textRegions.indexOf(textRegion)
 				if (currentTextRegionIndex > 0) {
 					def previousRegion = textRegions.get(currentTextRegionIndex - 1)
-					if (previousRegion.type == DOMRegionContext.XML_TAG_ATTRIBUTE_NAME) {
+					if (previousRegion.xmlAttribute) {
 						return true
 					}
 				}
@@ -81,8 +80,8 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 	 * @param cursorPosition
 	 * @return List of attribute processor suggestions.
 	 */
-	private List<AttributeProcessorCompletionProposal> computeAttributeProcessorSuggestions(
-		IDOMNode node, IStructuredDocument document, int cursorPosition) {
+	private List<AttributeProcessorCompletionProposal> computeAttributeProcessorSuggestions(Node node, IDocument document,
+		int cursorPosition) {
 
 		def pattern = document.findProcessorNamePattern(cursorPosition)
 
@@ -117,9 +116,9 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 	 * @param dataAttr
 	 *   Use the data-* version of the processor.
 	 */
-	private static ArrayList<AttributeProcessorCompletionProposal> createAttributeProcessorSuggestions(
-		String pattern, List<AttributeProcessor> processors, NamedNodeMap existingAttributes, IDOMNode node,
-		int cursorPosition, boolean dataAttr) {
+	private static ArrayList<AttributeProcessorCompletionProposal> createAttributeProcessorSuggestions(String pattern,
+		List<AttributeProcessor> processors, NamedNodeMap existingAttributes, Node node, int cursorPosition,
+		boolean dataAttr) {
 
 		def proposals = []
 		for (def processor: processors) {
@@ -180,14 +179,12 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 	}
 
 	@Override
-	List<AttributeProcessorCompletionProposal> generateProposals(IDOMNode node,
-		ITextRegion textRegion, IStructuredDocumentRegion documentRegion,
-		IStructuredDocument document, int cursorPosition) {
+	List<AttributeProcessorCompletionProposal> generateProposals(Node node, ITextRegion textRegion,
+		IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
-		if (canMakeProposals(node, textRegion, documentRegion, document, cursorPosition)) {
-			return computeAttributeProcessorSuggestions(node, document, cursorPosition)
-		}
-		return []
+		return canMakeProposals(node, textRegion, documentRegion, document, cursorPosition) ?
+			computeAttributeProcessorSuggestions(node, document, cursorPosition) :
+			[]
 	}
 
 	/**

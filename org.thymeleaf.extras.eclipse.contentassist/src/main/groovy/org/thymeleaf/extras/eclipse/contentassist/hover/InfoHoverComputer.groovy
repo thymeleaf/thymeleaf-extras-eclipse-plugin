@@ -24,9 +24,7 @@ import org.eclipse.jface.text.ITextHover
 import org.eclipse.jface.text.ITextHoverExtension
 import org.eclipse.jface.text.ITextViewer
 import org.eclipse.swt.widgets.Shell
-import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils
 import org.eclipse.wst.sse.ui.internal.derived.HTMLTextPresenter
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode
 import org.thymeleaf.extras.eclipse.SpringContainer
 import org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
@@ -77,10 +75,10 @@ class InfoHoverComputer implements ITextHover, ITextHoverExtension {
 		String hoverInfo = null
 
 		def cursorPosition = hoverRegion.offset
-		def node = ContentAssistUtils.getNodeAt(textViewer, cursorPosition)
+		def node = textViewer.getNodeAt(cursorPosition)
 
 		// Retrieve documentation on attribute or element nodes
-		if (node.nodeType == IDOMNode.ELEMENT_NODE) {
+		if (node.elementNode) {
 			def surroundingWord = textViewer.document.get(cursorPosition, hoverRegion.length)
 
 			if (surroundingWord ==~ /[\w:-]*/) {
