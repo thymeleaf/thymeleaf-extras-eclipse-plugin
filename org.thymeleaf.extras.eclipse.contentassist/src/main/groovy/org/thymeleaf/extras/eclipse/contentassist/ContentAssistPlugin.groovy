@@ -29,7 +29,6 @@ import org.osgi.framework.BundleContext
  * 
  * @author Emanuel Rabina
  */
-@SuppressWarnings('restriction')
 class ContentAssistPlugin extends AbstractUIPlugin {
 
 	static final String PLUGIN_ID = 'org.thymeleaf.extras.eclipse.contentassist'
@@ -68,9 +67,6 @@ class ContentAssistPlugin extends AbstractUIPlugin {
 		return plugin
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void initializeImageRegistry(ImageRegistry reg) {
 
@@ -83,9 +79,6 @@ class ContentAssistPlugin extends AbstractUIPlugin {
 		reg.put(IMAGE_EXPRESSION_OBJECT_METHOD,    imageDescriptorFromPlugin(PLUGIN_ID, 'icons/Expression-Object-Method.png'))
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	void start(BundleContext context) {
 
@@ -112,9 +105,6 @@ class ContentAssistPlugin extends AbstractUIPlugin {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	void stop(BundleContext context) {
 

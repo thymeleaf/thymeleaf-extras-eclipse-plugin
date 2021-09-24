@@ -31,7 +31,6 @@ import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
  * 
  * @author Emanuel Rabina
  */
-@SuppressWarnings('restriction')
 class ExpressionObjectProposalGenerator extends AbstractItemProposalGenerator<ExpressionObjectMethodCompletionProposal> {
 
 	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
@@ -48,7 +47,7 @@ class ExpressionObjectProposalGenerator extends AbstractItemProposalGenerator<Ex
 		IDOMNode node, IStructuredDocument document, int cursorPosition) {
 
 		def pattern = document.findExpressionObjectMethodNamePattern(cursorPosition)
-		return dialectCache.getExpressionObjectMethods(ContentAssistPlugin.findCurrentJavaProject(), findNodeNamespaces(node), pattern)
+		return dialectCache.getExpressionObjectMethods(ContentAssistPlugin.findCurrentJavaProject(), node.knownNamespaces, pattern)
 			.collect { expressionObject ->
 				return new ExpressionObjectMethodCompletionProposal(expressionObject, pattern.length(), cursorPosition)
 			}

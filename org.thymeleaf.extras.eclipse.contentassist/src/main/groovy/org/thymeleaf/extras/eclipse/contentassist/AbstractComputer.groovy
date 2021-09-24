@@ -16,12 +16,6 @@
 
 package org.thymeleaf.extras.eclipse.contentassist
 
-import org.w3c.dom.Attr
-import org.w3c.dom.Element
-import org.w3c.dom.Node
-
-import javax.xml.namespace.QName
-
 /**
  * Common code between the various content assist computers that pick out
  * Thymeleaf processors or expression object methods from the document.
@@ -30,30 +24,4 @@ import javax.xml.namespace.QName
  */
 abstract class AbstractComputer {
 
-	/**
-	 * Return a list of the namespaces valid at the given node.
-	 * 
-	 * @param node
-	 * @return List of namespaces known to this node.
-	 */
-	protected static ArrayList<QName> findNodeNamespaces(Node node) {
-
-		def namespaces = []
-
-		if (node instanceof Element) {
-			def attributes = node.attributes
-			for (def i = 0; i < attributes.length; i++) {
-				def name = ((Attr)attributes.item(i)).name
-				if (name.startsWith("xmlns:")) {
-					namespaces.add(new QName(((Element)node).getAttribute(name), '', name.substring(6)))
-				}
-			}
-		}
-		def parent = node.parentNode
-		if (parent != null) {
-			namespaces.addAll(findNodeNamespaces(parent))
-		}
-
-		return namespaces
-	}
 }

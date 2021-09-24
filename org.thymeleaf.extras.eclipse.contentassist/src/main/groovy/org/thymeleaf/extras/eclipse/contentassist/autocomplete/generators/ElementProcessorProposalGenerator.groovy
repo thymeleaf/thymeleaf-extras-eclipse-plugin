@@ -31,7 +31,6 @@ import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
  * 
  * @author Emanuel Rabina
  */
-@SuppressWarnings('restriction')
 class ElementProcessorProposalGenerator extends AbstractItemProposalGenerator<ElementProcessorCompletionProposal> {
 
 	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
@@ -47,16 +46,13 @@ class ElementProcessorProposalGenerator extends AbstractItemProposalGenerator<El
 	private List<ElementProcessorCompletionProposal> computeElementProcessorSuggestions(
 		IDOMNode node, IStructuredDocument document, int cursorPosition) {
 
-		def pattern = findProcessorNamePattern(document, cursorPosition)
-		return dialectCache.getElementProcessors(ContentAssistPlugin.findCurrentJavaProject(), findNodeNamespaces(node), pattern)
+		def pattern = document.findProcessorNamePattern(cursorPosition)
+		return dialectCache.getElementProcessors(ContentAssistPlugin.findCurrentJavaProject(), node.knownNamespaces, pattern)
 			.collect { processor ->
 				return new ElementProcessorCompletionProposal(processor, pattern.length(), cursorPosition)
 			}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	List<ElementProcessorCompletionProposal> generateProposals(IDOMNode node,
 		ITextRegion textRegion, IStructuredDocumentRegion documentRegion,

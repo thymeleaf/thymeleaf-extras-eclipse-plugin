@@ -86,7 +86,7 @@ class AttributeProcessorProposalGenerator extends AbstractItemProposalGenerator<
 
 		def pattern = document.findProcessorNamePattern(cursorPosition)
 
-		def processors = dialectCache.getAttributeProcessors(ContentAssistPlugin.findCurrentJavaProject(), findNodeNamespaces(node), pattern)
+		def processors = dialectCache.getAttributeProcessors(ContentAssistPlugin.findCurrentJavaProject(), node.knownNamespaces, pattern)
 		if (!processors.empty) {
 			def proposals = new ArrayList<AttributeProcessorCompletionProposal>()
 			def existingAttributes = node.attributes

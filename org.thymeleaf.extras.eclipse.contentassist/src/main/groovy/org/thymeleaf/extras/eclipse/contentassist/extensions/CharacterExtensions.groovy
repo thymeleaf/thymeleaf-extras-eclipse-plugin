@@ -32,7 +32,7 @@ class CharacterExtensions {
 	 */
 	static boolean isExpressionObjectMethodCharacter(Character self) {
 
-		return self.isLetterOrDigit() || self == '#' || self =='.'
+		return self.isLetterOrDigit() || self == '#' || self == '.'
 	}
 
 	/**

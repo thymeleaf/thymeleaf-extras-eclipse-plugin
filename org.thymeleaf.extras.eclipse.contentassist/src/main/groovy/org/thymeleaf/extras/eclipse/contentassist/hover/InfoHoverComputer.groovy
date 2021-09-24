@@ -37,7 +37,6 @@ import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
  * 
  * @author Emanuel Rabina
  */
-@SuppressWarnings("restriction")
 class InfoHoverComputer extends AbstractComputer implements ITextHover, ITextHoverExtension {
 
 	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
@@ -56,9 +55,6 @@ class InfoHoverComputer extends AbstractComputer implements ITextHover, ITextHov
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
 
@@ -72,7 +68,7 @@ class InfoHoverComputer extends AbstractComputer implements ITextHover, ITextHov
 			def surroundingWord = textViewer.document.get(cursorPosition, hoverRegion.length)
 
 			if (surroundingWord ==~ /[\w:-]*/) {
-				def processor = dialectCache.getProcessor(ContentAssistPlugin.findCurrentJavaProject(), findNodeNamespaces(node), surroundingWord)
+				def processor = dialectCache.getProcessor(ContentAssistPlugin.findCurrentJavaProject(), node.knownNamespaces, surroundingWord)
 				return processor?.documentation?.value
 			}
 

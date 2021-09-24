@@ -31,7 +31,6 @@ import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
  * 
  * @author Emanuel Rabina
  */
-@SuppressWarnings('restriction')
 class AttributeRestrictionProposalGenerator extends AbstractItemProposalGenerator<AttributeRestrictionCompletionProposal> {
 
 	private final DialectCache dialectCache = SpringContainer.instance.getBean(DialectCache)
@@ -55,7 +54,7 @@ class AttributeRestrictionProposalGenerator extends AbstractItemProposalGenerato
 		def attributeName = document.get(documentRegion.startOffset + attributeNameTextRegion.start,
 			 attributeNameTextRegion.textLength)
 
-		def attributeProcessor = dialectCache.getProcessor(ContentAssistPlugin.findCurrentJavaProject(), findNodeNamespaces(node), attributeName)
+		def attributeProcessor = dialectCache.getProcessor(ContentAssistPlugin.findCurrentJavaProject(), node.knownNamespaces, attributeName)
 		if (attributeProcessor?.isSetRestrictions()) {
 
 			def restrictions = attributeProcessor.restrictions
