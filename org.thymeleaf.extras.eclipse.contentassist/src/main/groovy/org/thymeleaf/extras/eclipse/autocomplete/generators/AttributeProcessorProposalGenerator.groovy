@@ -27,12 +27,14 @@ import org.w3c.dom.NamedNodeMap
 import org.w3c.dom.Node
 
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Proposal generator for Thymeleaf attribute processors.
  * 
  * @author Emanuel Rabina
  */
+@Named
 class AttributeProcessorProposalGenerator implements ProposalGenerator<AttributeProcessorCompletionProposal> {
 
 	@Inject
