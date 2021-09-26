@@ -17,12 +17,12 @@
 package org.thymeleaf.extras.eclipse.autocomplete.generators
 
 import org.eclipse.jface.text.IDocument
-import org.eclipse.ui.IWorkbench
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
 import org.thymeleaf.extras.eclipse.autocomplete.proposals.AttributeProcessorCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
+import org.thymeleaf.extras.eclipse.wrappers.JavaProjectLocator
 import org.w3c.dom.NamedNodeMap
 import org.w3c.dom.Node
 
@@ -40,7 +40,7 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 	@Inject
 	private final DialectCache dialectCache
 	@Inject
-	private final IWorkbench workbench
+	private final JavaProjectLocator javaProjectLocator
 
 	/**
 	 * Check if attribute processor suggestions can be made.
@@ -74,34 +74,6 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 			}
 		}
 		return false
-	}
-
-	/**
-	 * Collect attribute processor suggestions.
-	 * 
-	 * @param node
-	 * @param document
-	 * @param cursorPosition
-	 * @return List of attribute processor suggestions.
-	 */
-	private List<AttributeProcessorCompletionProposal> computeAttributeProcessorSuggestions(Node node, IDocument document,
-		int cursorPosition) {
-
-		def pattern = document.findProcessorNamePattern(cursorPosition)
-
-		def processors = dialectCache.getAttributeProcessors(workbench.currentJavaProject, node.knownNamespaces, pattern)
-		if (!processors.empty) {
-			def proposals = []
-			def existingAttributes = node.attributes
-
-			// Go through twice so that we create data-* suggestions as well
-			proposals.addAll(createAttributeProcessorSuggestions(pattern, processors, existingAttributes, node, cursorPosition, false))
-			proposals.addAll(createAttributeProcessorSuggestions(pattern, processors, existingAttributes, node, cursorPosition, true))
-
-			return proposals
-		}
-
-		return Collections.EMPTY_LIST
 	}
 
 	/**
@@ -186,9 +158,22 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 	List<AttributeProcessorCompletionProposal> generate(Node node, ITextRegion textRegion,
 		IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
-		return canMakeProposals(node, textRegion, documentRegion, document, cursorPosition) ?
-			computeAttributeProcessorSuggestions(node, document, cursorPosition) :
-			[]
+		if (canMakeProposals(node, textRegion, documentRegion, document, cursorPosition)) {
+			def pattern = document.findProcessorNamePattern(cursorPosition)
+
+			def processors = dialectCache.getAttributeProcessors(javaProjectLocator.locate(), node.knownNamespaces, pattern)
+			if (processors) {
+				def proposals = []
+				def existingAttributes = node.attributes
+
+				// Go through twice so that we create data-* suggestions as well
+				proposals.addAll(createAttributeProcessorSuggestions(pattern, processors, existingAttributes, node, cursorPosition, false))
+				proposals.addAll(createAttributeProcessorSuggestions(pattern, processors, existingAttributes, node, cursorPosition, true))
+
+				return proposals
+			}
+		}
+		return []
 	}
 
 	/**

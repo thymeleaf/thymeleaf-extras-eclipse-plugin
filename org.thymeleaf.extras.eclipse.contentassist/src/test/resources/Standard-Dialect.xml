@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ =============================================================================
+  ~
+  ~   Copyright (c) 2011-2018, The THYMELEAF team (http://www.thymeleaf.org)
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  ~
+  ~ =============================================================================
+  -->
+
+<dialect xmlns="http://www.thymeleaf.org/extras/dialect"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.thymeleaf.org/extras/dialect
+	                    http://www.thymeleaf.org/xsd/thymeleaf-extras-dialect-3.0.xsd"
+	prefix="th"
+	namespace-uri="http://www.thymeleaf.org"
+	class="org.thymeleaf.standard.StandardDialect">
+
+
+	<!-- Introduced Thymeleaf attribute processors -->
+	<!-- ========================================= -->
+
+	<attribute-processor
+		name="alt-title"
+		class="org.thymeleaf.standard.processor.StandardAltTitleTagProcessor">
+		<documentation
+			see-also="alt title"/>
+	</attribute-processor>
+
+	<attribute-processor
+		name="assert"
+		class="org.thymeleaf.standard.processor.StandardAssertTagProcessor"/>
+
+	<attribute-processor
+		name="attr"
+		class="org.thymeleaf.standard.processor.StandardAttrTagProcessor">
+		<documentation
+			see-also="attrappend attrprepend"
+			reference="Setting Attribute Values"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#setting-attribute-values">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#setting-attribute-values</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="attrappend"
+		class="org.thymeleaf.standard.processor.StandardAttrappendTagProcessor">
+		<documentation
+			see-also="attr attrprepend classappend"
+			reference="Appending And Prepending attribute values"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appending-and-prepending">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appending-and-prepending</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="attrprepend"
+		class="org.thymeleaf.standard.processor.StandardAttrprependTagProcessor">
+		<documentation
+			see-also="attr attrappend"
+			reference="Appending And Prepending attribute values"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appending-and-prepending">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appending-and-prepending</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="case"
+		class="org.thymeleaf.standard.processor.StandardCaseTagProcessor">
+		<documentation
+			see-also="switch"
+			reference="Switch Statements"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#switch-statements">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#switch-statements</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="classappend"
+		class="org.thymeleaf.standard.processor.StandardClassappendTagProcessor">
+		<documentation
+			see-also="attrappend class"
+			reference="Appending And Prepending attribute values"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appending-and-prepending">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appending-and-prepending</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="each"
+		class="org.thymeleaf.standard.processor.StandardEachTagProcessor">
+		<documentation
+			reference="Iteration"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#iteration">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#iteration</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="fragment"
+		class="org.thymeleaf.standard.processor.StandardFragmentTagProcessor">
+		<documentation
+			see-also="include insert replace"
+			reference="Including Template Fragments"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#including-template-fragments">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#including-template-fragments</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="if"
+		class="org.thymeleaf.standard.processor.StandardIfTagProcessor">
+		<documentation
+			see-also="unless"
+			reference="Simple Conditionals"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#simple-conditionals-if-and-unless">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#simple-conditionals-if-and-unless</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="include"
+		class="org.thymeleaf.standard.processor.StandardIncludeTagProcessor">
+		<documentation
+			see-also="insert replace fragment"
+			reference="Including Template Fragments"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#including-template-fragments">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#including-template-fragments</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="inline"
+		class="org.thymeleaf.standard.processor.StandardInlineTextualTagProcessor">
+		<documentation
+			reference="Inlining"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#inlining">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#inlining</a>
+		]]></documentation>
+		<restrictions
+			values="text javascript dart"/>
+	</attribute-processor>
+
+	<attribute-processor
+		name="insert"
+		class="org.thymeleaf.standard.processor.StandardInsertTagProcessor">
+		<documentation
+			see-also="include replace fragment"
+			reference="Including Template Fragments"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#including-template-fragments">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#including-template-fragments</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="lang-xmllang"
+		class="org.thymeleaf.standard.processor.StandardLangXmlLangTagProcessor">
+		<documentation
+			see-also="lang xmllang"/>
+	</attribute-processor>
+
+	<attribute-processor
+		name="object"
+		class="org.thymeleaf.standard.processor.StandardObjectTagProcessor">
+		<documentation
+			see-also="with"
+			reference="Asterisk Syntax"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#expressions-on-selections-asterisk-syntax">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#expressions-on-selections-asterisk-syntax</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="ref"
+		class="org.thymeleaf.standard.processor.StandardRefAttributeTagProcessor"/>
+
+	<attribute-processor
+		name="remove"
+		class="org.thymeleaf.standard.processor.StandardRemoveTagProcessor">
+		<documentation
+			reference="Removing Template Fragments"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#removing-template-fragments">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#removing-template-fragments</a>
+		]]></documentation>
+		<restrictions
+			values="all body tag all-but-first"/>
+	</attribute-processor>
+
+	<attribute-processor
+		name="replace"
+		class="org.thymeleaf.standard.processor.StandardReplaceTagProcessor">
+		<documentation
+			see-also="include insert fragment"
+			reference="Including Template Fragments"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#including-template-fragments">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#including-template-fragments</a>
+		]]></documentation>
+	</attribute-processor>
+
+    <attribute-processor
+        name="styleappend"
+        class="org.thymeleaf.standard.processor.StandardStyleappendTagProcessor">
+        <documentation
+            see-also="attrappend style"
+			reference="Appending And Prepending attribute values"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appending-and-prepending">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appending-and-prepending</a>
+		]]></documentation>
+    </attribute-processor>
+
+	<attribute-processor
+		name="substituteby"
+		class="org.thymeleaf.standard.processor.StandardSubstituteByTagProcessor">
+		<documentation
+			see-also="include insert replace fragment"
+			reference="Including Template Fragments"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#including-template-fragments">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#including-template-fragments</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="switch"
+		class="org.thymeleaf.standard.processor.StandardSwitchTagProcessor">
+		<documentation
+			see-also="case if"
+			reference="Switch Statements"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#switch-statements">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#switch-statements</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="text"
+		class="org.thymeleaf.standard.processor.StandardTextTagProcessor">
+		<documentation
+			see-also="utext"
+			reference="Using Texts"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#using-texts">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#using-texts</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="unless"
+		class="org.thymeleaf.standard.processor.StandardUnlessTagProcessor">
+		<documentation
+			see-also="if"
+			reference="Simple Conditionals"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#simple-conditionals-if-and-unless">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#simple-conditionals-if-and-unless</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="utext"
+		class="org.thymeleaf.standard.processor.StandardUtextTagProcessor">
+		<documentation
+			see-also="text"
+			reference="Unescaped Text"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#unescaped-text">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#unescaped-text</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="with"
+		class="org.thymeleaf.standard.processor.StandardWithTagProcessor">
+		<documentation
+			see-also="object"
+			reference="Local Variables"><![CDATA[
+			<a href="http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#local-variables">http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#local-variables</a>
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor
+		name="xmlbase"
+		class="org.thymeleaf.standard.processor.StandardXmlBaseTagProcessor">
+		<documentation
+			see-also="xmllang xmlspace"/>
+	</attribute-processor>
+
+	<attribute-processor
+		name="xmllang"
+		class="org.thymeleaf.standard.processor.StandardXmlLangTagProcessor">
+		<documentation
+			see-also="xmlbase xmlspace"/>
+	</attribute-processor>
+
+	<attribute-processor
+		name="xmlspace"
+		class="org.thymeleaf.standard.processor.StandardXmlSpaceTagProcessor">
+		<documentation
+			see-also="xmlbase xmllang"/>
+	</attribute-processor>
+
+
+	<!-- Introduced Thymeleaf element processors -->
+	<!-- ======================================= -->
+
+	<element-processor name="block"
+		class="org.thymeleaf.standard.processor.StandardBlockTagProcessor"/>
+
+
+	<!-- URL and form-specific attribute processors -->
+	<!-- ========================================== -->
+
+	<attribute-processor
+		name="action"
+		class="org.thymeleaf.standard.processor.StandardActionTagProcessor"/>
+
+	<attribute-processor
+		name="href"
+		class="org.thymeleaf.standard.processor.StandardHrefTagProcessor"/>
+
+	<attribute-processor
+		name="method"
+		class="org.thymeleaf.standard.processor.StandardMethodTagProcessor"/>
+
+	<attribute-processor
+		name="src"
+		class="org.thymeleaf.standard.processor.StandardSrcTagProcessor"/>
+
+	<attribute-processor
+		name="value"
+		class="org.thymeleaf.standard.processor.StandardValueTagProcessor"/>
+
+
+	<!-- Fixed value processors -->
+	<!-- ====================== -->
+
+	<attribute-processor name="async"/>
+	<attribute-processor name="autofocus"/>
+	<attribute-processor name="autoplay"/>
+	<attribute-processor name="checked"/>
+	<attribute-processor name="controls"/>
+	<attribute-processor name="declare"/>
+	<attribute-processor name="default"/>
+	<attribute-processor name="defer"/>
+	<attribute-processor name="disabled"/>
+	<attribute-processor name="formnovalidate"/>
+	<attribute-processor name="hidden"/>
+	<attribute-processor name="ismap"/>
+	<attribute-processor name="loop"/>
+	<attribute-processor name="multiple"/>
+	<attribute-processor name="novalidate"/>
+	<attribute-processor name="nowrap"/>
+	<attribute-processor name="open"/>
+	<attribute-processor name="pubdate"/>
+	<attribute-processor name="readonly"/>
+	<attribute-processor name="required"/>
+	<attribute-processor name="reversed"/>
+	<attribute-processor name="selected"/>
+	<attribute-processor name="scoped"/>
+	<attribute-processor name="seamless"/>
+
+
+	<!-- Event processors -->
+	<!-- ================ -->
+
+	<attribute-processor name="onabort"/>
+	<attribute-processor name="onafterprint"/>
+	<attribute-processor name="onbeforeprint"/>
+	<attribute-processor name="onbeforeunload"/>
+	<attribute-processor name="onblur"/>
+	<attribute-processor name="oncanplay"/>
+	<attribute-processor name="oncanplaythrough"/>
+	<attribute-processor name="onchange"/>
+	<attribute-processor name="onclick"/>
+	<attribute-processor name="oncontextmenu"/>
+	<attribute-processor name="ondblclick"/>
+	<attribute-processor name="ondrag"/>
+	<attribute-processor name="ondragend"/>
+	<attribute-processor name="ondragenter"/>
+	<attribute-processor name="ondragleave"/>
+	<attribute-processor name="ondragover"/>
+	<attribute-processor name="ondragstart"/>
+	<attribute-processor name="ondrop"/>
+	<attribute-processor name="ondurationchanged"/>
+	<attribute-processor name="onemptied"/>
+	<attribute-processor name="onended"/>
+	<attribute-processor name="onerror"/>
+	<attribute-processor name="onfocus"/>
+	<attribute-processor name="onformchange"/>
+	<attribute-processor name="onforminput"/>
+	<attribute-processor name="onhashchange"/>
+	<attribute-processor name="oninput"/>
+	<attribute-processor name="oninvalid"/>
+	<attribute-processor name="onkeydown"/>
+	<attribute-processor name="onkeypress"/>
+	<attribute-processor name="onkeyup"/>
+	<attribute-processor name="onload"/>
+	<attribute-processor name="onloadeddata"/>
+	<attribute-processor name="onloadedmetadata"/>
+	<attribute-processor name="onloadstart"/>
+	<attribute-processor name="onmessage"/>
+	<attribute-processor name="onmousedown"/>
+	<attribute-processor name="onmousemove"/>
+	<attribute-processor name="onmouseout"/>
+	<attribute-processor name="onmouseover"/>
+	<attribute-processor name="onmouseup"/>
+	<attribute-processor name="onmousewheel"/>
+	<attribute-processor name="onoffline"/>
+	<attribute-processor name="ononline"/>
+	<attribute-processor name="onpause"/>
+	<attribute-processor name="onplay"/>
+	<attribute-processor name="onplaying"/>
+	<attribute-processor name="onpopstate"/>
+	<attribute-processor name="onprogress"/>
+	<attribute-processor name="onratechange"/>
+	<attribute-processor name="onreadystatechange"/>
+	<attribute-processor name="onredo"/>
+	<attribute-processor name="onreset"/>
+	<attribute-processor name="onresize"/>
+	<attribute-processor name="onscroll"/>
+	<attribute-processor name="onseeked"/>
+	<attribute-processor name="onseeking"/>
+	<attribute-processor name="onselect"/>
+	<attribute-processor name="onshow"/>
+	<attribute-processor name="onstalled"/>
+	<attribute-processor name="onstorage"/>
+	<attribute-processor name="onsubmit"/>
+	<attribute-processor name="onsuspend"/>
+	<attribute-processor name="ontimeupdate"/>
+	<attribute-processor name="onundo"/>
+	<attribute-processor name="onunload"/>
+	<attribute-processor name="onvolumechange"/>
+	<attribute-processor name="onwaiting"/>
+
+
+	<!-- Non-removable attribute processors -->
+	<!-- ================================== -->
+
+	<attribute-processor name="name"/>
+	<attribute-processor name="type"/>
+
+
+	<!-- Removable attribute processors -->
+	<!-- ============================== -->
+
+	<attribute-processor name="abbr"/>
+	<attribute-processor name="accept"/>
+	<attribute-processor name="accept-charset"/>
+	<attribute-processor name="accesskey"/>
+	<attribute-processor name="align"/>
+
+	<attribute-processor name="alt">
+		<documentation see-also="alt-title"><![CDATA[
+			Sets the <b>alt</b> attribute to the result of the expression.
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor name="archive"/>
+	<attribute-processor name="audio"/>
+	<attribute-processor name="autocomplete"/>
+	<attribute-processor name="axis"/>
+	<attribute-processor name="background"/>
+	<attribute-processor name="bgcolor"/>
+	<attribute-processor name="border"/>
+	<attribute-processor name="cellpadding"/>
+	<attribute-processor name="cellspacing"/>
+	<attribute-processor name="challenge"/>
+	<attribute-processor name="charset"/>
+	<attribute-processor name="cite"/>
+	<attribute-processor name="class"/>
+	<attribute-processor name="classid"/>
+	<attribute-processor name="codebase"/>
+	<attribute-processor name="codetype"/>
+	<attribute-processor name="cols"/>
+	<attribute-processor name="colspan"/>
+	<attribute-processor name="compact"/>
+	<attribute-processor name="content"/>
+	<attribute-processor name="contenteditable"/>
+	<attribute-processor name="contextmenu"/>
+	<attribute-processor name="data"/>
+	<attribute-processor name="datetime"/>
+	<attribute-processor name="dir"/>
+	<attribute-processor name="draggable"/>
+	<attribute-processor name="dropzone"/>
+	<attribute-processor name="enctype"/>
+	<attribute-processor name="for"/>
+	<attribute-processor name="form"/>
+	<attribute-processor name="formaction"/>
+	<attribute-processor name="formenctype"/>
+	<attribute-processor name="formmethod"/>
+	<attribute-processor name="formtarget"/>
+	<attribute-processor name="frame"/>
+	<attribute-processor name="frameborder"/>
+	<attribute-processor name="headers"/>
+	<attribute-processor name="height"/>
+	<attribute-processor name="high"/>
+	<attribute-processor name="hreflang"/>
+	<attribute-processor name="hspace"/>
+	<attribute-processor name="http-equiv"/>
+	<attribute-processor name="icon"/>
+	<attribute-processor name="id"/>
+	<attribute-processor name="keytype"/>
+	<attribute-processor name="kind"/>
+	<attribute-processor name="label"/>
+
+	<attribute-processor name="lang">
+		<documentation see-also="lang-xmllang"><![CDATA[
+			Sets the <b>lang</b> attribute to the result of the expression.
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor name="list"/>
+	<attribute-processor name="longdesc"/>
+	<attribute-processor name="low"/>
+	<attribute-processor name="manifest"/>
+	<attribute-processor name="marginheight"/>
+	<attribute-processor name="marginwidth"/>
+	<attribute-processor name="max"/>
+	<attribute-processor name="maxlength"/>
+	<attribute-processor name="media"/>
+	<attribute-processor name="min"/>
+	<attribute-processor name="optimum"/>
+	<attribute-processor name="pattern"/>
+	<attribute-processor name="placeholder"/>
+	<attribute-processor name="poster"/>
+	<attribute-processor name="preload"/>
+	<attribute-processor name="radiogroup"/>
+	<attribute-processor name="rel"/>
+	<attribute-processor name="rev"/>
+	<attribute-processor name="rows"/>
+	<attribute-processor name="rowspan"/>
+	<attribute-processor name="rules"/>
+	<attribute-processor name="sandbox"/>
+	<attribute-processor name="scheme"/>
+	<attribute-processor name="scope"/>
+	<attribute-processor name="scrolling"/>
+	<attribute-processor name="size"/>
+	<attribute-processor name="sizes"/>
+	<attribute-processor name="span"/>
+	<attribute-processor name="spellcheck"/>
+	<attribute-processor name="standby"/>
+	<attribute-processor name="style"/>
+	<attribute-processor name="srclang"/>
+	<attribute-processor name="start"/>
+	<attribute-processor name="step"/>
+	<attribute-processor name="summary"/>
+	<attribute-processor name="tabindex"/>
+	<attribute-processor name="target"/>
+
+	<attribute-processor name="title">
+		<documentation see-also="alt-title"><![CDATA[
+			Sets the <b>title</b> attribute to the result of the expression.
+		]]></documentation>
+	</attribute-processor>
+
+	<attribute-processor name="usemap"/>
+	<attribute-processor name="valuetype"/>
+	<attribute-processor name="vspace"/>
+	<attribute-processor name="width"/>
+	<attribute-processor name="wrap"/>
+
+
+	<!-- Thymeleaf Expression Objects -->
+	<!-- ============================ -->
+
+	<expression-object name="ctx"                class="org.thymeleaf.context.IContext"/>
+	<expression-object name="root"               class="org.thymeleaf.context.IContext"/>
+	<expression-object name="vars"               class="org.thymeleaf.context.IContext"/>
+	<expression-object name="object"             class="org.thymeleaf.context.IContext"/>
+	<expression-object name="locale"             class="java.util.Locale"/>
+
+	<expression-object name="request"            class="javax.servlet.http.HttpServletRequest"/>
+	<expression-object name="response"           class="javax.servlet.http.HttpServletResponse"/>
+	<expression-object name="session"            class="javax.servlet.http.HttpSession"/>
+	<expression-object name="servletContext"     class="javax.servlet.ServletContext"/>
+
+	<expression-object name="httpServletRequest" class="javax.servlet.http.HttpServletRequest"/>
+	<expression-object name="httpSession"        class="javax.servlet.http.HttpSession"/>
+
+	<expression-object name="conversions" class="org.thymeleaf.expression.Conversions"/>
+	<expression-object name="uris"        class="org.thymeleaf.expression.Uris"/>
+
+	<expression-object name="calendars"  class="org.thymeleaf.expression.Calendars"/>
+	<expression-object name="dates"      class="org.thymeleaf.expression.Dates"/>
+	<expression-object name="bools"      class="org.thymeleaf.expression.Bools"/>
+	<expression-object name="numbers"    class="org.thymeleaf.expression.Numbers"/>
+	<expression-object name="objects"    class="org.thymeleaf.expression.Objects"/>
+	<expression-object name="strings"    class="org.thymeleaf.expression.Strings"/>
+	<expression-object name="arrays"     class="org.thymeleaf.expression.Arrays"/>
+	<expression-object name="lists"      class="org.thymeleaf.expression.Lists"/>
+	<expression-object name="sets"       class="org.thymeleaf.expression.Sets"/>
+	<expression-object name="maps"       class="org.thymeleaf.expression.Maps"/>
+	<expression-object name="aggregates" class="org.thymeleaf.expression.Aggregates"/>
+	<expression-object name="messages"   class="org.thymeleaf.expression.Messages"/>
+	<expression-object name="ids"        class="org.thymeleaf.expression.Ids"/>
+
+	<expression-object name="execInfo" class="org.thymeleaf.expression.ExecutionInfo"/>
+
+</dialect>

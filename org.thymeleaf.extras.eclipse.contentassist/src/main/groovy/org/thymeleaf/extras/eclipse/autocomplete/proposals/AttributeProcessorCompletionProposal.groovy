@@ -16,11 +16,14 @@
 
 package org.thymeleaf.extras.eclipse.autocomplete.proposals
 
+import org.eclipse.jface.resource.ImageRegistry
 import org.eclipse.jface.text.IDocument
 import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.graphics.Point
 import org.thymeleaf.extras.eclipse.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
+
+import javax.inject.Inject
 
 /**
  * A completion proposal for Thymeleaf attribute processors.
@@ -29,8 +32,10 @@ import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
  */
 class AttributeProcessorCompletionProposal extends AbstractCompletionProposal {
 
+	@Inject
+	private final ImageRegistry imageRegistry
+
 	final String displayString
-	final Image image = ContentAssistPlugin.default.imageRegistry.get(ContentAssistPlugin.IMAGE_ATTRIBUTE_PROCESSOR)
 
 	/**
 	 * Constructor, creates a completion proposal for a Thymeleaf attribute
@@ -56,18 +61,18 @@ class AttributeProcessorCompletionProposal extends AbstractCompletionProposal {
 		this.displayString = !dataAttr ? processor.fullName : processor.fullDataName
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void applyImpl(IDocument document, char trigger, int offset) {
 
 		document.replace(offset, 0, replacementString.substring(offset - cursorPosition) + '=""')
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
+	Image getImage() {
+
+		return imageRegistry.get(ContentAssistPlugin.IMAGE_ATTRIBUTE_PROCESSOR)
+	}
+
 	@Override
 	Point getSelection(IDocument document) {
 

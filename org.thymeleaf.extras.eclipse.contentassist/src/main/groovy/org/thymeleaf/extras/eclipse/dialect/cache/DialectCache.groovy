@@ -26,7 +26,6 @@ import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor
-import org.thymeleaf.extras.eclipse.nature.ThymeleafNature
 import static org.eclipse.core.resources.IResourceChangeEvent.*
 
 import javax.annotation.PostConstruct
@@ -150,7 +149,7 @@ class DialectCache {
 		loadDialectsFromProject(project)
 
 		return dialectTree.getAttributeProcessorsForProject(project).findAll { processor ->
-			return (thymeleafNatureEnabled(project) || dialectInNamespace(processor.dialect, namespaces)) &&
+			return (project.hasThymeleafNature() || dialectInNamespace(processor.dialect, namespaces)) &&
 				processorMatchesPattern(processor, pattern)
 		}
 	}
@@ -170,7 +169,7 @@ class DialectCache {
 		loadDialectsFromProject(project)
 
 		return dialectTree.getElementProcessorsForProject(project).findAll { processor ->
-			return (thymeleafNatureEnabled(project) || dialectInNamespace(processor.dialect, namespaces)) &&
+			return (project.hasThymeleafNature() || dialectInNamespace(processor.dialect, namespaces)) &&
 				processorMatchesPattern(processor, pattern)
 		}
 	}
@@ -191,7 +190,7 @@ class DialectCache {
 		loadDialectsFromProject(project)
 
 		return dialectTree.getExpressionObjectMethodsForProject(project).find { expressionObject ->
-			return (thymeleafNatureEnabled(project) || dialectInNamespace(expressionObject.dialect, namespaces)) &&
+			return (project.hasThymeleafNature() || dialectInNamespace(expressionObject.dialect, namespaces)) &&
 				expressionObjectMethodMatchesName(expressionObject, methodname)
 		}
 	}
@@ -212,7 +211,7 @@ class DialectCache {
 		loadDialectsFromProject(project)
 
 		return dialectTree.getExpressionObjectMethodsForProject(project).findAll { expressionObjectMethod ->
-			return (thymeleafNatureEnabled(project) || dialectInNamespace(expressionObjectMethod.dialect, namespaces)) &&
+			return (project.hasThymeleafNature() || dialectInNamespace(expressionObjectMethod.dialect, namespaces)) &&
 				expressionObjectMethodMatchesPattern(expressionObjectMethod, pattern)
 		}
 	}
@@ -235,7 +234,7 @@ class DialectCache {
 			dialectTree.getAttributeProcessorsForProject(project) +
 			dialectTree.getElementProcessorsForProject(project)
 		return processors.find { processor ->
-			return (thymeleafNatureEnabled(project) || dialectInNamespace(processor.dialect, namespaces)) &&
+			return (project.hasThymeleafNature() || dialectInNamespace(processor.dialect, namespaces)) &&
 				processorMatchesName(processor, processorName)
 		}
 	}
@@ -252,7 +251,7 @@ class DialectCache {
 
 		if (!dialectTree.containsProject(project)) {
 			def pathsAndDialects = xmlDialectLoader.load(new ProjectDependencyDialectLocator(project))
-			if (pathsAndDialects.size() > 0) {
+			if (pathsAndDialects) {
 				pathsAndDialects.eachWithIndex { pathAndDialect, index ->
 					dialectTree.addProjectDialect(project, pathAndDialect.path,
 						dialectItemProcessor.processDialectItems(pathAndDialect.dialect, project))
@@ -292,16 +291,5 @@ class DialectCache {
 
 		return processor.fullName.startsWith(pattern) ||
 			(processor instanceof AttributeProcessor && processor.fullDataName.startsWith(pattern))
-	}
-
-	/**
-	 * Check if the Thymeleaf nature has been applied to the given project.
-	 * 
-	 * @param project
-	 * @return <tt>true</tt> if the project has the Thymeleaf nature.
-	 */
-	private boolean thymeleafNatureEnabled(IJavaProject project) {
-
-		return project.project.hasNature(ThymeleafNature.THYMELEAF_NATURE_ID)
 	}
 }

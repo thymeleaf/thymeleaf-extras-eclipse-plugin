@@ -31,9 +31,6 @@ class ThymeleafNature implements IProjectNature {
 
 	IProject project
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	void configure() {
 
@@ -45,9 +42,6 @@ class ThymeleafNature implements IProjectNature {
 		project.setDescription(description, null)
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	void deconfigure() {
 

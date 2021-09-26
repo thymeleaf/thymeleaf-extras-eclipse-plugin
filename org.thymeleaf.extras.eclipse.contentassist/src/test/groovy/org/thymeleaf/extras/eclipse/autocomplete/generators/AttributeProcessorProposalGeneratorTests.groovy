@@ -18,12 +18,10 @@ package org.thymeleaf.extras.eclipse.autocomplete.generators
 
 import org.eclipse.core.resources.IFile
 import org.eclipse.core.resources.IProject
+import org.eclipse.jdt.core.IJavaProject
+import org.eclipse.jdt.core.IPackageFragment
+import org.eclipse.jdt.core.IPackageFragmentRoot
 import org.eclipse.jface.text.IDocument
-import org.eclipse.ui.IEditorPart
-import org.eclipse.ui.IWorkbench
-import org.eclipse.ui.IWorkbenchPage
-import org.eclipse.ui.IWorkbenchWindow
-import org.eclipse.ui.part.FileEditorInput
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
@@ -33,7 +31,9 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import org.thymeleaf.extras.eclipse.TestContentAssistConfig
-import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
+import org.thymeleaf.extras.eclipse.dialect.cache.DialectChangeListener
+import org.thymeleaf.extras.eclipse.nature.ThymeleafNature
+import org.thymeleaf.extras.eclipse.wrappers.JavaProjectLocator
 import static org.junit.jupiter.api.Assertions.*
 import static org.mockito.Mockito.*
 
@@ -58,17 +58,15 @@ class AttributeProcessorProposalGeneratorTests {
 		}
 
 		@Bean
-		DialectCache dialectCache() {
-			def dialectCache = mock(DialectCache)
-			when(dialectCache.getAttributeProcessors(any(), any(), any())).thenReturn([])
-			return dialectCache
+		JavaProjectLocator javaProjectLocator() {
+			return mock(JavaProjectLocator)
 		}
 	}
 
 	@Inject
 	private final AttributeProcessorProposalGenerator attributeProcessorProposalGenerator
 	@Inject
-	private final IWorkbench workbench
+	private final JavaProjectLocator javaProjectLocator
 
 	/**
 	 * Create an {@link IDocument} mock that operates over the given text.
@@ -102,19 +100,23 @@ class AttributeProcessorProposalGeneratorTests {
 	@Test
 	void returnsProposalsAtElementWhitespace() {
 
-		// TODO: See the note in IWorkbenchExtensions
+		def xmlBytes = this.class.classLoader.getResourceAsStream('Standard-Dialect.xml').bytes
+		def xmlFile = mock(IFile)
+		when(xmlFile.getContents())
+			.thenReturn(new ByteArrayInputStream(xmlBytes))
+			.thenReturn(new ByteArrayInputStream(xmlBytes)) // TODO: See the note in ProjectDependencyDialectLocator
+		when(xmlFile.getName()).thenReturn('Standard-Dialect.xml')
+
+		def packageFragment = mock(IPackageFragment)
+		when(packageFragment.getNonJavaResources()).thenReturn([xmlFile] as Object[])
+		def packageFragmentRoot = mock(IPackageFragmentRoot)
+		when(packageFragmentRoot.getChildren()).thenReturn([packageFragment] as IPackageFragment[])
 		def project = mock(IProject)
-		def file = mock(IFile)
-		when(file.getProject()).thenReturn(project)
-		def editorInput = mock(FileEditorInput)
-		when(editorInput.getFile()).thenReturn(file)
-		def activeEditor = mock(IEditorPart)
-		when(activeEditor.getEditorInput()).thenReturn(editorInput)
-		def workbenchPage = mock(IWorkbenchPage)
-		when(workbenchPage.getActiveEditor()).thenReturn(activeEditor)
-		def workbenchWindow = mock(IWorkbenchWindow)
-		when(workbenchWindow.getActivePage()).thenReturn(workbenchPage)
-		when(workbench.getWorkbenchWindows()).thenReturn(new IWorkbenchWindow[]{ workbenchWindow })
+		when(project.hasNature(ThymeleafNature.THYMELEAF_NATURE_ID)).thenReturn(true)
+		def javaProject = mock(IJavaProject)
+		when(javaProject.getAllPackageFragmentRoots()).thenReturn([packageFragmentRoot] as IPackageFragmentRoot[])
+		when(javaProject.getProject()).thenReturn(project)
+		when(javaProjectLocator.locate()).thenReturn(javaProject)
 
 		def html = '<p xmlns:th="http://www.thymeleaf.org" >Hi!</p>'
 		def document = DOMBuilder.newInstance().parseText(html)

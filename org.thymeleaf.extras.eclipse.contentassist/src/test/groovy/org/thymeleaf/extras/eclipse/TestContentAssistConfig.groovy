@@ -17,10 +17,15 @@
 package org.thymeleaf.extras.eclipse
 
 import org.eclipse.core.resources.IWorkspace
+import org.eclipse.jface.resource.ImageRegistry
 import org.eclipse.ui.IWorkbench
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader
+import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
+import org.thymeleaf.extras.eclipse.dialect.cache.DialectChangeListener
+import org.thymeleaf.extras.eclipse.dialect.cache.DialectItemProcessor
+import org.thymeleaf.extras.eclipse.dialect.cache.DialectTree
 import static org.mockito.Mockito.mock
 
 /**
@@ -29,8 +34,32 @@ import static org.mockito.Mockito.mock
  * @author Emanuel Rabina
  */
 @Configuration
-@ComponentScan
 class TestContentAssistConfig {
+
+	@Bean
+	DialectCache dialectCache() {
+		return new DialectCache()
+	}
+
+	@Bean
+	DialectChangeListener dialectChangeListener() {
+		return mock(DialectChangeListener)
+	}
+
+	@Bean
+	DialectItemProcessor dialectItemProcessor() {
+		return new DialectItemProcessor()
+	}
+
+	@Bean
+	DialectTree dialectTree() {
+		return new DialectTree()
+	}
+
+	@Bean
+	ImageRegistry imageRegistry() {
+		return mock(ImageRegistry)
+	}
 
 	@Bean
 	IWorkbench workbench() {
@@ -40,5 +69,10 @@ class TestContentAssistConfig {
 	@Bean
 	IWorkspace workspace() {
 		return mock(IWorkspace)
+	}
+
+	@Bean
+	XmlDialectLoader xmlDialectLoader() {
+		return new XmlDialectLoader()
 	}
 }

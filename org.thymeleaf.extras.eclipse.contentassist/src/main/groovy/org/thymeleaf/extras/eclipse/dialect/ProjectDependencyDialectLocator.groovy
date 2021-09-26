@@ -68,6 +68,9 @@ class ProjectDependencyDialectLocator implements DialectLocator {
 	 */
 	private static boolean isDialectHelpXmlFile(IStorage resource) {
 
+		// TODO: This method consumes the stream, so when we need it later it can
+		//       lead to EOF errors.  Find a way to maybe store the results of a
+		//       read stream so we don't encounter that problem.
 		if (((resource instanceof IJarEntryResource && resource.file) ||
 			resource instanceof IFile) && resource.name.endsWith('.xml')) {
 			return resource.contents.withStream { resourceStream ->
