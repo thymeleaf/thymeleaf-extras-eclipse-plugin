@@ -31,34 +31,10 @@
 			<timezone>Pacific/Auckland</timezone>
 		</developer>
 	</developers>
-	<contributors>
-		<contributor>
-			<name>Thibault Duchateau</name>
-			<email>thibault.duchateau@gmail.com</email>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<properties>
-				<contribution>The original dialect scanning code</contribution>
-			</properties>
-		</contributor>
-		<contributor>
-			<name>Alexandre Araújo</name>
-			<email>alexandre.little@gmail.com</email>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<timezone>America/Fortaleza</timezone>
-			<properties>
-				<contribution>https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/pull/69</contribution>
-			</properties>
-		</contributor>
-	</contributors>
 
 	<modules>
 		<module>org.thymeleaf.extras.eclipse.contentassist</module>
 		<module>org.thymeleaf.extras.eclipse.contentassist.feature</module>
-		<module>org.thymeleaf.extras.eclipse.core</module>
 		<module>org.thymeleaf.extras.eclipse.repository</module>
 		<module>org.thymeleaf.extras.eclipse.repository.composite</module>
 	</modules>

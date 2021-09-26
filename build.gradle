@@ -25,7 +25,6 @@ plugins {
 }
 apply from: 'https://raw.githubusercontent.com/ultraq/gradle-support/3.4.0/jaxb.gradle'
 
-def corePluginDir = 'org.thymeleaf.extras.eclipse.core'
 def contentassistPluginDir = 'org.thymeleaf.extras.eclipse.contentassist'
 
 repositories {
@@ -41,7 +40,6 @@ repositories {
  * project, saving us having to store those JARs in source control (like we used
  * to, since this is an OSGi environment, not a Maven one). 
  */
-configurations.create('core')
 configurations.create('contentassist')
 
 configurations.all {
@@ -52,23 +50,13 @@ configurations.all {
 }
 
 dependencies {
-	core(
+	contentassist(
 		'javax.annotation:javax.annotation-api:1.3.2',
 		'javax.inject:javax.inject:1',
 		'nz.net.ultraq.jaxb:jaxb-utilities:2.1.0-SNAPSHOT',
 		'nz.net.ultraq.extensions:groovy-extensions:1.1.0',
 		'nz.net.ultraq.extensions:profiling-extensions:0.6.1',
 		'org.attoparser:attoparser:2.0.5.RELEASE',
-		'org.codehaus.groovy:groovy:3.0.9',
-		'org.springframework:spring-context:5.2.0.RELEASE',
-
-		// For unit tests
-		'org.junit.jupiter:junit-jupiter:5.7.2',
-		'org.mockito:mockito-core:3.12.4',
-		'org.springframework:spring-test:5.2.0.RELEASE'
-	)
-	contentassist(
-		'javax.inject:javax.inject:1',
 		'org.codehaus.groovy:groovy:3.0.9',
 		'org.springframework:spring-context:5.2.0.RELEASE',
 
@@ -87,10 +75,6 @@ task downloadDependencies(
 	description: 'Download Maven dependencies into the libs directory for each plugin') {
 
 	copy {
-		from configurations.core
-		into "${corePluginDir}/libs"
-	}
-	copy {
 		from configurations.contentassist
 		into "${contentassistPluginDir}/libs"
 	}
@@ -101,8 +85,8 @@ task downloadDependencies(
  * in the core plugin.
  */
 xjc {
-	schemaDir = "${corePluginDir}/schemas"
-	outputDir = "${corePluginDir}/src/main/java"
+	schemaDir = "${contentassistPluginDir}/schemas"
+	outputDir = "${contentassistPluginDir}/src/main/java"
 	classes = [
 		'**/dialect/xml/*.java'
 	]
