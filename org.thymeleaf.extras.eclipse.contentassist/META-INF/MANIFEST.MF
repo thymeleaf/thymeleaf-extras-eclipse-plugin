@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Thymeleaf Content Assist
 Bundle-SymbolicName: org.thymeleaf.extras.eclipse.contentassist;singleton:=true
 Bundle-Version: 3.1.0.qualifier
-Bundle-Activator: org.thymeleaf.extras.eclipse.contentassist.ContentAssistPlugin
+Bundle-Activator: org.thymeleaf.extras.eclipse.ContentAssistPlugin
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.13.400",
  org.eclipse.core.runtime;bundle-version="3.15.300",
  org.eclipse.jdt.core;bundle-version="3.18.0",
@@ -26,18 +26,18 @@ Export-Package: org.thymeleaf.extras.eclipse.contentassist;
    org.eclipse.core.runtime.preferences,
    org.eclipse.core.resources,
    org.eclipse.ui.plugin",
- org.thymeleaf.extras.eclipse.contentassist.autocomplete;uses:="org.eclipse.core.runtime,org.eclipse.wst.sse.ui.contentassist,org.thymeleaf.extras.eclipse.contentassist",
- org.thymeleaf.extras.eclipse.contentassist.autocomplete.generators;
+ org.thymeleaf.extras.eclipse.autocomplete;uses:="org.eclipse.core.runtime,org.eclipse.wst.sse.ui.contentassist,org.thymeleaf.extras.eclipse.contentassist",
+ org.thymeleaf.extras.eclipse.autocomplete.generators;
   uses:="org.eclipse.wst.xml.core.internal.provisional.document,
    org.thymeleaf.extras.eclipse.contentassist,
    org.eclipse.jface.text,
    org.eclipse.wst.sse.core.internal.provisional.text",
- org.thymeleaf.extras.eclipse.contentassist.autocomplete.proposals;
+ org.thymeleaf.extras.eclipse.autocomplete.proposals;
   uses:="org.eclipse.jface.text.contentassist,
    org.eclipse.swt.graphics,
    org.thymeleaf.extras.eclipse.dialect.xml,
    org.eclipse.jface.text",
- org.thymeleaf.extras.eclipse.contentassist.hover;uses:="org.thymeleaf.extras.eclipse.contentassist,org.eclipse.jface.text"
+ org.thymeleaf.extras.eclipse.hover;uses:="org.thymeleaf.extras.eclipse.contentassist,org.eclipse.jface.text"
 Bundle-ClassPath: .,
  libs/apiguardian-api-1.1.0.jar,
  libs/attoparser-2.0.5.RELEASE.jar,
