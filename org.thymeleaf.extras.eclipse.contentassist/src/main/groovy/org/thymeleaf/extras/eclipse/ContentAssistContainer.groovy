@@ -20,7 +20,7 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 /**
- * Holds the Spring IoC context for use throughout the plugin.
+ * Spring IoC container for the content assist plugin.
  * 
  * @author Emanuel Rabina
  */

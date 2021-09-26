@@ -24,9 +24,9 @@ import org.eclipse.jface.text.ITextHover
 import org.eclipse.jface.text.ITextHoverExtension
 import org.eclipse.jface.text.ITextViewer
 import org.eclipse.swt.widgets.Shell
+import org.eclipse.ui.IWorkbench
 import org.eclipse.wst.sse.ui.internal.derived.HTMLTextPresenter
 import org.thymeleaf.extras.eclipse.ContentAssistContainer
-import org.thymeleaf.extras.eclipse.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 
 /**
@@ -37,25 +37,30 @@ import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 class InfoHoverComputer implements ITextHover, ITextHoverExtension {
 
 	private final DialectCache dialectCache
+	private final IWorkbench workbench
 
 	/**
 	 * Constructor, used by Eclipse to create an instance of this class so
 	 * defaults to using the dialect cache via direct access to the Spring
-	 * container instance.
+	 * container instance, and the current workbench via static access to the
+	 * plugin.
 	 */
 	InfoHoverComputer() {
 
-		this(ContentAssistContainer.instance.getBean(DialectCache))
+		this(ContentAssistContainer.instance.getBean(DialectCache), ContentAssistContainer.instance.getBean(IWorkbench))
 	}
 
 	/**
-	 * Constructor, create a new hover computer with the specified dialect cache.
+	 * Constructor, create a new hover computer with the specified dialect cache
+	 * and workbench.
 	 * 
 	 * @param dialectCache
+	 * @param workbench
 	 */
-	InfoHoverComputer(DialectCache dialectCache) {
+	InfoHoverComputer(DialectCache dialectCache, IWorkbench workbench) {
 
 		this.dialectCache = dialectCache
+		this.workbench = workbench
 	}
 
 	@Override
@@ -82,7 +87,7 @@ class InfoHoverComputer implements ITextHover, ITextHoverExtension {
 			def surroundingWord = textViewer.document.get(cursorPosition, hoverRegion.length)
 
 			if (surroundingWord ==~ /[\w:-]*/) {
-				def processor = dialectCache.getProcessor(ContentAssistPlugin.findCurrentJavaProject(), node.knownNamespaces, surroundingWord)
+				def processor = dialectCache.getProcessor(workbench.currentJavaProject, node.knownNamespaces, surroundingWord)
 				return processor?.documentation?.value
 			}
 

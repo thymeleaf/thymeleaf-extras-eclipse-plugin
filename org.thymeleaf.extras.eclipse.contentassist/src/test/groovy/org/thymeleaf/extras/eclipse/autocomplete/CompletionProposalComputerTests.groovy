@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
+import org.thymeleaf.extras.eclipse.TestContentAssistConfig
 import org.thymeleaf.extras.eclipse.autocomplete.generators.AttributeProcessorProposalGenerator
 import org.thymeleaf.extras.eclipse.autocomplete.generators.AttributeRestrictionProposalGenerator
 import org.thymeleaf.extras.eclipse.autocomplete.generators.ElementProcessorProposalGenerator
@@ -37,7 +38,7 @@ import javax.inject.Inject
  * 
  * @author Emanuel Rabina
  */
-@SpringJUnitConfig(classes = [TestCoreConfig, CompletionProposalComputerTestsConfig.class])
+@SpringJUnitConfig(classes = [TestContentAssistConfig, CompletionProposalComputerTestsConfig.class])
 class CompletionProposalComputerTests {
 
 	@Configuration
@@ -59,11 +60,7 @@ class CompletionProposalComputerTests {
 	@Test
 	void computeCompletionProposalsAggregatesResults() {
 
-//		def mockTextViewer = mock(ITextViewer)
-//		when(mockTextViewer.getNodeAt(anyInt())).thenReturn(null)
 		def mockCompletionProposalInvocationContext = mock(CompletionProposalInvocationContext)
-//		when(mockCompletionProposalInvocationContext.getViewer()).thenReturn(null)
-
 		def results = completionProposalComputer.computeCompletionProposals(
 			mockCompletionProposalInvocationContext, mock(IProgressMonitor))
 		assertEquals(results, [])

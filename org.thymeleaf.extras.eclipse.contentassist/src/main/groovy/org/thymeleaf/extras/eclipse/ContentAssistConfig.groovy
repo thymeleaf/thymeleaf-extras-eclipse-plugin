@@ -17,6 +17,7 @@ package org.thymeleaf.extras.eclipse
 
 import org.eclipse.core.resources.IWorkspace
 import org.eclipse.core.resources.ResourcesPlugin
+import org.eclipse.ui.IWorkbench
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
@@ -29,6 +30,11 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 @ComponentScan
 class ContentAssistConfig {
+
+	@Bean
+	IWorkbench workbench() {
+		return ContentAssistPlugin.default.workbench
+	}
 
 	@Bean
 	IWorkspace workspace() {

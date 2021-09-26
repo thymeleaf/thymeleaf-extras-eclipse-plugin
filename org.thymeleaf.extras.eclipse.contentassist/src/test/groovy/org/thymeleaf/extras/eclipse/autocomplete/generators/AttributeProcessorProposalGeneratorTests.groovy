@@ -16,6 +16,14 @@
 
 package org.thymeleaf.extras.eclipse.autocomplete.generators
 
+import org.eclipse.core.resources.IFile
+import org.eclipse.core.resources.IProject
+import org.eclipse.jface.text.IDocument
+import org.eclipse.ui.IEditorPart
+import org.eclipse.ui.IWorkbench
+import org.eclipse.ui.IWorkbenchPage
+import org.eclipse.ui.IWorkbenchWindow
+import org.eclipse.ui.part.FileEditorInput
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
@@ -24,10 +32,12 @@ import org.junit.jupiter.api.Test
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
-import org.thymeleaf.extras.eclipse.autocomplete.TestCoreConfig
+import org.thymeleaf.extras.eclipse.TestContentAssistConfig
+import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import static org.junit.jupiter.api.Assertions.*
 import static org.mockito.Mockito.*
 
+import groovy.xml.DOMBuilder
 import javax.inject.Inject
 
 /**
@@ -36,26 +46,81 @@ import javax.inject.Inject
  * 
  * @author Emanuel Rabina
  */
-@SpringJUnitConfig(classes = [TestCoreConfig, AttributeProcessorProposalGeneratorConfig.class])
+@SpringJUnitConfig(classes = [TestContentAssistConfig, AttributeProcessorProposalGeneratorConfig.class])
 class AttributeProcessorProposalGeneratorTests {
 
 	@Configuration
 	static class AttributeProcessorProposalGeneratorConfig {
+
 		@Bean
 		AttributeProcessorProposalGenerator attributeProcessorProposalGenerator() {
 			return new AttributeProcessorProposalGenerator()
+		}
+
+		@Bean
+		DialectCache dialectCache() {
+			def dialectCache = mock(DialectCache)
+			when(dialectCache.getAttributeProcessors(any(), any(), any())).thenReturn([])
+			return dialectCache
 		}
 	}
 
 	@Inject
 	private final AttributeProcessorProposalGenerator attributeProcessorProposalGenerator
+	@Inject
+	private final IWorkbench workbench
+
+	/**
+	 * Create an {@link IDocument} mock that operates over the given text.
+	 * 
+	 * @param documentText
+	 * @return
+	 */
+	private static IDocument createDocument(String documentText) {
+
+		def document = mock(IDocument)
+		when(document.getChar(anyInt())).thenAnswer({ invocation ->
+			def index = invocation.getArgument(0)
+			return documentText.charAt(index)
+		})
+		when(document.get(anyInt(), anyInt())).thenAnswer({ invocation ->
+			def (position, length) = invocation.arguments
+			return documentText.substring(position, position + length)
+		})
+		return document
+	}
 
 	@Test
-	void generateProposals() {
+	void mock() {
 
-		def results = attributeProcessorProposalGenerator.generateProposals(
+		def results = attributeProcessorProposalGenerator.generate(
 			mock(IDOMNode), mock(ITextRegion), mock(IStructuredDocumentRegion),
 			mock(IStructuredDocument), 0)
+		assertEquals(results, [])
+	}
+
+	@Test
+	void returnsProposalsAtElementWhitespace() {
+
+		// TODO: See the note in IWorkbenchExtensions
+		def project = mock(IProject)
+		def file = mock(IFile)
+		when(file.getProject()).thenReturn(project)
+		def editorInput = mock(FileEditorInput)
+		when(editorInput.getFile()).thenReturn(file)
+		def activeEditor = mock(IEditorPart)
+		when(activeEditor.getEditorInput()).thenReturn(editorInput)
+		def workbenchPage = mock(IWorkbenchPage)
+		when(workbenchPage.getActiveEditor()).thenReturn(activeEditor)
+		def workbenchWindow = mock(IWorkbenchWindow)
+		when(workbenchWindow.getActivePage()).thenReturn(workbenchPage)
+		when(workbench.getWorkbenchWindows()).thenReturn(new IWorkbenchWindow[]{ workbenchWindow })
+
+		def html = '<p xmlns:th="http://www.thymeleaf.org" >Hi!</p>'
+		def document = DOMBuilder.newInstance().parseText(html)
+
+		def results = attributeProcessorProposalGenerator.generate(document.firstChild, mock(ITextRegion),
+			mock(IStructuredDocumentRegion), createDocument(html), 39)
 		assertEquals(results, [])
 	}
 }

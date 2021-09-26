@@ -40,6 +40,6 @@ interface ProposalGenerator<P extends ICompletionProposal> {
 	 * @param cursorPosition
 	 * @return List of autocomplete proposals.
 	 */
-	List<P> generateProposals(Node node, ITextRegion textRegion, IStructuredDocumentRegion documentRegion,
+	List<P> generate(Node node, ITextRegion textRegion, IStructuredDocumentRegion documentRegion,
 		IDocument document, int cursorPosition)
 }

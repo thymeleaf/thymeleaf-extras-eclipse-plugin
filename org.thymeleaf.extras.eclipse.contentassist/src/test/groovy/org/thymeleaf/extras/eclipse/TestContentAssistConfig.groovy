@@ -17,6 +17,7 @@
 package org.thymeleaf.extras.eclipse
 
 import org.eclipse.core.resources.IWorkspace
+import org.eclipse.ui.IWorkbench
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
@@ -28,8 +29,13 @@ import static org.mockito.Mockito.mock
  * @author Emanuel Rabina
  */
 @Configuration
-@ComponentScan('org.thymeleaf.extras.eclipse')
-class TestCoreConfig {
+@ComponentScan
+class TestContentAssistConfig {
+
+	@Bean
+	IWorkbench workbench() {
+		return mock(IWorkbench)
+	}
 
 	@Bean
 	IWorkspace workspace() {

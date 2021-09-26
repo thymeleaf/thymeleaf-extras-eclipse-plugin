@@ -91,7 +91,7 @@ class CompletionProposalComputer implements ICompletionProposalComputer {
 
 				// Create proposals from the generators given to us by the computers
 				return proposalGenerators.inject([]) { acc, proposalGenerator ->
-					return acc + proposalGenerator.generateProposals(node, textRegion, documentRegion, document, cursorPosition)
+					return acc + proposalGenerator.generate(node, textRegion, documentRegion, document, cursorPosition)
 				}
 			}
 		}

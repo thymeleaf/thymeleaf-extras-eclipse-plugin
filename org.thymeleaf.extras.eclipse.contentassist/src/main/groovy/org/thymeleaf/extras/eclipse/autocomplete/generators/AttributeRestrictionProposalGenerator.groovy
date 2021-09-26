@@ -17,9 +17,9 @@
 package org.thymeleaf.extras.eclipse.autocomplete.generators
 
 import org.eclipse.jface.text.IDocument
+import org.eclipse.ui.IWorkbench
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
-import org.thymeleaf.extras.eclipse.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.autocomplete.proposals.AttributeRestrictionCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.w3c.dom.Node
@@ -37,6 +37,8 @@ class AttributeRestrictionProposalGenerator implements ProposalGenerator<Attribu
 
 	@Inject
 	private final DialectCache dialectCache
+	@Inject
+	private final IWorkbench workbench
 
 	/**
 	 * Collect attribute restriction suggestions.
@@ -56,7 +58,7 @@ class AttributeRestrictionProposalGenerator implements ProposalGenerator<Attribu
 		def attributeName = document.get(documentRegion.startOffset + attributeNameTextRegion.start,
 			 attributeNameTextRegion.textLength)
 
-		def attributeProcessor = dialectCache.getProcessor(ContentAssistPlugin.findCurrentJavaProject(), node.knownNamespaces, attributeName)
+		def attributeProcessor = dialectCache.getProcessor(workbench.currentJavaProject, node.knownNamespaces, attributeName)
 		if (attributeProcessor?.isSetRestrictions()) {
 
 			def restrictions = attributeProcessor.restrictions
@@ -79,7 +81,7 @@ class AttributeRestrictionProposalGenerator implements ProposalGenerator<Attribu
 	 * {@inheritDoc}
 	 */
 	@Override
-	List<AttributeRestrictionCompletionProposal> generateProposals(Node node, ITextRegion textRegion,
+	List<AttributeRestrictionCompletionProposal> generate(Node node, ITextRegion textRegion,
 		IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
 		return makeAttributeRestrictionSuggestions(node, textRegion) ?

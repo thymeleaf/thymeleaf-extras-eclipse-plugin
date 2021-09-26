@@ -17,9 +17,9 @@
 package org.thymeleaf.extras.eclipse.autocomplete.generators
 
 import org.eclipse.jface.text.IDocument
+import org.eclipse.ui.IWorkbench
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
-import org.thymeleaf.extras.eclipse.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.autocomplete.proposals.AttributeProcessorCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
@@ -39,6 +39,8 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 
 	@Inject
 	private final DialectCache dialectCache
+	@Inject
+	private final IWorkbench workbench
 
 	/**
 	 * Check if attribute processor suggestions can be made.
@@ -54,7 +56,7 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 		IDocument document, int cursorPosition) {
 
 		if (node.elementNode) {
-			if (document.getChar(cursorPosition - 1).whitespace) {
+			if (cursorPosition > 0 && document.getChar(cursorPosition - 1).whitespace) {
 				return true
 			}
 			if (textRegion) {
@@ -87,9 +89,9 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 
 		def pattern = document.findProcessorNamePattern(cursorPosition)
 
-		def processors = dialectCache.getAttributeProcessors(ContentAssistPlugin.findCurrentJavaProject(), node.knownNamespaces, pattern)
+		def processors = dialectCache.getAttributeProcessors(workbench.currentJavaProject, node.knownNamespaces, pattern)
 		if (!processors.empty) {
-			def proposals = new ArrayList<AttributeProcessorCompletionProposal>()
+			def proposals = []
 			def existingAttributes = node.attributes
 
 			// Go through twice so that we create data-* suggestions as well
@@ -181,7 +183,7 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 	}
 
 	@Override
-	List<AttributeProcessorCompletionProposal> generateProposals(Node node, ITextRegion textRegion,
+	List<AttributeProcessorCompletionProposal> generate(Node node, ITextRegion textRegion,
 		IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
 		return canMakeProposals(node, textRegion, documentRegion, document, cursorPosition) ?

@@ -16,8 +16,6 @@
 
 package org.thymeleaf.extras.eclipse
 
-import org.eclipse.jdt.core.IJavaProject
-import org.eclipse.jdt.core.JavaCore
 import org.eclipse.jface.resource.ImageRegistry
 import org.eclipse.ui.plugin.AbstractUIPlugin
 import org.eclipse.wst.html.ui.internal.HTMLUIPlugin
@@ -40,22 +38,6 @@ class ContentAssistPlugin extends AbstractUIPlugin {
 	static final String IMAGE_EXPRESSION_OBJECT_METHOD    = 'expression-object-method'
 
 	private static ContentAssistPlugin plugin
-
-	/**
-	 * Find the Eclipse project for the file the user is working on.
-	 * 
-	 * @return The project owning the file the user has open.
-	 */
-	static IJavaProject findCurrentJavaProject() {
-
-		def editor = plugin.workbench.workbenchWindows[0].activePage.activeEditor
-		def file = editor.editorInput.file
-		def project = file.project
-		if (project.isNatureEnabled(JavaCore.NATURE_ID)) {
-			return JavaCore.create(project)
-		}
-		return null
-	}
 
 	/**
 	 * Returns the shared instance of this plugin.

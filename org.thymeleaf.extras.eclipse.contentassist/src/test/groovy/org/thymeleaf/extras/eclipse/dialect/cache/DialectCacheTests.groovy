@@ -19,7 +19,7 @@ package org.thymeleaf.extras.eclipse.dialect.cache
 import org.eclipse.jdt.core.IJavaProject
 import org.junit.jupiter.api.Test
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
-import org.thymeleaf.extras.eclipse.TestCoreConfig
+import org.thymeleaf.extras.eclipse.TestContentAssistConfig
 import static org.junit.jupiter.api.Assertions.*
 import static org.mockito.Mockito.*
 
@@ -31,7 +31,7 @@ import javax.inject.Inject
  * 
  * @author Emanuel Rabina
  */
-@SpringJUnitConfig(classes = [TestCoreConfig])
+@SpringJUnitConfig(classes = [TestContentAssistConfig])
 class DialectCacheTests {
 
 	@Inject

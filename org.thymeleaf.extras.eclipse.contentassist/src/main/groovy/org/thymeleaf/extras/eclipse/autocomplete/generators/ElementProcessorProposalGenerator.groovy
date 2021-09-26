@@ -17,10 +17,10 @@
 package org.thymeleaf.extras.eclipse.autocomplete.generators
 
 import org.eclipse.jface.text.IDocument
+import org.eclipse.ui.IWorkbench
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
 import org.eclipse.wst.xml.core.internal.regions.DOMRegionContext
-import org.thymeleaf.extras.eclipse.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.autocomplete.proposals.ElementProcessorCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.w3c.dom.Node
@@ -38,6 +38,8 @@ class ElementProcessorProposalGenerator implements ProposalGenerator<ElementProc
 
 	@Inject
 	private final DialectCache dialectCache
+	@Inject
+	private final IWorkbench workbench
 
 	/**
 	 * Collect element processor suggestions.
@@ -51,14 +53,14 @@ class ElementProcessorProposalGenerator implements ProposalGenerator<ElementProc
 		int cursorPosition) {
 
 		def pattern = document.findProcessorNamePattern(cursorPosition)
-		return dialectCache.getElementProcessors(ContentAssistPlugin.findCurrentJavaProject(), node.knownNamespaces, pattern)
+		return dialectCache.getElementProcessors(workbench.currentJavaProject, node.knownNamespaces, pattern)
 			.collect { processor ->
 				return new ElementProcessorCompletionProposal(processor, pattern.length(), cursorPosition)
 			}
 	}
 
 	@Override
-	List<ElementProcessorCompletionProposal> generateProposals(Node node, ITextRegion textRegion,
+	List<ElementProcessorCompletionProposal> generate(Node node, ITextRegion textRegion,
 		IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
 		return makeElementProcessorSuggestions(node, textRegion, documentRegion, document, cursorPosition) ?

@@ -27,9 +27,6 @@ class ContentAssistPreferenceInitializer extends AbstractPreferenceInitializer {
 
 	static final String AUTO_PROPOSE_PREF = 'autoProposeOn'
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	void initializeDefaultPreferences() {
 

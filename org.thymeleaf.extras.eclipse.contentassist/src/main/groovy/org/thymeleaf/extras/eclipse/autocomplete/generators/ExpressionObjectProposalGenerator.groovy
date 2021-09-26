@@ -17,9 +17,9 @@
 package org.thymeleaf.extras.eclipse.autocomplete.generators
 
 import org.eclipse.jface.text.IDocument
+import org.eclipse.ui.IWorkbench
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
-import org.thymeleaf.extras.eclipse.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.autocomplete.proposals.ExpressionObjectMethodCompletionProposal
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.w3c.dom.Node
@@ -37,6 +37,8 @@ class ExpressionObjectProposalGenerator implements ProposalGenerator<ExpressionO
 
 	@Inject
 	private final DialectCache dialectCache
+	@Inject
+	private final IWorkbench workbench
 	
 	/**
 	 * Collect expression object method suggestions.
@@ -50,14 +52,14 @@ class ExpressionObjectProposalGenerator implements ProposalGenerator<ExpressionO
 		IDocument document, int cursorPosition) {
 
 		def pattern = document.findExpressionObjectMethodNamePattern(cursorPosition)
-		return dialectCache.getExpressionObjectMethods(ContentAssistPlugin.findCurrentJavaProject(), node.knownNamespaces, pattern)
+		return dialectCache.getExpressionObjectMethods(workbench.currentJavaProject, node.knownNamespaces, pattern)
 			.collect { expressionObject ->
 				return new ExpressionObjectMethodCompletionProposal(expressionObject, pattern.length(), cursorPosition)
 			}
 	}
 
 	@Override
-	List<ExpressionObjectMethodCompletionProposal> generateProposals(Node node, ITextRegion textRegion,
+	List<ExpressionObjectMethodCompletionProposal> generate(Node node, ITextRegion textRegion,
 		IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
 		return makeExpressionObjectMethodSuggestions(node, textRegion) ?
