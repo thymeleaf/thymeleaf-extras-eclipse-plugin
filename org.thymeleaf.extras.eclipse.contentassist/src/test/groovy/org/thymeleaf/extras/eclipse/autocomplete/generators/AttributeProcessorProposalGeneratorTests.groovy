@@ -122,6 +122,9 @@ class AttributeProcessorProposalGeneratorTests {
 
 		def results = attributeProcessorProposalGenerator.generate(document.firstChild, mock(ITextRegion),
 			mock(IStructuredDocumentRegion), createDocument(html), 39)
-		assertEquals(results, [])
+		assertEquals(
+			[ 'plugin:test1', 'plugin:test2', 'data-plugin-test1', 'data-plugin-test2' ],
+			results.collect { it.displayString }
+		)
 	}
 }

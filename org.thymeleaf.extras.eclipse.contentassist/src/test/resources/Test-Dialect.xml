@@ -4,7 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.thymeleaf.org/extras/dialect
 	                    http://www.thymeleaf.org/xsd/thymeleaf-extras-dialect-3.0.xsd"
-	prefix="th"
+	prefix="plugin"
 	namespace-uri="http://www.thymeleaf.org/extras/eclipse-plugin-tests"
 	class="org.thymeleaf.extras.eclipse.TestDialect">
 
