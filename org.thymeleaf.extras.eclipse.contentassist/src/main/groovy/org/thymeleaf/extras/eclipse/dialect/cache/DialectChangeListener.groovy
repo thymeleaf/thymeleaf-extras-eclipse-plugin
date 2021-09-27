@@ -1,5 +1,5 @@
 /* 
- * Copyright 2013, The Thymeleaf Emanuel Rabina (http://www.ultraq.net.nz/)
+ * Copyright 2013, The Thymeleaf Project (http://www.thymeleaf.org/)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
