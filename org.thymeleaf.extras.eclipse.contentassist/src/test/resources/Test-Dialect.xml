@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dialect xmlns="http://www.thymeleaf.org/extras/dialect"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.thymeleaf.org/extras/dialect
+	                    http://www.thymeleaf.org/xsd/thymeleaf-extras-dialect-3.0.xsd"
+	prefix="th"
+	namespace-uri="http://www.thymeleaf.org/extras/eclipse-plugin-tests"
+	class="org.thymeleaf.extras.eclipse.TestDialect">
+
+	<attribute-processor
+		name="test1"
+		class="org.thymeleaf.extras.eclipse.TestProcessor1">
+		<documentation
+			see-also="test2"
+			reference="Link to documentation">
+			<![CDATA[
+				<a href="https://www.thymeleaf.org/">Link text</a>
+			]]>
+		</documentation>
+	</attribute-processor>
+	<attribute-processor
+		name="test2"
+		class="org.thymeleaf.extras.eclipse.TestProcessor2">
+		<documentation
+			see-also="test2"
+			reference="Link to documentation">
+			<![CDATA[
+				<a href="https://www.thymeleaf.org/">Link text</a>
+			]]>
+		</documentation>
+	</attribute-processor>
+
+	<element-processor
+		name="testblock"
+		class="org.thymeleaf.extras.eclipse.TestBlockProcessor"/>
+
+	<expression-object name="something" class="org.thymeleaf.extras.eclipse.SomethingObject"/>
+
+</dialect>

@@ -31,7 +31,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import org.thymeleaf.extras.eclipse.TestContentAssistConfig
-import org.thymeleaf.extras.eclipse.dialect.cache.DialectChangeListener
 import org.thymeleaf.extras.eclipse.nature.ThymeleafNature
 import org.thymeleaf.extras.eclipse.wrappers.JavaProjectLocator
 import static org.junit.jupiter.api.Assertions.*
@@ -100,12 +99,12 @@ class AttributeProcessorProposalGeneratorTests {
 	@Test
 	void returnsProposalsAtElementWhitespace() {
 
-		def xmlBytes = this.class.classLoader.getResourceAsStream('Standard-Dialect.xml').bytes
+		def xmlBytes = this.class.classLoader.getResourceAsStream('Test-Dialect.xml').bytes
 		def xmlFile = mock(IFile)
 		when(xmlFile.getContents())
 			.thenReturn(new ByteArrayInputStream(xmlBytes))
 			.thenReturn(new ByteArrayInputStream(xmlBytes)) // TODO: See the note in ProjectDependencyDialectLocator
-		when(xmlFile.getName()).thenReturn('Standard-Dialect.xml')
+		when(xmlFile.getName()).thenReturn('Test-Dialect.xml')
 
 		def packageFragment = mock(IPackageFragment)
 		when(packageFragment.getNonJavaResources()).thenReturn([xmlFile] as Object[])
