@@ -66,32 +66,11 @@ abstract class AbstractCompletionProposal implements ICompletionProposal, ICompl
 		this.additionalProposalInfo = !dialectItem ? generateDocumentation(dialectItem) : null
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	void apply(IDocument document) {
 
 		apply(document, '\0', cursorPosition)
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	void apply(IDocument document, char trigger, int offset) {
-
-		applyImpl(document, trigger, offset)
-	}
-
-	/**
-	 * Applies the proposal to the document.
-	 * 
-	 * @param document
-	 * @param trigger
-	 * @param offset
-	 */
-	protected abstract void applyImpl(IDocument document, char trigger, int offset)
 
 	/**
 	 * Creates the documentation/help text, either from a {@code <documentation>}
@@ -212,9 +191,6 @@ abstract class AbstractCompletionProposal implements ICompletionProposal, ICompl
 		return docText
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	boolean isValidFor(IDocument document, int offset) {
 

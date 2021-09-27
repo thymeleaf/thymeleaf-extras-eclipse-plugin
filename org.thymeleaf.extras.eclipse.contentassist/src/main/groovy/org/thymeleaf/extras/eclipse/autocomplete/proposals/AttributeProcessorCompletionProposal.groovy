@@ -62,7 +62,7 @@ class AttributeProcessorCompletionProposal extends AbstractCompletionProposal {
 	}
 
 	@Override
-	protected void applyImpl(IDocument document, char trigger, int offset) {
+	void apply(IDocument document, char trigger, int offset) {
 
 		document.replace(offset, 0, replacementString.substring(offset - cursorPosition) + '=""')
 	}

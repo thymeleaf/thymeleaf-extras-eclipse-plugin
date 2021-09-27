@@ -29,7 +29,6 @@ import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor
  * 
  * @author Emanuel Rabina
  */
-@SuppressWarnings("restriction")
 class ElementProcessorCompletionProposal extends AbstractCompletionProposal {
 
 	final String displayString
@@ -53,11 +52,8 @@ class ElementProcessorCompletionProposal extends AbstractCompletionProposal {
 		this.displayString = processor.fullName
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	protected void applyImpl(IDocument document, char trigger, int offset) {
+	void apply(IDocument document, char trigger, int offset) {
 
 		def replacement = "${replacementString.substring(offset - cursorPosition)}>"
 		if (addEndTag) {
@@ -66,9 +62,6 @@ class ElementProcessorCompletionProposal extends AbstractCompletionProposal {
 		document.replace(offset, 0, replacement)
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	Point getSelection(IDocument document) {
 

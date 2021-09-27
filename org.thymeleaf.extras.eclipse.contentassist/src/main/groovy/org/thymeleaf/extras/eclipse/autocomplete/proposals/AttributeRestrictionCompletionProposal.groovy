@@ -54,19 +54,13 @@ class AttributeRestrictionCompletionProposal extends AbstractCompletionProposal 
 		this.offsetLength  = offsetLength
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	protected void applyImpl(IDocument document, char trigger, int offset) {
+	void apply(IDocument document, char trigger, int offset) {
 
 		int diff = offset - cursorPosition
 		document.replace(offsetStart, offsetLength + diff, displayString.substring(diff))
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	Point getSelection(IDocument document) {
 
