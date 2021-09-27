@@ -2,6 +2,10 @@
 Changelog
 =========
 
+### 3.1.0
+ - Upgrade JAXB Utilities to 2.1.0 to clear reflective access warnings in more
+   recent versions of Java, which have since become errors in Java 16+
+
 ### 3.0.1
  - Bundle all JARs to fix plugin startup issues around missing
    `javax.activation` dependency.  That JAR is normally included in the

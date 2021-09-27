@@ -5,5 +5,5 @@
 // Generated on: 2013.02.01 at 10:24:14 PM NZDT 
 //
 
-@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.thymeleaf.org/extras/dialect", elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.thymeleaf.org/extras/dialect", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.thymeleaf.extras.eclipse.dialect.xml;
