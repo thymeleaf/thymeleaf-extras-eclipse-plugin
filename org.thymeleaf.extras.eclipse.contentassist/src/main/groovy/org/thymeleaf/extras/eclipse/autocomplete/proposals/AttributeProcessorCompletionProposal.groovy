@@ -18,12 +18,9 @@ package org.thymeleaf.extras.eclipse.autocomplete.proposals
 
 import org.eclipse.jface.resource.ImageRegistry
 import org.eclipse.jface.text.IDocument
-import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.graphics.Point
 import org.thymeleaf.extras.eclipse.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
-
-import javax.inject.Inject
 
 /**
  * A completion proposal for Thymeleaf attribute processors.
@@ -32,15 +29,13 @@ import javax.inject.Inject
  */
 class AttributeProcessorCompletionProposal extends AbstractCompletionProposal {
 
-	@Inject
-	private final ImageRegistry imageRegistry
-
 	final String displayString
 
 	/**
 	 * Constructor, creates a completion proposal for a Thymeleaf attribute
 	 * processor.
 	 * 
+	 * @param imageRegistry
 	 * @param processor
 	 *   Attribute processor being proposed.
 	 * @param charsEntered
@@ -50,13 +45,14 @@ class AttributeProcessorCompletionProposal extends AbstractCompletionProposal {
 	 *   Whether the data-* version of this processor should be used for the
 	 *   proposal.
 	 */
-	AttributeProcessorCompletionProposal(AttributeProcessor processor,
-		int charsEntered, int cursorPosition, boolean dataAttr) {
+	AttributeProcessorCompletionProposal(ImageRegistry imageRegistry, AttributeProcessor processor, int charsEntered,
+		int cursorPosition, boolean dataAttr) {
 
 		super(processor,
-				!dataAttr ? processor.fullName.substring(charsEntered) :
-				            processor.fullDataName.substring(charsEntered),
-				cursorPosition)
+			!dataAttr ? processor.fullName.substring(charsEntered) :
+			            processor.fullDataName.substring(charsEntered),
+			cursorPosition,
+			imageRegistry.get(ContentAssistPlugin.IMAGE_ATTRIBUTE_PROCESSOR))
 
 		this.displayString = !dataAttr ? processor.fullName : processor.fullDataName
 	}
@@ -65,12 +61,6 @@ class AttributeProcessorCompletionProposal extends AbstractCompletionProposal {
 	void apply(IDocument document, char trigger, int offset) {
 
 		document.replace(offset, 0, replacementString.substring(offset - cursorPosition) + '=""')
-	}
-
-	@Override
-	Image getImage() {
-
-		return imageRegistry.get(ContentAssistPlugin.IMAGE_ATTRIBUTE_PROCESSOR)
 	}
 
 	@Override

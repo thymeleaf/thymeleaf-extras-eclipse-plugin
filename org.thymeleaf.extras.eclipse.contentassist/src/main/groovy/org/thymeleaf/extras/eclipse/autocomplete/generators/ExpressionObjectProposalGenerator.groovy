@@ -16,6 +16,7 @@
 
 package org.thymeleaf.extras.eclipse.autocomplete.generators
 
+import org.eclipse.jface.resource.ImageRegistry
 import org.eclipse.jface.text.IDocument
 import org.eclipse.ui.IWorkbench
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
@@ -38,6 +39,8 @@ class ExpressionObjectProposalGenerator implements ProposalGenerator<ExpressionO
 	@Inject
 	private final DialectCache dialectCache
 	@Inject
+	private final ImageRegistry imageRegistry
+	@Inject
 	private final IWorkbench workbench
 	
 	/**
@@ -54,7 +57,7 @@ class ExpressionObjectProposalGenerator implements ProposalGenerator<ExpressionO
 		def pattern = document.findExpressionObjectMethodNamePattern(cursorPosition)
 		return dialectCache.getExpressionObjectMethods(workbench.currentJavaProject, node.knownNamespaces, pattern)
 			.collect { expressionObject ->
-				return new ExpressionObjectMethodCompletionProposal(expressionObject, pattern.length(), cursorPosition)
+				return new ExpressionObjectMethodCompletionProposal(imageRegistry, expressionObject, pattern.length(), cursorPosition)
 			}
 	}
 

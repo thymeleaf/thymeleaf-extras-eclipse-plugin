@@ -21,6 +21,7 @@ import org.eclipse.jface.text.contentassist.ContextInformation
 import org.eclipse.jface.text.contentassist.ICompletionProposal
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension
 import org.eclipse.jface.text.contentassist.IContextInformation
+import org.eclipse.swt.graphics.Image
 import org.thymeleaf.extras.eclipse.dialect.xml.AttributeProcessor
 import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
 
@@ -37,6 +38,7 @@ abstract class AbstractCompletionProposal implements ICompletionProposal, ICompl
 	final String additionalProposalInfo
 	final IContextInformation contextInformation = new ContextInformation('Context string', 'Information string')
 	final int contextInformationPosition = -1
+	final Image image
 	final char[] triggerCharacters = null
 
 	/**
@@ -45,10 +47,11 @@ abstract class AbstractCompletionProposal implements ICompletionProposal, ICompl
 	 * @param replacementString
 	 *   Value to be entered into the document if this proposal is selected.
 	 * @param cursorPosition
+	 * @param image
 	 */
-	protected AbstractCompletionProposal(String replacementString, int cursorPosition) {
+	protected AbstractCompletionProposal(String replacementString, int cursorPosition, Image image) {
 
-		this(null, replacementString, cursorPosition)
+		this(null, replacementString, cursorPosition, image)
 	}
 
 	/**
@@ -58,18 +61,21 @@ abstract class AbstractCompletionProposal implements ICompletionProposal, ICompl
 	 * @param replacementString
 	 *   Value to be entered into the document if this proposal is selected.
 	 * @param cursorPosition
+	 * @param image
 	 */
-	protected AbstractCompletionProposal(DialectItem dialectItem, String replacementString, int cursorPosition) {
+	protected AbstractCompletionProposal(DialectItem dialectItem, String replacementString, int cursorPosition,
+		Image image) {
 
 		this.replacementString = replacementString
 		this.cursorPosition = cursorPosition
 		this.additionalProposalInfo = !dialectItem ? generateDocumentation(dialectItem) : null
+		this.image = image
 	}
 
 	@Override
 	void apply(IDocument document) {
 
-		apply(document, '\0', cursorPosition)
+		apply(document, '\0' as char, cursorPosition)
 	}
 
 	/**

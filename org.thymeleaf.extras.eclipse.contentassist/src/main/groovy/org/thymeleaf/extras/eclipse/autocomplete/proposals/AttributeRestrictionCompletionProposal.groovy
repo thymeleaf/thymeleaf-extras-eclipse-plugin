@@ -16,8 +16,8 @@
 
 package org.thymeleaf.extras.eclipse.autocomplete.proposals
 
+import org.eclipse.jface.resource.ImageRegistry
 import org.eclipse.jface.text.IDocument
-import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.graphics.Point
 import org.thymeleaf.extras.eclipse.ContentAssistPlugin
 
@@ -29,15 +29,15 @@ import org.thymeleaf.extras.eclipse.ContentAssistPlugin
  */
 class AttributeRestrictionCompletionProposal extends AbstractCompletionProposal {
 
-	final String displayString
-	final Image image = ContentAssistPlugin.default.imageRegistry.get(ContentAssistPlugin.IMAGE_ATTRIBUTE_RESTRICTION_VALUE)
 	private final int offsetStart
 	private final int offsetLength
+	final String displayString
 
 	/**
 	 * Constructor, creates a proposal for a Thymeleaf attribute processor
 	 * value.
 	 * 
+	 * @param imageRegistry
 	 * @param value
 	 *   A value that the attribute processor can take.
 	 * @param offsetStart
@@ -45,9 +45,10 @@ class AttributeRestrictionCompletionProposal extends AbstractCompletionProposal 
 	 * @param cursorPosition
 	 */
 	// TODO: @MapConstructor?
-	AttributeRestrictionCompletionProposal(String displayString, int offsetStart, int offsetLength, int cursorPosition) {
+	AttributeRestrictionCompletionProposal(ImageRegistry imageRegistry, String displayString, int offsetStart,
+		int offsetLength, int cursorPosition) {
 
-		super(displayString, cursorPosition)
+		super(displayString, cursorPosition, imageRegistry.get(ContentAssistPlugin.IMAGE_ATTRIBUTE_RESTRICTION_VALUE))
 
 		this.displayString = displayString
 		this.offsetStart   = offsetStart

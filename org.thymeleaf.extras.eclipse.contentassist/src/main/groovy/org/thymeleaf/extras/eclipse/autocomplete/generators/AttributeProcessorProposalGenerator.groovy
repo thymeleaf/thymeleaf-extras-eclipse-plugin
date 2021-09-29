@@ -16,6 +16,7 @@
 
 package org.thymeleaf.extras.eclipse.autocomplete.generators
 
+import org.eclipse.jface.resource.ImageRegistry
 import org.eclipse.jface.text.IDocument
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
 import org.eclipse.wst.sse.core.internal.provisional.text.ITextRegion
@@ -39,6 +40,8 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 
 	@Inject
 	private final DialectCache dialectCache
+	@Inject
+	private final ImageRegistry imageRegistry
 	@Inject
 	private final JavaProjectLocator javaProjectLocator
 
@@ -92,7 +95,7 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 	 * @param dataAttr
 	 *   Use the data-* version of the processor.
 	 */
-	private static ArrayList<AttributeProcessorCompletionProposal> createAttributeProcessorSuggestions(String pattern,
+	private ArrayList<AttributeProcessorCompletionProposal> createAttributeProcessorSuggestions(String pattern,
 		List<AttributeProcessor> processors, NamedNodeMap existingAttributes, Node node, int cursorPosition,
 		boolean dataAttr) {
 
@@ -105,7 +108,7 @@ class AttributeProcessorProposalGenerator implements ProposalGenerator<Attribute
 				continue
 			}
 
-			def proposal = new AttributeProcessorCompletionProposal(processor, pattern.length(), cursorPosition, dataAttr)
+			def proposal = new AttributeProcessorCompletionProposal(imageRegistry, processor, pattern.length(), cursorPosition, dataAttr)
 
 			// Only include the proposal if it isn't already in the element
 			if (existingAttributes.getNamedItem(proposal.displayString) == null) {

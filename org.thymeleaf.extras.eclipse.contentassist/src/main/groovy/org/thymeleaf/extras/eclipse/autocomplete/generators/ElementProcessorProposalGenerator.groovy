@@ -16,6 +16,7 @@
 
 package org.thymeleaf.extras.eclipse.autocomplete.generators
 
+import org.eclipse.jface.resource.ImageRegistry
 import org.eclipse.jface.text.IDocument
 import org.eclipse.ui.IWorkbench
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
@@ -39,6 +40,8 @@ class ElementProcessorProposalGenerator implements ProposalGenerator<ElementProc
 	@Inject
 	private final DialectCache dialectCache
 	@Inject
+	private final ImageRegistry imageRegistry
+	@Inject
 	private final IWorkbench workbench
 
 	/**
@@ -55,7 +58,7 @@ class ElementProcessorProposalGenerator implements ProposalGenerator<ElementProc
 		def pattern = document.findProcessorNamePattern(cursorPosition)
 		return dialectCache.getElementProcessors(workbench.currentJavaProject, node.knownNamespaces, pattern)
 			.collect { processor ->
-				return new ElementProcessorCompletionProposal(processor, pattern.length(), cursorPosition)
+				return new ElementProcessorCompletionProposal(imageRegistry, processor, pattern.length(), cursorPosition)
 			}
 	}
 

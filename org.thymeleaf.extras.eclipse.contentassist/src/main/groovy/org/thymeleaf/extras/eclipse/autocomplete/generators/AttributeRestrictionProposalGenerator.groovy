@@ -16,6 +16,7 @@
 
 package org.thymeleaf.extras.eclipse.autocomplete.generators
 
+import org.eclipse.jface.resource.ImageRegistry
 import org.eclipse.jface.text.IDocument
 import org.eclipse.ui.IWorkbench
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocumentRegion
@@ -37,6 +38,8 @@ class AttributeRestrictionProposalGenerator implements ProposalGenerator<Attribu
 
 	@Inject
 	private final DialectCache dialectCache
+	@Inject
+	private final ImageRegistry imageRegistry
 	@Inject
 	private final IWorkbench workbench
 
@@ -66,9 +69,8 @@ class AttributeRestrictionProposalGenerator implements ProposalGenerator<Attribu
 
 				def proposals = new ArrayList<AttributeRestrictionCompletionProposal>()
 				for (def value: restrictions.values) {
-					proposals.add(new AttributeRestrictionCompletionProposal(value,
-							documentRegion.getStartOffset(textRegion) + 1,
-							textRegion.textLength - 2, cursorPosition))
+					proposals.add(new AttributeRestrictionCompletionProposal(imageRegistry, value,
+						documentRegion.getStartOffset(textRegion) + 1, textRegion.textLength - 2, cursorPosition))
 				}
 				return proposals
 			}

@@ -16,8 +16,8 @@
 
 package org.thymeleaf.extras.eclipse.autocomplete.proposals
 
+import org.eclipse.jface.resource.ImageRegistry
 import org.eclipse.jface.text.IDocument
-import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.graphics.Point
 import org.eclipse.wst.html.ui.internal.HTMLUIPlugin
 import org.eclipse.wst.html.ui.internal.preferences.HTMLUIPreferenceNames
@@ -32,22 +32,24 @@ import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor
 class ElementProcessorCompletionProposal extends AbstractCompletionProposal {
 
 	final String displayString
-	final Image image = ContentAssistPlugin.default.imageRegistry.get(ContentAssistPlugin.IMAGE_ELEMENT_PROCESSOR)
 	private final boolean addEndTag = HTMLUIPlugin.default.preferenceStore.getBoolean(HTMLUIPreferenceNames.TYPING_COMPLETE_ELEMENTS)
 
 	/**
 	 * Constructor, creates a completion proposal for a Thymeleaf element
 	 * processor.
 	 * 
+	 * @param imageRegistry
 	 * @param processor
 	 *   Element processor being proposed.
 	 * @param charsEntered
 	 *   How much of the entire proposal has already been entered by the user.
 	 * @param cursorposition
 	 */
-	ElementProcessorCompletionProposal(ElementProcessor processor, int charsEntered, int cursorPosition) {
+	ElementProcessorCompletionProposal(ImageRegistry imageRegistry, ElementProcessor processor,
+		int charsEntered, int cursorPosition) {
 
-		super(processor, processor.fullName.substring(charsEntered), cursorPosition)
+		super(processor, processor.fullName.substring(charsEntered), cursorPosition,
+			imageRegistry.get(ContentAssistPlugin.IMAGE_ELEMENT_PROCESSOR))
 
 		this.displayString = processor.fullName
 	}

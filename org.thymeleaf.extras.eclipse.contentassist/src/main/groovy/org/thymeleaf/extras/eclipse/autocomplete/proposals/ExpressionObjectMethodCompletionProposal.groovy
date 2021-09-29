@@ -16,8 +16,8 @@
 
 package org.thymeleaf.extras.eclipse.autocomplete.proposals
 
+import org.eclipse.jface.resource.ImageRegistry
 import org.eclipse.jface.text.IDocument
-import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.graphics.Point
 import org.thymeleaf.extras.eclipse.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
@@ -30,21 +30,22 @@ import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
 class ExpressionObjectMethodCompletionProposal extends AbstractCompletionProposal {
 
 	final String displayString
-	final Image image = ContentAssistPlugin.getDefault().imageRegistry.get(ContentAssistPlugin.IMAGE_EXPRESSION_OBJECT_METHOD)
 	private final boolean javaBeanProperty
 
 	/**
 	 * Constructor, set the expression object method information.
 	 * 
+	 * @param imageRegistry
 	 * @param method
 	 *   Expression object method being proposed.
 	 * @param charsEntered
 	 *   How much of the entire proposal has already been entered by the user.
 	 * @param cursorPosition
 	 */
-	ExpressionObjectMethodCompletionProposal(ExpressionObjectMethod method, int charsEntered, int cursorPosition) {
+	ExpressionObjectMethodCompletionProposal(ImageRegistry imageRegistry, ExpressionObjectMethod method, int charsEntered, int cursorPosition) {
 
-		super(method, method.getFullName().substring(charsEntered), cursorPosition)
+		super(method, method.getFullName().substring(charsEntered), cursorPosition,
+			imageRegistry.get(ContentAssistPlugin.IMAGE_EXPRESSION_OBJECT_METHOD))
 
 		displayString = method.name
 		javaBeanProperty = method.javaBeanProperty
