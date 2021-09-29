@@ -44,31 +44,18 @@ class ElementProcessorProposalGenerator implements ProposalGenerator<ElementProc
 	@Inject
 	private final IWorkbench workbench
 
-	/**
-	 * Collect element processor suggestions.
-	 * 
-	 * @param node
-	 * @param document
-	 * @param cursorPosition
-	 * @return List of element processor suggestions.
-	 */
-	private List<ElementProcessorCompletionProposal> computeElementProcessorSuggestions(Node node, IDocument document,
-		int cursorPosition) {
-
-		def pattern = document.findProcessorNamePattern(cursorPosition)
-		return dialectCache.getElementProcessors(workbench.currentJavaProject, node.knownNamespaces, pattern)
-			.collect { processor ->
-				return new ElementProcessorCompletionProposal(imageRegistry, processor, pattern.length(), cursorPosition)
-			}
-	}
-
 	@Override
 	List<ElementProcessorCompletionProposal> generate(Node node, ITextRegion textRegion,
 		IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
-		return makeElementProcessorSuggestions(node, textRegion, documentRegion, document, cursorPosition) ?
-				computeElementProcessorSuggestions(node, document, cursorPosition) :
-				Collections.EMPTY_LIST
+		if (canMakeElementProcessorSuggestions(node, textRegion, documentRegion, document, cursorPosition)) {
+			def pattern = document.findProcessorNamePattern(cursorPosition)
+			return dialectCache.getElementProcessors(workbench.currentJavaProject, node.knownNamespaces, pattern)
+				.collect { processor ->
+					return new ElementProcessorCompletionProposal(imageRegistry, processor, pattern.length(), cursorPosition)
+				}
+		}
+		return []
 	}
 
 	/**
@@ -81,7 +68,7 @@ class ElementProcessorProposalGenerator implements ProposalGenerator<ElementProc
 	 * @param cursorposition
 	 * @return <tt>true</tt> if element processor suggestions should be made.
 	 */
-	private static boolean makeElementProcessorSuggestions(Node node, ITextRegion textRegion,
+	private static boolean canMakeElementProcessorSuggestions(Node node, ITextRegion textRegion,
 		IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
 		// If we're in a text node, then the first non-whitespace character before

@@ -44,19 +44,6 @@ abstract class AbstractCompletionProposal implements ICompletionProposal, ICompl
 	/**
 	 * Subclass constructor, set completion information.
 	 * 
-	 * @param replacementString
-	 *   Value to be entered into the document if this proposal is selected.
-	 * @param cursorPosition
-	 * @param image
-	 */
-	protected AbstractCompletionProposal(String replacementString, int cursorPosition, Image image) {
-
-		this(null, replacementString, cursorPosition, image)
-	}
-
-	/**
-	 * Subclass constructor, set completion information.
-	 * 
 	 * @param dialectItem
 	 * @param replacementString
 	 *   Value to be entered into the document if this proposal is selected.

@@ -43,44 +43,17 @@ class ExpressionObjectProposalGenerator implements ProposalGenerator<ExpressionO
 	@Inject
 	private final IWorkbench workbench
 	
-	/**
-	 * Collect expression object method suggestions.
-	 * 
-	 * @param node
-	 * @param document
-	 * @param cursorPosition
-	 * @return List of expression object method suggestions
-	 */
-	private List<ExpressionObjectMethodCompletionProposal> computeExpressionObjectMethodSuggestions(Node node,
-		IDocument document, int cursorPosition) {
-
-		def pattern = document.findExpressionObjectMethodNamePattern(cursorPosition)
-		return dialectCache.getExpressionObjectMethods(workbench.currentJavaProject, node.knownNamespaces, pattern)
-			.collect { expressionObject ->
-				return new ExpressionObjectMethodCompletionProposal(imageRegistry, expressionObject, pattern.length(), cursorPosition)
-			}
-	}
-
 	@Override
 	List<ExpressionObjectMethodCompletionProposal> generate(Node node, ITextRegion textRegion,
 		IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
-		return makeExpressionObjectMethodSuggestions(node, textRegion) ?
-				computeExpressionObjectMethodSuggestions(node, document, cursorPosition) :
-				Collections.EMPTY_LIST
-	}
-
-	/**
-	 * Check if, given everything, expression object method suggestions should
-	 * be made.
-	 * 
-	 * @param node
-	 * @param textRegion
-	 * @return <tt>true</tt> if expression object method suggestions should be
-	 * 		   made.
-	 */
-	private static boolean makeExpressionObjectMethodSuggestions(Node node, ITextRegion textRegion) {
-
-		return node.elementNode && textRegion.xmlAttribute
+		if (node.elementNode && textRegion.xmlAttribute) {
+			def pattern = document.findExpressionObjectMethodNamePattern(cursorPosition)
+			return dialectCache.getExpressionObjectMethods(workbench.currentJavaProject, node.knownNamespaces, pattern)
+				.collect { expressionObject ->
+					return new ExpressionObjectMethodCompletionProposal(imageRegistry, expressionObject, pattern.length(), cursorPosition)
+				}
+		}
+		return []
 	}
 }

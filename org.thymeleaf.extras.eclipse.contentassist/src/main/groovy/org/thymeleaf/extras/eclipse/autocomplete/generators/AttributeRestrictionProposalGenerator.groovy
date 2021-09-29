@@ -43,64 +43,31 @@ class AttributeRestrictionProposalGenerator implements ProposalGenerator<Attribu
 	@Inject
 	private final IWorkbench workbench
 
-	/**
-	 * Collect attribute restriction suggestions.
-	 * 
-	 * @param node
-	 * @param textRegion
-	 * @param documentRegion
-	 * @param document
-	 * @param cursorPosition
-	 * @return List of attribute restriction suggestions.
-	 */
-	private List<AttributeRestrictionCompletionProposal> computeAttributeRestrictionSuggestions(Node node,
-		ITextRegion textRegion, IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
-
-		def textRegions = documentRegion.regions
-		def attributeNameTextRegion = textRegions.get(textRegions.indexOf(textRegion) - 2)
-		def attributeName = document.get(documentRegion.startOffset + attributeNameTextRegion.start,
-			 attributeNameTextRegion.textLength)
-
-		def attributeProcessor = dialectCache.getProcessor(workbench.currentJavaProject, node.knownNamespaces, attributeName)
-		if (attributeProcessor?.isSetRestrictions()) {
-
-			def restrictions = attributeProcessor.restrictions
-			if (restrictions.isSetValues()) {
-
-				def proposals = new ArrayList<AttributeRestrictionCompletionProposal>()
-				for (def value: restrictions.values) {
-					proposals.add(new AttributeRestrictionCompletionProposal(imageRegistry, value,
-						documentRegion.getStartOffset(textRegion) + 1, textRegion.textLength - 2, cursorPosition))
-				}
-				return proposals
-			}
-		}
-
-		return Collections.EMPTY_LIST
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	List<AttributeRestrictionCompletionProposal> generate(Node node, ITextRegion textRegion,
 		IStructuredDocumentRegion documentRegion, IDocument document, int cursorPosition) {
 
-		return makeAttributeRestrictionSuggestions(node, textRegion) ?
-			computeAttributeRestrictionSuggestions(node, textRegion, documentRegion, document, cursorPosition) :
-			Collections.EMPTY_LIST
-	}
+		if (node.elementNode && textRegion?.xmlAttribute) {
+			def textRegions = documentRegion.regions
+			def attributeNameTextRegion = textRegions.get(textRegions.indexOf(textRegion) - 2)
+			def attributeName = document.get(documentRegion.startOffset + attributeNameTextRegion.start,
+				attributeNameTextRegion.textLength)
 
-	/**
-	 * Check if, given everything, attribute restriction suggestions should be
-	 * made.
-	 * 
-	 * @param node
-	 * @param textRegion
-	 * @return <tt>true</tt> if attribute processor suggestions should be made.
-	 */
-	private static boolean makeAttributeRestrictionSuggestions(Node node, ITextRegion textRegion) {
+			def attributeProcessor = dialectCache.getProcessor(workbench.currentJavaProject, node.knownNamespaces, attributeName)
+			if (attributeProcessor?.isSetRestrictions()) {
 
-		return node.elementNode && textRegion?.xmlAttribute
+				def restrictions = attributeProcessor.restrictions
+				if (restrictions.isSetValues()) {
+
+					def proposals = new ArrayList<AttributeRestrictionCompletionProposal>()
+					for (def value: restrictions.values) {
+						proposals.add(new AttributeRestrictionCompletionProposal(imageRegistry, value,
+							documentRegion.getStartOffset(textRegion) + 1, textRegion.textLength - 2, cursorPosition))
+					}
+					return proposals
+				}
+			}
+		}
+		return []
 	}
 }

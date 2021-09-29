@@ -48,7 +48,7 @@ class AttributeRestrictionCompletionProposal extends AbstractCompletionProposal 
 	AttributeRestrictionCompletionProposal(ImageRegistry imageRegistry, String displayString, int offsetStart,
 		int offsetLength, int cursorPosition) {
 
-		super(displayString, cursorPosition, imageRegistry.get(ContentAssistPlugin.IMAGE_ATTRIBUTE_RESTRICTION_VALUE))
+		super(null, displayString, cursorPosition, imageRegistry.get(ContentAssistPlugin.IMAGE_ATTRIBUTE_RESTRICTION_VALUE))
 
 		this.displayString = displayString
 		this.offsetStart   = offsetStart
