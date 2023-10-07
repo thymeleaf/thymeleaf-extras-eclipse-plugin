@@ -68,12 +68,16 @@ dependencies {
 	)
 }
 
+tasks.named('clean') {
+	delete "${contentassistPluginDir}/lib"
+}
+
 /**
  * Download the dependencies for each plugin and place them into their
  * respective libs directories.
  */
 tasks.register('downloadDependencies') {
-	description = 'Download Maven dependencies into the libs directory for each plugin'
+	description = 'Download Maven dependencies into the lib directory for each plugin'
 
 	doLast {
 		copy {

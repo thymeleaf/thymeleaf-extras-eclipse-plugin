@@ -51,13 +51,13 @@
 
 	<repositories>
 		<repository>
-			<id>2019-06</id>
-			<url>https://download.eclipse.org/releases/2019-06/</url>
+			<id>2023-06</id>
+			<url>https://download.eclipse.org/releases/2023-06/</url>
 			<layout>p2</layout>
 		</repository>
 		<repository>
 			<id>eclipse</id>
-			<url>https://download.eclipse.org/eclipse/updates/4.12</url>
+			<url>https://download.eclipse.org/eclipse/updates/4.28</url>
 			<layout>p2</layout>
 		</repository>
 		<repository>
@@ -71,8 +71,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<thymeleaf.plugin-update-site>https://raw.githubusercontent.com/thymeleaf/thymeleaf-extras-eclipse-plugin/update-site/${project.version}/</thymeleaf.plugin-update-site>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 	</properties>
 
 	<build>
@@ -138,8 +138,8 @@
 				<artifactId>tycho-compiler-plugin</artifactId>
 				<version>${tycho.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
 			<plugin>

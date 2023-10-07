@@ -15,13 +15,12 @@ Web Tools Platform HTML source editor.
 Minimum Requirements
 --------------------
 
- - Java 8
- - An Eclipse IDE based on 2019-06 or newer
+ - Java 17
+ - An Eclipse IDE based on 2023-06 or newer
    > This plugin has been tested with the Enterprise and Java Web Developers
-   > bundle from the Eclipse installer and Spring Tool Suite 4.7.1.
-   > STS 4.8.0+ changed the HTML editor this plugin is built atop, so it
-   > isn't guaranteed to work in those versions.  However, some people have
-   > reported it still works for them so your mileage may vary.
+   > bundle from the Eclipse installer.
+   > Spring Tool Suite 4.8.0+ changed the HTML editor this plugin is built atop,
+   > so is no longer guaranteed to work in those versions.
  - A Thymeleaf 3 project
 
 
