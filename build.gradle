@@ -17,13 +17,13 @@
 /**
  * Gradle build script to perform a variety of support tasks for the Thymeleaf
  * Extras Eclipse Plugin project.
- * 
+ *
  * @author Emanuel Rabina
  */
 plugins {
 	id 'java-library'
 }
-apply from: 'https://raw.githubusercontent.com/ultraq/gradle-support/3.4.0/jaxb.gradle'
+apply from: 'https://raw.githubusercontent.com/ultraq/gradle-support/4.3.1/jaxb.gradle'
 
 def contentassistPluginDir = 'org.thymeleaf.extras.eclipse.contentassist'
 
@@ -38,7 +38,7 @@ repositories {
  * Create the depdendency graphs for each of the plugins.  This is used for the
  * 'downloadDependencies' task so it can copy all necessary JARs into each
  * project, saving us having to store those JARs in source control (like we used
- * to, since this is an OSGi environment, not a Maven one). 
+ * to, since this is an OSGi environment, not a Maven one).
  */
 configurations.create('contentassist')
 
@@ -70,14 +70,16 @@ dependencies {
 
 /**
  * Download the dependencies for each plugin and place them into their
- * respective libs directories. 
+ * respective libs directories.
  */
-task downloadDependencies(
-	description: 'Download Maven dependencies into the libs directory for each plugin') {
+tasks.register('downloadDependencies') {
+	description = 'Download Maven dependencies into the libs directory for each plugin'
 
-	copy {
-		from configurations.contentassist
-		into "${contentassistPluginDir}/libs"
+	doLast {
+		copy {
+			from configurations.contentassist
+			into "${contentassistPluginDir}/lib"
+		}
 	}
 }
 
