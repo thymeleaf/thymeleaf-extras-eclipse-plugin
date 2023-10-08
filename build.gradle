@@ -49,22 +49,24 @@ configurations.create('contentassist')
 //	}
 //}
 
+def groovyVersion = '4.0.15'
+def springVersion = '5.2.0.RELEASE'
+
 dependencies {
 	contentassist(
 		'javax.annotation:javax.annotation-api:1.3.2',
 		'javax.inject:javax.inject:1',
-		'nz.net.ultraq.jaxb:jaxb-utilities:2.1.0',
-		'nz.net.ultraq.extensions:groovy-extensions:1.1.0',
-		'nz.net.ultraq.extensions:profiling-extensions:0.6.1',
+		'nz.net.ultraq.groovy:groovy-extensions:2.2.0',
+		'nz.net.ultraq.groovy:groovy-profiling-extensions:0.7.0',
 		'org.attoparser:attoparser:2.0.5.RELEASE',
-		'org.codehaus.groovy:groovy:3.0.9',
-		'org.springframework:spring-context:5.2.0.RELEASE',
+		"org.apache.groovy:groovy:${groovyVersion}",
+		"org.springframework:spring-context:${springVersion}",
 
 		// For unit tests
-		'org.codehaus.groovy:groovy-xml:3.0.9',
+		"org.apache.groovy:groovy-xml:${groovyVersion}",
 		'org.junit.jupiter:junit-jupiter:5.7.2',
 		'org.mockito:mockito-core:3.12.4',
-		'org.springframework:spring-test:5.2.0.RELEASE'
+		"org.springframework:spring-test:${springVersion}"
 	)
 }
 
