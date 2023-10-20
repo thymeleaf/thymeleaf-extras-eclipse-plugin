@@ -12,4 +12,4 @@ jobs:
           java-version: 17
           cache: maven
       - run: ./gradlew downloadDependencies
-      - run: mvn --batch-mode --update-snapshots verify
+      - run: mvn verify
