@@ -73,7 +73,7 @@ your project, and is ideal for when you've organized your code to have plenty of
 reusable HTML fragments without a common root element on which to put the XML
 namespace.
 
-To add the Thymeleaf nature to your project: right-click a project >> Thymeleaf >>
+To add the Thymeleaf nature to your project: right-click a project >> Configure >>
 Add Thymeleaf Nature.
 
 Using either method, you should now start getting content assist for any dialect

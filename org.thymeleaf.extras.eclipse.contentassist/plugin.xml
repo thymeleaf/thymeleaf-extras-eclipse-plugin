@@ -114,11 +114,12 @@
       </menuContribution>
       <menuContribution
           allPopups="true"
-          locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-         <menu
-             icon="icons/Thymeleaf.png"
-             id="org.thymeleaf.extras.eclipse.menus.ThymeleafMenuGroup"
-             label="Thymeleaf">
+          locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+          <command
+                commandId="org.thymeleaf.extras.eclipse.menus.RemoveThymeleafNature"
+                icon="icons/Thymeleaf.png"
+                label="Remove Thymeleaf Nature"
+                style="push">
             <visibleWhen>
                <iterate ifEmpty="false">
                   <adapt type="org.eclipse.core.resources.IProject">
@@ -133,12 +134,7 @@
                   </adapt>
                </iterate>
             </visibleWhen>
-            <command
-                commandId="org.thymeleaf.extras.eclipse.menus.RemoveThymeleafNature"
-                label="Remove Thymeleaf Nature"
-                style="push">
-            </command>
-         </menu>
+          </command>
       </menuContribution>
    </extension>
    <extension
