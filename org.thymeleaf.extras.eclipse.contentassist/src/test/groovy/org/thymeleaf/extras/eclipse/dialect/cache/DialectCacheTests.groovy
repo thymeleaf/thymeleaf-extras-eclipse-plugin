@@ -23,7 +23,7 @@ import org.thymeleaf.extras.eclipse.TestContentAssistConfig
 import static org.junit.jupiter.api.Assertions.*
 import static org.mockito.Mockito.*
 
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 /**
  * Tests for the {@link DialectCache} class which is a store of dialect

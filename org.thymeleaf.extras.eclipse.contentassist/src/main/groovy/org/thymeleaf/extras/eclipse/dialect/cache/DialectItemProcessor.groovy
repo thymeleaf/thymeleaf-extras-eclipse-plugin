@@ -21,7 +21,8 @@ import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.ui.JavadocContentAccess
 import org.thymeleaf.extras.eclipse.dialect.xml.*
 
-import javax.inject.Named 
+import jakarta.inject.Named 
+
 /**
  * Creates a content-assist ready dialect item from a dialect file definition.
  * 

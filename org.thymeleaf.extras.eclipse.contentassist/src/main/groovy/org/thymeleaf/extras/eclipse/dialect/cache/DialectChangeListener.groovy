@@ -28,12 +28,12 @@ import org.thymeleaf.extras.eclipse.dialect.SingleFileDialectLocator
 import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader
 import static org.eclipse.core.resources.IResourceChangeEvent.*
 
+import jakarta.annotation.PreDestroy
+import jakarta.inject.Inject
+import jakarta.inject.Named
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import javax.annotation.PreDestroy
-import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * A resource change listener, acting on changes made to any dialect files,

@@ -19,7 +19,7 @@ package org.thymeleaf.extras.eclipse.autocomplete
 import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.wst.sse.ui.contentassist.CompletionProposalInvocationContext
 import org.eclipse.wst.sse.ui.contentassist.ICompletionProposalComputer
-import org.thymeleaf.extras.eclipse.ContentAssistContainer
+import org.thymeleaf.extras.eclipse.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.autocomplete.generators.ProposalGenerator
 import org.thymeleaf.extras.eclipse.autocomplete.generators.AttributeProcessorProposalGenerator
 import org.thymeleaf.extras.eclipse.autocomplete.generators.AttributeRestrictionProposalGenerator
@@ -46,10 +46,10 @@ class CompletionProposalComputer implements ICompletionProposalComputer {
 	CompletionProposalComputer() {
 
 		this(
-			ContentAssistContainer.instance.getBean(ElementProcessorProposalGenerator),
-			ContentAssistContainer.instance.getBean(AttributeProcessorProposalGenerator),
-			ContentAssistContainer.instance.getBean(AttributeRestrictionProposalGenerator),
-			ContentAssistContainer.instance.getBean(ExpressionObjectProposalGenerator)
+			ContentAssistPlugin.default.getBean(ElementProcessorProposalGenerator),
+			ContentAssistPlugin.default.getBean(AttributeProcessorProposalGenerator),
+			ContentAssistPlugin.default.getBean(AttributeRestrictionProposalGenerator),
+			ContentAssistPlugin.default.getBean(ExpressionObjectProposalGenerator)
 		)
 	}
 

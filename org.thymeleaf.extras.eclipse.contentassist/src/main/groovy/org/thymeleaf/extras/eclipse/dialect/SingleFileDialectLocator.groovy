@@ -20,7 +20,7 @@ import org.eclipse.core.resources.IWorkspace
 import org.eclipse.core.runtime.IPath
 
 import groovy.transform.TupleConstructor
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 /**
  * A dialect locator target at a single, already-known, dialect file.

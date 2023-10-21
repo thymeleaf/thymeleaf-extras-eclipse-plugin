@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.*
 import static org.mockito.Mockito.*
 
 import groovy.xml.DOMBuilder
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 /**
  * Tests for the {@link AttributeProcessorProposalGenerator}, which comes up

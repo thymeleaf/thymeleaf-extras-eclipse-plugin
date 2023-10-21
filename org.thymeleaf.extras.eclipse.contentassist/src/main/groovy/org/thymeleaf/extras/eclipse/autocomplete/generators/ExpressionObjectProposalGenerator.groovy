@@ -25,8 +25,8 @@ import org.thymeleaf.extras.eclipse.autocomplete.proposals.ExpressionObjectMetho
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import org.w3c.dom.Node
 
-import javax.inject.Inject
-import javax.inject.Named
+import jakarta.inject.Inject
+import jakarta.inject.Named
 
 /**
  * Proposal generator for Thymeleaf expression objects.

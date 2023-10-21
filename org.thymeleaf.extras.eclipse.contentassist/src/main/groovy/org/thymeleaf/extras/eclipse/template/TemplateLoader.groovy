@@ -21,7 +21,8 @@ import org.attoparser.dom.DOMMarkupParser
 import org.thymeleaf.extras.eclipse.resources.ResourceLoader
 import org.thymeleaf.extras.eclipse.template.model.Template
 
-import javax.inject.Named 
+import jakarta.inject.Named
+
 /**
  * Creates template metadata for any templates picked out by a template locator.
  * 

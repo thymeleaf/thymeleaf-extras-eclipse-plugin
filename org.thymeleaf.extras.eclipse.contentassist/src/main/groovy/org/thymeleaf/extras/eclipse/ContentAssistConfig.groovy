@@ -18,10 +18,13 @@ package org.thymeleaf.extras.eclipse
 import org.eclipse.core.resources.IWorkspace
 import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.jface.resource.ImageRegistry
+import org.eclipse.ui.PlatformUI
 import org.eclipse.ui.IWorkbench
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.thymeleaf.extras.eclipse.dialect.XmlDialectLoader
+import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 
 /**
  * Spring configuration for the core part of the plugin.
@@ -39,7 +42,7 @@ class ContentAssistConfig {
 
 	@Bean
 	IWorkbench workbench() {
-		return ContentAssistPlugin.default.workbench
+		return PlatformUI.workbench
 	}
 
 	@Bean

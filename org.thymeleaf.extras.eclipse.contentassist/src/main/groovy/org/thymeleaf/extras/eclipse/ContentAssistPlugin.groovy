@@ -21,6 +21,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin
 import org.eclipse.wst.html.ui.internal.HTMLUIPlugin
 import org.eclipse.wst.html.ui.internal.preferences.HTMLUIPreferenceNames
 import org.osgi.framework.BundleContext
+import org.springframework.context.ApplicationContext
+import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 /**
  * Plugin activator class for the Thymeleaf content assist module.
@@ -38,6 +40,17 @@ class ContentAssistPlugin extends AbstractUIPlugin {
 	static final String IMAGE_EXPRESSION_OBJECT_METHOD    = 'expression-object-method'
 
 	private static ContentAssistPlugin plugin
+
+	ApplicationContext applicationContext
+
+	/**
+	 * Shortcut to the {@code getBean} method of the underlying application
+	 * context.
+	 */
+	public <T> T getBean(Class<T> requiredType) {
+
+		return plugin.applicationContext.getBean(requiredType)
+	}
 
 	/**
 	 * Returns the shared instance of this plugin.
@@ -86,7 +99,7 @@ class ContentAssistPlugin extends AbstractUIPlugin {
 			})
 		}
 
-		ContentAssistContainer.instance
+		applicationContext = new AnnotationConfigApplicationContext(ContentAssistConfig)
 	}
 
 	@Override
@@ -94,6 +107,5 @@ class ContentAssistPlugin extends AbstractUIPlugin {
 
 		plugin = null
 		super.stop(context)
-		ContentAssistContainer.instance.close()
 	}
 }

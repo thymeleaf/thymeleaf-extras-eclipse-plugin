@@ -3,7 +3,7 @@
 
 <plugin>
    <extension
-       id="org.thymeleaf.extras.eclipse.core.ThymeleafBuilder"
+       id="org.thymeleaf.extras.eclipse.contentassist.ThymeleafBuilder"
        name="Thymeleaf Validation Builder"
        point="org.eclipse.core.resources.builders">
       <builder>
@@ -25,7 +25,7 @@
          </run>
       </runtime>
       <builder
-          id="org.thymeleaf.extras.eclipse.core.ThymeleafBuilder">
+          id="org.thymeleaf.extras.eclipse.contentassist.ThymeleafBuilder">
       </builder>
    </extension>
    <extension
@@ -63,7 +63,7 @@
                      <not>
                         <test
                             property="org.eclipse.core.resources.projectNature"
-                            value="org.thymeleaf.extras.eclipse.core.ThymeleafNature">
+                            value="org.thymeleaf.extras.eclipse.contentassist.ThymeleafNature">
                         </test>
                      </not>
                   </adapt>
@@ -80,7 +80,7 @@
                   <adapt type="org.eclipse.core.resources.IProject">
                      <test
                          property="org.eclipse.core.resources.projectNature"
-                         value="org.thymeleaf.extras.eclipse.core.ThymeleafNature">
+                         value="org.thymeleaf.extras.eclipse.contentassist.ThymeleafNature">
                      </test>
                   </adapt>
                </iterate>
@@ -104,7 +104,7 @@
                         <test
                             forcePluginActivation="true"
                             property="org.eclipse.core.resources.projectNature"
-                            value="org.thymeleaf.extras.eclipse.core.ThymeleafNature">
+                            value="org.thymeleaf.extras.eclipse.contentassist.ThymeleafNature">
                         </test>
                      </not>
                   </adapt>
@@ -128,7 +128,7 @@
                      </test>
                      <test
                          property="org.eclipse.core.resources.projectNature"
-                         value="org.thymeleaf.extras.eclipse.core.ThymeleafNature">
+                         value="org.thymeleaf.extras.eclipse.contentassist.ThymeleafNature">
                      </test>
                   </adapt>
                </iterate>

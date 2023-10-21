@@ -27,7 +27,7 @@ import org.eclipse.jdt.core.IJavaProject
 import org.eclipse.jdt.core.JavaCore
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.thymeleaf.extras.eclipse.ContentAssistContainer
+import org.thymeleaf.extras.eclipse.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 import static org.eclipse.core.resources.IResource.*
 
@@ -50,7 +50,7 @@ class ThymeleafBuilder extends IncrementalProjectBuilder {
 
 	private static final Logger logger = LoggerFactory.getLogger(ThymeleafBuilder)
 
-	private final DialectCache dialectCache = ContentAssistContainer.instance.getBean(DialectCache)
+	private final DialectCache dialectCache = ContentAssistPlugin.default.getBean(DialectCache)
 
 	/**
 	 * Remove HTML validation messages that refer to unknown attributes, when

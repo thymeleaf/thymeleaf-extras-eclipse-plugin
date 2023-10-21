@@ -28,10 +28,10 @@ import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
 import org.thymeleaf.extras.eclipse.dialect.xml.Processor
 import static org.eclipse.core.resources.IResourceChangeEvent.*
 
-import javax.annotation.PostConstruct
-import javax.annotation.PreDestroy
-import javax.inject.Inject
-import javax.inject.Named
+import jakarta.annotation.PostConstruct
+import jakarta.annotation.PreDestroy
+import jakarta.inject.Inject
+import jakarta.inject.Named
 import javax.xml.namespace.QName
 
 /**

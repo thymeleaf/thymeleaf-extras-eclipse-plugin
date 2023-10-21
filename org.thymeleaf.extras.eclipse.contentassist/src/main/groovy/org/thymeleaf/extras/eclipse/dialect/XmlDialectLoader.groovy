@@ -21,7 +21,7 @@ import nz.net.ultraq.jaxb.XmlReader
 import org.thymeleaf.extras.eclipse.dialect.xml.Dialect
 import org.thymeleaf.extras.eclipse.resources.ResourceLoader
 
-import javax.inject.Named
+import jakarta.inject.Named
 
 /**
  * Loads dialect help/documentation XML files from those returned by a

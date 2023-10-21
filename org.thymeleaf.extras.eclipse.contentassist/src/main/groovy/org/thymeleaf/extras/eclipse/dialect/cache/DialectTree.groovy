@@ -23,7 +23,7 @@ import org.thymeleaf.extras.eclipse.dialect.xml.DialectItem
 import org.thymeleaf.extras.eclipse.dialect.xml.ElementProcessor
 import org.thymeleaf.extras.eclipse.dialect.xml.ExpressionObjectMethod
 
-import javax.inject.Named
+import jakarta.inject.Named
 
 /**
  * Representation of all of the projects which contain dialect files found in

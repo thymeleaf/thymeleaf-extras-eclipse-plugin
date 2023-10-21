@@ -16,9 +16,9 @@
 
 package org.thymeleaf.extras.eclipse.nature
 
-
 import org.eclipse.core.resources.IProject
-import org.eclipse.core.resources.IProjectNature 
+import org.eclipse.core.resources.IProjectNature
+
 /**
  * Configures a project that has been given the Thymeleaf nature.
  * 
@@ -26,8 +26,8 @@ import org.eclipse.core.resources.IProjectNature
  */
 class ThymeleafNature implements IProjectNature {
 
-	static final String THYMELEAF_NATURE_ID  = 'org.thymeleaf.extras.eclipse.core.ThymeleafNature'
-	static final String THYMELEAF_BUILDER_ID = 'org.thymeleaf.extras.eclipse.core.ThymeleafBuilder'
+	static final String THYMELEAF_NATURE_ID  = 'org.thymeleaf.extras.eclipse.contentassist.ThymeleafNature'
+	static final String THYMELEAF_BUILDER_ID = 'org.thymeleaf.extras.eclipse.contentassist.ThymeleafBuilder'
 
 	IProject project
 

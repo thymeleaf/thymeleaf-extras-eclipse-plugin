@@ -16,14 +16,15 @@
 
 package org.thymeleaf.extras.eclipse.template.cache
 
-import javax.inject.Inject
-import javax.inject.Named
 import org.eclipse.jdt.core.IJavaProject
 import org.thymeleaf.extras.eclipse.resources.ResourceTree
 import org.thymeleaf.extras.eclipse.template.ProjectTemplateLocator
 import org.thymeleaf.extras.eclipse.template.TemplateLoader
 import org.thymeleaf.extras.eclipse.template.model.Fragment
 import org.thymeleaf.extras.eclipse.template.model.Template
+
+import jakarta.inject.Inject
+import jakarta.inject.Named
 
 /**
  * A basic in-memory store of all known template fragments per project.

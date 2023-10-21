@@ -30,7 +30,7 @@ import org.thymeleaf.extras.eclipse.autocomplete.generators.ExpressionObjectProp
 import static org.junit.jupiter.api.Assertions.*
 import static org.mockito.Mockito.*
 
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 /**
  * Tests for the {@link CompletionProposalComputer}, which aggregates

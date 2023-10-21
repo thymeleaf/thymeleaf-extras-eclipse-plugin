@@ -27,8 +27,8 @@ import org.thymeleaf.extras.eclipse.wrappers.JavaProjectLocator
 import org.w3c.dom.NamedNodeMap
 import org.w3c.dom.Node
 
-import javax.inject.Inject
-import javax.inject.Named
+import jakarta.inject.Inject
+import jakarta.inject.Named
 
 /**
  * Proposal generator for Thymeleaf attribute processors.

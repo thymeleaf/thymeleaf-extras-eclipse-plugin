@@ -26,7 +26,7 @@ import org.eclipse.jface.text.ITextViewer
 import org.eclipse.swt.widgets.Shell
 import org.eclipse.ui.IWorkbench
 import org.eclipse.wst.sse.ui.internal.derived.HTMLTextPresenter
-import org.thymeleaf.extras.eclipse.ContentAssistContainer
+import org.thymeleaf.extras.eclipse.ContentAssistPlugin
 import org.thymeleaf.extras.eclipse.dialect.cache.DialectCache
 
 /**
@@ -47,7 +47,7 @@ class InfoHoverComputer implements ITextHover, ITextHoverExtension {
 	 */
 	InfoHoverComputer() {
 
-		this(ContentAssistContainer.instance.getBean(DialectCache), ContentAssistContainer.instance.getBean(IWorkbench))
+		this(ContentAssistPlugin.default.getBean(DialectCache), ContentAssistPlugin.default.getBean(IWorkbench))
 	}
 
 	/**

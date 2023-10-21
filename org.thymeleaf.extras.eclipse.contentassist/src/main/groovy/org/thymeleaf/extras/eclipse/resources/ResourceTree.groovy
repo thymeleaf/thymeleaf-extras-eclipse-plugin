@@ -16,9 +16,10 @@
 
 package org.thymeleaf.extras.eclipse.resources
 
-import javax.inject.Named
 import org.eclipse.core.runtime.IPath
 import org.eclipse.jdt.core.IJavaProject
+
+import jakarta.inject.Named
 
 /**
  * Generic representation of resources in a developer's workspace, divided-up by
