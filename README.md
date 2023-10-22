@@ -17,11 +17,19 @@ Minimum Requirements
 
  - Java 17
  - An Eclipse IDE based on 2023-06 or newer
-   > This plugin has been tested with the Enterprise and Java Web Developers
-   > bundle from the Eclipse installer.
-   > Spring Tool Suite 4.8.0+ changed the HTML editor this plugin is built atop,
-   > so is no longer guaranteed to work in those versions.
  - A Thymeleaf 3 project
+
+> Please note that this plugin is really only effective in the Eclipse WebTools
+> HTML Editor, which was the default editor for HTML files back when this plugin
+> was first developed, but may no longer be with newer versions of Eclipse or
+> other installations like the Spring Tool Suite.  To check if the HTML Editor
+> is being used to open HTML files, look at the note in [Invoking content assist](#invoking-content-assist)
+> below.
+> 
+> Members of the Thymeleaf team no longer use Eclipse in their day-to-day, so
+> developing for it is especially difficult.  As such, this plugin is in
+> maintenance mode, doing just enough to make sure it still works with Eclipse
+> so long as no drastic changes are made to the IDE.
 
 
 Installation
@@ -76,6 +84,8 @@ namespace.
 To add the Thymeleaf nature to your project: right-click a project >> Configure >>
 Add Thymeleaf Nature.
 
+#### Invoking content assist
+
 Using either method, you should now start getting content assist for any dialect
 whose namespace is explicitly declared in your HTML files (method 1), or for
 every dialect in your project's classpath (method 2).  This applies to
@@ -114,3 +124,39 @@ Some notes on where you put that file in the JAR:
 
 These are just short-comings of the current dialect scanning method, which
 itself is built upon Eclipse's own lookup mechanisms.
+
+
+Developing this plugin
+----------------------
+
+### Setup
+
+As a base, it's best to install the Eclipe IDE for Java and Web Developers using
+the Eclipse Installer.  This gives you access to most of the tools required to
+work on this plugin.  After that, also install the Groovy Development Tools (can
+be done from the marketplace) and any m2e connectors that may come up as a
+result of trying to fix the Tycho errors in the `pom.xml` files.
+
+### Building
+
+With all of the above installed, you should be able to run an Eclipse instance
+from within Eclipse, with the plugin included.
+
+From the command line, you can use `mvn verify` to compile, test, and create the
+plugin repository and download artifacts.
+
+### Releasing
+
+Having run `mvn verify`, switch to the `update-site` branch in this repo and
+create a folder for the version of the plugin you're looking to release.  Then,
+place all of the contents of `target/repository/update-site` into that folder.
+Commit and push the changes.
+
+Open the [Thymeleaf website project](https://github.com/thymeleaf/thymeleaf.github.io)
+and place the contents of `target/compositeRepository` into the `eclipse-plugin-update-site`
+folder.  Commit and push the changes.
+
+Lastly, go to [the Eclipse Marketplace page for the plugin](https://marketplace.eclipse.org/content/thymeleaf-plugin-eclipse),
+sign in to the website, and add a new version that points to the one you made in
+the `update-site` branch of this GitHub repository, eg: `https://raw.githubusercontent.com/thymeleaf/thymeleaf-extras-eclipse-plugin/update-site/3.1.0/`
+Don't forget to Save those changes.
