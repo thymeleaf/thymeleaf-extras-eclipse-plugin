@@ -3,8 +3,13 @@ Changelog
 =========
 
 ### 3.1.0
- - Upgrade JAXB Utilities to 2.1.0 to clear reflective access warnings in more
-   recent versions of Java, which have since become errors in Java 16+
+ - Minimum required Eclipse version is now 2023-06 (Eclipse changed some bundled
+   packages which prevent the 3.0 version of the plugin from working correctly)
+ - Java 17 now required as that is what Eclipse 2023-06 requires too
+ - And the Java 17 target required an upgrade of a lot of internal dependencies
+   as well
+ - Fixes for some null/index exceptions
+   ([#63](https://github.com/thymeleaf/thymeleaf-extras-eclipse-plugin/issues/63)
 
 ### 3.0.1
  - Bundle all JARs to fix plugin startup issues around missing
