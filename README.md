@@ -87,8 +87,8 @@ and help text when hovering the cursor over a Thymeleaf processor.
 > may not be the default for HTML files in your Eclipse installation.  To check
 > that you're using WTP's HTML editor, right-click an HTML file >> Open with,
 > and see if HTML Editor is selected:
-> 
-> ![HTML editor example](html-editor.png)
+
+![HTML editor example](html-editor.png)
 
 
 Adding content assist for your dialect
