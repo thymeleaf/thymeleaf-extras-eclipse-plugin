@@ -120,7 +120,9 @@ class AttributeProcessorProposalGeneratorTests {
 		def html = '<p xmlns:th="http://www.thymeleaf.org" >Hi!</p>'
 		def document = DOMBuilder.newInstance().parseText(html)
 
-		def results = attributeProcessorProposalGenerator.generate(document.firstChild, mock(ITextRegion),
+		// Have to use .getFirstChild() as isFirstChild is an internal method in the
+		// Apache Xerces implementation of Document 🙃
+		def results = attributeProcessorProposalGenerator.generate(document.getFirstChild(), mock(ITextRegion),
 			mock(IStructuredDocumentRegion), createDocument(html), 39)
 		assertEquals(
 			[ 'plugin:test1', 'plugin:test2', 'data-plugin-test1', 'data-plugin-test2' ],
