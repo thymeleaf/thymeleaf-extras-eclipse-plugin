@@ -59,7 +59,7 @@ dependencies {
 		'nz.net.ultraq.jaxb:jaxb-utilities:3.0.0',
 		'nz.net.ultraq.groovy:groovy-extensions:2.2.0',
 		'nz.net.ultraq.groovy:groovy-profiling-extensions:0.8.0',
-		'org.attoparser:attoparser:2.0.5.RELEASE',
+		'org.attoparser:attoparser:2.0.7.RELEASE',
 		"org.apache.groovy:groovy:${groovyVersion}",
 		"org.springframework:spring-context:${springVersion}",
 
