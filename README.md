@@ -88,7 +88,7 @@ and help text when hovering the cursor over a Thymeleaf processor.
 > that you're using WTP's HTML editor, right-click an HTML file >> Open with,
 > and see if HTML Editor is selected:
 
-![HTML editor example](html-editor.png)
+<img alt="HTML editor example" src="html-editor.png" width="448"/>
 
 
 Adding content assist for your dialect
