@@ -45,11 +45,11 @@ Features
 ### Content Assist
 
 Content assist features are only available for dialects which have supplied
-special dialect metadata files in their JARs.  thymeleaf, thymeleaf-spring,
-thymeleaf-extras-springsecurity, and thymeleaf-extras-tiles2 projects already
-have such files.  Other dialects, however, are up to the discretion of their
-developers.  If you're developing a Thymeleaf dialect and would like to take
-advantage of content assist for your own dialect, read the section on
+special dialect metadata files in their JARs.  Many of the dialects that come
+with Thymeleaf already include such files.  Other dialects, however, are up to
+the discretion of their developers.  If you're developing a Thymeleaf dialect
+and would like to take advantage of content assist for your own dialect, read
+the section on
 [adding content assist for your dialect](#adding-content-assist-for-your-dialect).
 
 Once those help files are available, and that the JAR is in the classpath of the
@@ -82,6 +82,13 @@ every dialect in your project's classpath (method 2).  This applies to
 suggestions as you type, autocompletion of what you've entered so far if it
 matches only one result (both of these can be invoked manually using CTRL+SPACE),
 and help text when hovering the cursor over a Thymeleaf processor.
+
+> These features are only available in the Eclipse WebTools HTML editor, which
+> may not be the default for HTML files in your Eclipse installation.  To check
+> that you're using WTP's HTML editor, right-click an HTML file >> Open with,
+> and see if HTML Editor is selected:
+> 
+> ![HTML editor example](html-editor.png)
 
 
 Adding content assist for your dialect
