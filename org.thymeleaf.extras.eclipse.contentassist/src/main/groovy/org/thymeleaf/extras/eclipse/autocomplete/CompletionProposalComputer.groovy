@@ -68,9 +68,8 @@ class CompletionProposalComputer implements ICompletionProposalComputer {
 		AttributeRestrictionProposalGenerator attributeRestrictionProposalGenerator,
 		ExpressionObjectProposalGenerator expressionObjectProposalGenerator
 	) {
-
 		proposalGenerators = [
-		  elementProcessorProposalGenerator,
+			elementProcessorProposalGenerator,
 			attributeProcessorProposalGenerator,
 			attributeRestrictionProposalGenerator,
 			expressionObjectProposalGenerator
